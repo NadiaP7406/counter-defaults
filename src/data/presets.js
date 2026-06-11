@@ -1,0 +1,22 @@
+export const PRESETS = {
+  frugal: {
+    name: 'Frugal & local',
+    desc: 'Minimal tokens, local alternatives, ecological awareness',
+    state: { sovereignty: 1, uncertainty: 1, referencing: 0, worldview: 1, divergence: 0, sycophancy: 2, anthropo: 2, presence: 0, memory: 2, privacy: 1, voice: 0, frugality: 3, calibration: 1, tropes: ['emdash', 'fillers', 'fractal', 'signposts'] },
+  },
+  curious: {
+    name: 'Curious & connected',
+    desc: 'Lineages, alternative frames, cross-disciplinary connections',
+    state: { sovereignty: 2, uncertainty: 2, referencing: 3, worldview: 3, divergence: 3, sycophancy: 2, anthropo: 1, presence: 1, memory: 0, privacy: 0, voice: 0, frugality: 1, calibration: 3, tropes: ['emdash', 'inflated', 'fillers'] },
+  },
+  voicekeeper: {
+    name: 'True to my voice',
+    desc: 'Mimics my voice, sticks to my content, refuses to fabricate',
+    state: { sovereignty: 3, uncertainty: 3, referencing: 1, worldview: 1, divergence: 2, sycophancy: 2, anthropo: 1, presence: 1, memory: 2, privacy: 0, voice: 3, frugality: 2, calibration: 2, tropes: ['emdash', 'inflated', 'negparallel', 'rhetorical', 'fillers', 'notjust', 'signposts', 'inflate', 'fractal', 'metaphor'] },
+  },
+  skeptic: {
+    name: 'Strict skeptic',
+    desc: 'Maximum disclosure, refuse-to-fabricate, adversarial',
+    state: { sovereignty: 3, uncertainty: 3, referencing: 2, worldview: 2, divergence: 2, sycophancy: 3, anthropo: 3, presence: 0, memory: 2, privacy: 1, voice: 1, frugality: 2, calibration: 3, tropes: ['emdash', 'inflated', 'fillers', 'signposts', 'inflate'] },
+  },
+};

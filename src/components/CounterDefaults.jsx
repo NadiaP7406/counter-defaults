@@ -1,0 +1,447 @@
+import React, { useState, useMemo, useEffect } from 'react';
+import { CREAM, PAPER, INK, CORAL, CORAL_TEXT, GREEN, PINK, BLUE, LILAC, YELLOW, COBALT, PURPLE } from '../utils/constants.js';
+import { DIMENSIONS } from '../data/dimensions.js';
+import { SECTIONS } from '../data/sections.js';
+import { TROPES } from '../data/tropes.js';
+import { PRESETS } from '../data/presets.js';
+import { generateMarkdown } from '../utils/generateMarkdown.js';
+import { usePersistedState } from '../hooks/usePersistedState.js';
+
+function renderInline(text) {
+  const parts = [];
+  let lastIndex = 0;
+  const regex = /\[([^\]]+)\]\(([^)]+)\)|\*([^*]+)\*/g;
+  let match, key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    if (match[1]) parts.push(<a key={`l${key++}`} href={match[2]} target="_blank" rel="noopener noreferrer">{match[1]}</a>);
+    else if (match[3]) parts.push(<em key={`i${key++}`}>{match[3]}</em>);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
+
+const Divider = () => (
+  <div style={{ textAlign: 'center', margin: '60px 0 36px', letterSpacing: '24px', fontSize: '22px', opacity: 0.45 }}>✱ ✱ ✱</div>
+);
+
+const initialState = {
+  sovereignty: 0, uncertainty: 0, referencing: 0, worldview: 0, divergence: 0,
+  sycophancy: 0, anthropo: 0, presence: 0, memory: 0, privacy: 0,
+  voice: 0, frugality: 0, calibration: 0, tropes: [],
+};
+
+// Sections that should start open for a given state: any section with a moved
+// advanced dim, plus Writing if tropes are set. Used on preset click and on
+// restore from localStorage or a shared URL.
+function expandedForState(state) {
+  const expanded = {};
+  SECTIONS.forEach(section => {
+    const hasAdvancedSet = section.dims.some(dimKey => DIMENSIONS[dimKey].advanced && state[dimKey] > 0);
+    const hasTropesSet = section.id === 'writing' && state.tropes && state.tropes.length > 0;
+    if (hasAdvancedSet || hasTropesSet) expanded[section.id] = true;
+  });
+  return expanded;
+}
+
+function matchPreset(state) {
+  return Object.keys(PRESETS).find(key => {
+    const p = PRESETS[key].state;
+    return Object.keys(DIMENSIONS).every(k => p[k] === state[k])
+      && p.tropes.length === state.tropes.length
+      && p.tropes.every(t => state.tropes.includes(t));
+  }) || null;
+}
+
+export default function CounterDefaults() {
+  const [state, setState] = usePersistedState(initialState);
+  const [copied, setCopied] = useState(false);
+  const [showRefs, setShowRefs] = useState(false);
+  const [editedOutput, setEditedOutput] = useState(null);
+  const [activePreset, setActivePreset] = useState(() => matchPreset(state));
+  const [expandedSections, setExpandedSections] = useState(() => expandedForState(state));
+
+  const toggleSection = (id) => setExpandedSections(prev => ({ ...prev, [id]: !prev[id] }));
+
+  const generated = useMemo(() => generateMarkdown(state), [state]);
+  const displayOutput = editedOutput !== null ? editedOutput : generated;
+
+  useEffect(() => { setEditedOutput(null); }, [state]);
+
+  const updateField = (id, value) => { setState((s) => ({ ...s, [id]: value })); setActivePreset(null); };
+  const toggleTrope = (id) => { setState((s) => ({ ...s, tropes: s.tropes.includes(id) ? s.tropes.filter((t) => t !== id) : [...s.tropes, id] })); setActivePreset(null); };
+  const reset = () => { setState(initialState); setActivePreset(null); };
+  const applyPreset = (key) => {
+    const preset = PRESETS[key];
+    setState({ ...preset.state });
+    setActivePreset(key);
+    setExpandedSections(expandedForState(preset.state));
+  };
+
+  const copyToClipboard = async () => {
+    try { await navigator.clipboard.writeText(displayOutput); }
+    catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = displayOutput; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const thumbStyles = SECTIONS.flatMap(s => s.dims.map(d => `
+    input.cd-slider-${d}::-webkit-slider-thumb { background: ${s.color}; }
+    input.cd-slider-${d}::-moz-range-thumb { background: ${s.color}; }
+  `)).join('\n');
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: CREAM, color: INK }}>
+      <style>{`
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .mono { font-family: 'VT323', monospace; letter-spacing: 1px; }
+        .smono { font-family: 'Space Mono', monospace; letter-spacing: 0.5px; }
+        .display { font-family: 'Jersey 25', 'Darker Grotesque', 'Inter', sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+        .grain { background-image: radial-gradient(rgba(26,24,20,0.05) 1px, transparent 1px); background-size: 4px 4px; }
+        .cd-slider {
+          -webkit-appearance: none; appearance: none;
+          width: 100%; height: 1px; background: ${INK}; opacity: 0.6;
+          outline: none; margin: 0; padding: 0;
+        }
+        .cd-slider::-webkit-slider-thumb {
+          -webkit-appearance: none; appearance: none;
+          width: 16px; height: 16px;
+          cursor: pointer; border: 1.5px solid ${INK};
+          border-radius: 50%;
+          transition: transform 0.15s ease;
+        }
+        .cd-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+        .cd-slider::-moz-range-thumb {
+          width: 16px; height: 16px;
+          cursor: pointer; border: 1.5px solid ${INK};
+          border-radius: 50%;
+        }
+        ${thumbStyles}
+        .opt-label {
+          font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer;
+          padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+          transition: all 0.1s ease; color: ${INK};
+        }
+        .opt-label:hover { background: rgba(26,24,20,0.08); }
+        .opt-label.selected { background: ${INK}; color: ${CREAM}; font-weight: 500; }
+        .opt-label.selected:hover { background: ${INK}; }
+        .callout-tab {
+          position: absolute; top: -12px; left: 16px;
+          padding: 2px 10px; border: 1.5px solid ${INK}; border-radius: 5px;
+          font-family: 'VT323', monospace; font-size: 14px; letter-spacing: 1px;
+        }
+        .callout {
+          position: relative; border: 1.5px dashed ${INK}; border-radius: 10px;
+          padding: 22px 20px 18px;
+        }
+        .preset-btn {
+          background: ${PAPER}; border: 1.5px solid ${INK}; border-radius: 8px;
+          padding: 12px 16px; cursor: pointer; text-align: left;
+          transition: all 0.1s ease; font-family: 'Inter', sans-serif;
+        }
+        .preset-btn:hover { background: ${YELLOW}; }
+        .preset-btn.active { background: ${CORAL}; }
+        .btn-primary {
+          color: ${INK}; border: 1.5px solid ${INK};
+          font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 1px;
+          padding: 8px 18px; cursor: pointer; border-radius: 6px;
+        }
+        .btn-primary:hover { background: ${YELLOW}; }
+        .btn-secondary {
+          background: ${PAPER}; color: ${INK}; border: 1.5px solid ${INK};
+          font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 1px;
+          padding: 8px 18px; cursor: pointer; border-radius: 6px;
+        }
+        .btn-secondary:hover { background: ${YELLOW}; }
+        .trope-card {
+          background: ${PAPER}; border: 1.5px solid ${INK}; border-radius: 8px;
+          padding: 14px; transition: all 0.15s ease; cursor: pointer;
+        }
+        .trope-card:hover { background: ${YELLOW}; }
+        .trope-card.checked { background: ${YELLOW}; }
+        .editable-output {
+          background: transparent; color: ${INK}; border: none; outline: none;
+          width: 100%; resize: vertical; font-family: 'VT323', monospace;
+          font-size: 17px; letter-spacing: 0.5px; line-height: 1.6;
+          padding: 14px 18px; min-height: 300px;
+        }
+        a { color: ${INK}; text-decoration: underline; text-underline-offset: 2px; }
+        a:hover { background: ${YELLOW}; }
+      `}</style>
+
+      <div className="grain min-h-screen">
+        <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
+
+          {/* Header strip */}
+          <div className="smono" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px dashed ${INK}`, paddingBottom: '8px', fontSize: '13px', opacity: 0.8, marginBottom: '28px' }}>
+            <span>● by <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>AIxDESIGN</a></span>
+            <span>2026 / v1.0</span>
+          </div>
+
+          {/* Title */}
+          <h1 className="display" style={{ fontSize: 'clamp(64px, 13vw, 124px)', lineHeight: 0.78, marginBottom: '24px' }}>
+            Counter-<br/>
+            <span style={{ color: CORAL_TEXT }}>Defaults</span><span style={{ fontSize: '0.22em', verticalAlign: '0.9em', marginLeft: '0.1em', color: INK, letterSpacing: 0 }}>v1.0</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p style={{ fontSize: '17px', lineHeight: 1.5, marginBottom: '24px', maxWidth: '52ch' }}>
+            A workbook for setting your own LLM defaults, instead of the model's. Move some sliders, copy what comes out, paste it into your LLM's settings.
+          </p>
+
+          {/* Two callouts: WHY left, HOW right */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+            <div className="callout" style={{ background: PINK }}>
+              <div className="callout-tab" style={{ background: GREEN }}>● WHY THIS EXISTS</div>
+              <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '4px' }}>
+                Most LLMs default to agreeing with you, sounding sure, and writing for you. Useful when you want a confident assistant. Less useful when you want a thinking partner, your own voice, or your own judgment kept sharp. The gains and the costs come from the same capabilities. This is for keeping one while drawing limits on the other.
+              </p>
+              <button onClick={() => setShowRefs(!showRefs)} className="mono" style={{ marginTop: '8px', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', opacity: 0.75 }}>
+                {showRefs ? '> hide note' : '> read more'}
+              </button>
+              {showRefs && (
+                <div style={{ marginTop: '10px', fontSize: '13px', lineHeight: 1.5, borderTop: `1px dashed ${INK}`, paddingTop: '10px', opacity: 0.85 }}>
+                  <p style={{ marginBottom: '6px' }}><strong>On tools and capacity.</strong> Illich, <em>Tools for Conviviality</em> (1973): tools tip from extending capacity into substituting for it past a threshold he called <em>radical monopoly</em>.</p>
+                  <p style={{ marginBottom: '6px' }}><strong>On cognitive surrender.</strong> Shaw &amp; Nave (Wharton, 2026): people adopt AI outputs even when wrong (+25 pts when AI right, −15 pts when wrong). Lee et al. (Microsoft Research, CHI '25, n=319): higher confidence in AI correlates with lower critical thinking effort.</p>
+                  <p style={{ marginBottom: '6px' }}><strong>On sycophancy.</strong> Sharma, Tong, Korbak et al. (Anthropic, ICLR 2024): five AI assistants consistently exhibit sycophancy; partly traced to human preference data favoring sycophantic responses. Fanous et al. (Stanford, SycEval 2025): 58.19% sycophancy baseline across major models.</p>
+                  <p style={{ marginBottom: '6px' }}><strong>On preference writing.</strong> Scott Waddell (Medium, 2025): the "behavioral spec" approach. Specifying behavior with contrast pairs (do X, not Y) works better than abstract requests for honesty or directness. This tool's preference outputs follow that pattern.</p>
+                  <p><strong>On homogeneity.</strong> Wenger &amp; Kenett (Duke, PNAS Nexus 2026): individual LLM responses can be as creative as average human responses, but LLM responses cluster heavily together. Widespread use narrows the variety of thinking in circulation.</p>
+                </div>
+              )}
+            </div>
+
+            <div className="callout" style={{ background: YELLOW }}>
+              <div className="callout-tab" style={{ background: PAPER }}>▶ HOW THIS WORKS</div>
+              <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '4px' }}>
+                Each slider starts on the left, where the LLM already is. Drag right to swap that default for yours.
+              </p>
+              <p style={{ fontSize: '14px', fontStyle: 'italic', marginTop: '6px' }}>Only sliders you've moved show up in your output.</p>
+            </div>
+          </div>
+
+          {/* Presets */}
+          <div className="smono" style={{ fontSize: '13px', marginBottom: '12px', opacity: 0.75 }}>▶ PRESETS / starting points</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            {Object.entries(PRESETS).map(([key, preset]) => (
+              <button key={key} onClick={() => applyPreset(key)} className={`preset-btn ${activePreset === key ? 'active' : ''}`}>
+                <p style={{ fontWeight: 700, fontSize: '15px' }}>{preset.name}</p>
+                <p style={{ fontStyle: 'italic', fontSize: '13px', opacity: 0.75, marginTop: '2px' }}>{preset.desc}</p>
+              </button>
+            ))}
+          </div>
+
+          {/* Sections */}
+          {SECTIONS.map((section) => (
+            <React.Fragment key={section.id}>
+              <Divider />
+              <section style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '32px', flexWrap: 'wrap' }}>
+                  <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: section.color, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold', color: section.color === COBALT ? '#FFFFFF' : 'inherit' }}>
+                    {section.num}
+                  </span>
+                  <h2 className="display" style={{ fontSize: 'clamp(27px, 5vw, 42px)', lineHeight: 1, textTransform: 'uppercase' }}>
+                    {section.title}
+                  </h2>
+                </div>
+
+                {section.dims.map((dimKey) => {
+                  const dim = DIMENSIONS[dimKey];
+                  const value = state[dimKey];
+                  const opt = dim.options[value];
+                  const isAtDefault = value === 0;
+                  const sectionExpanded = expandedSections[section.id];
+                  if (dim.advanced && !sectionExpanded) return null;
+                  return (
+                    <div key={dimKey} style={{ marginBottom: '36px' }}>
+                      <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px' }}>
+                        <span style={{ marginRight: '6px' }}>{dim.emoji}</span>{dim.title}
+                      </h3>
+                      <p style={{ fontSize: '14px', lineHeight: 1.55, marginBottom: '14px', opacity: 0.82, maxWidth: '58ch' }}>
+                        {renderInline(dim.why)}
+                      </p>
+
+                      {dim.caveat && (
+                        <p style={{
+                          fontSize: '12px',
+                          fontStyle: 'italic',
+                          opacity: 0.65,
+                          marginTop: '-8px',
+                          marginBottom: '14px',
+                          padding: '6px 10px',
+                          borderLeft: `2px solid ${INK}`,
+                          lineHeight: 1.5,
+                          maxWidth: '58ch',
+                        }}>
+                          <span className="smono" style={{ marginRight: '6px', fontStyle: 'normal', fontSize: '10px', letterSpacing: '0.5px' }}>NOTE</span>
+                          {dim.caveat}
+                        </p>
+                      )}
+
+                      {/* Slider frame */}
+                      <div style={{ border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '14px 20px 12px', background: PAPER }}>
+                        <div className="smono" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', opacity: 0.7, marginBottom: '10px' }}>
+                          <span>{dim.poles[0]}</span>
+                          <span>{dim.poles[1]}</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max={dim.options.length - 1}
+                          value={value}
+                          onChange={(e) => updateField(dimKey, parseInt(e.target.value))}
+                          className={`cd-slider cd-slider-${dimKey}`}
+                          aria-label={`${dim.title}: ${dim.poles[0]} to ${dim.poles[1]}. Currently: ${dim.options[value].label}`}
+                          aria-valuetext={dim.options[value].label}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', gap: '4px' }}>
+                          {dim.options.map((o, i) => (
+                            <span key={i} onClick={() => updateField(dimKey, i)} className={`opt-label ${value === i ? 'selected' : ''}`}>
+                              {o.label}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Selected option box */}
+                      <div style={{ marginTop: '8px', background: `${section.color}55`, border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '12px 18px' }}>
+                        <div className="mono" style={{ fontSize: '15px', marginBottom: '2px' }}>
+                          <strong>▸ {opt.label.toUpperCase()}</strong>
+                          {isAtDefault && <span style={{ marginLeft: '10px', opacity: 0.65 }}>[DEFAULT]</span>}
+                        </div>
+                        <p style={{ fontSize: '14px', lineHeight: 1.5 }}>{opt.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {section.id === 'writing' && expandedSections[section.id] && (
+                  <div style={{ marginBottom: '36px' }}>
+                    <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px' }}>
+                      <span style={{ marginRight: '6px' }}>🚫</span>Patterns to avoid
+                    </h3>
+                    <p style={{ fontSize: '14px', lineHeight: 1.55, marginBottom: '14px', opacity: 0.82, maxWidth: '58ch' }}>
+                      Common AI writing tropes you can ban outright. Check the ones you want excluded from any output.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {TROPES.map((trope) => {
+                        const checked = state.tropes.includes(trope.id);
+                        return (
+                          <label key={trope.id} className={`trope-card ${checked ? 'checked' : ''}`} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                            <input type="checkbox" checked={checked} onChange={() => toggleTrope(trope.id)} style={{ marginTop: '3px', accentColor: section.color, transform: 'scale(1.15)' }} />
+                            <div>
+                              <p style={{ fontWeight: 600, fontSize: '14px' }}>{trope.label}</p>
+                              <p style={{ fontStyle: 'italic', fontSize: '12.5px', opacity: 0.75, marginTop: '2px', lineHeight: 1.5 }}>{trope.text}</p>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {(() => {
+                  const advancedDims = section.dims.filter(k => DIMENSIONS[k].advanced);
+                  const hasPatterns = section.id === 'writing';
+                  const items = [...advancedDims.map(k => DIMENSIONS[k].title)];
+                  if (hasPatterns) items.push('Patterns to avoid');
+                  if (items.length === 0) return null;
+                  const expanded = expandedSections[section.id];
+                  return (
+                    <button
+                      onClick={() => toggleSection(section.id)}
+                      className="smono"
+                      style={{
+                        background: 'transparent',
+                        border: `1.5px dashed ${INK}`,
+                        borderRadius: '10px',
+                        padding: '12px 20px',
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        color: INK,
+                        marginBottom: '36px',
+                        marginTop: '-12px',
+                        width: '100%',
+                        textAlign: 'left',
+                        opacity: 0.75,
+                      }}
+                    >
+                      {expanded
+                        ? `▾ Show fewer`
+                        : `▸ ${items.length} more: ${items.join(', ')}`}
+                    </button>
+                  );
+                })()}
+              </section>
+            </React.Fragment>
+          ))}
+
+          {/* Output section */}
+          <Divider />
+          <section style={{ marginBottom: '40px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', flexWrap: 'wrap' }}>
+              <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: PURPLE, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>06</span>
+              <h2 className="display" style={{ fontSize: 'clamp(27px, 5vw, 42px)', lineHeight: 1, textTransform: 'uppercase' }}>Your preferences</h2>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+              <p style={{ fontSize: '13px', fontStyle: 'italic', opacity: 0.75, maxWidth: '40ch' }}>
+                Editable. Tweak the text directly before copying.
+              </p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button onClick={reset} className="btn-secondary">RESET</button>
+                <button onClick={copyToClipboard} className="btn-primary" style={{ background: copied ? GREEN : PURPLE }}>
+                  {copied ? '✓ COPIED' : 'COPY ▸'}
+                </button>
+              </div>
+            </div>
+            <div style={{ border: `1.5px solid ${INK}`, borderRadius: '10px', overflow: 'hidden', background: PAPER }}>
+              <div className="mono" style={{ background: INK, color: CREAM, padding: '5px 14px', fontSize: '14px', display: 'flex', justifyContent: 'space-between' }}>
+                <span>preferences.md {editedOutput !== null && <span style={{ opacity: 0.7 }}>● edited</span>}</span>
+                <span style={{ opacity: 0.7 }}>● ● ●</span>
+              </div>
+              <textarea className="editable-output" value={displayOutput} onChange={(e) => setEditedOutput(e.target.value)} spellCheck={false} />
+            </div>
+
+            <div className="callout" style={{ marginTop: '24px', background: BLUE }}>
+              <div className="callout-tab" style={{ background: PAPER }}>▶ WHERE TO PASTE</div>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, marginTop: '4px' }}>
+                Most chat-based LLMs have a place for this in your account settings, usually labeled 'Custom Instructions,' 'Personalization,' 'Personal Preferences,' or 'Profile.' Paste it there. If you're using an LLM through an API, use the system prompt instead.
+              </p>
+            </div>
+
+            <div className="callout" style={{ marginTop: '24px', background: LILAC }}>
+              <div className="callout-tab" style={{ background: PAPER }}>＋ ADD YOURSELF (after pasting)</div>
+              <div style={{ fontSize: '14px', lineHeight: 1.6, marginTop: '4px' }}>
+                <p style={{ marginBottom: '6px' }}><span className="mono" style={{ background: INK, color: CREAM, padding: '1px 8px', fontSize: '12px', borderRadius: '3px', marginRight: '6px' }}>about you</span>who you are, what you work on, context you usually bring.</p>
+                <p><span className="mono" style={{ background: INK, color: CREAM, padding: '1px 8px', fontSize: '12px', borderRadius: '3px', marginRight: '6px' }}>working modes</span>e.g. thinking mode (sparring) vs. drafting mode. The configurator can't guess these.</p>
+              </div>
+              <p style={{ fontSize: '12px', fontStyle: 'italic', opacity: 0.7, marginTop: '8px' }}>These are personal and contextual. Better written by you.</p>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <div style={{ borderTop: `1px dashed ${INK}`, paddingTop: '20px', opacity: 0.8 }}>
+            <div className="smono" style={{ fontSize: '12px', marginBottom: '10px' }}>● COUNTER-DEFAULTS v1.0 / a prototype by <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer">AIxDESIGN</a></div>
+            <details>
+              <summary className="smono" style={{ fontSize: '12px', cursor: 'pointer' }}>▸ references</summary>
+              <ul style={{ marginTop: '10px', paddingLeft: '20px', listStyle: 'square', fontSize: '12.5px', lineHeight: 1.7 }}>
+                <li><a href="https://dl.acm.org/doi/10.1145/3442188.3445922" target="_blank" rel="noopener noreferrer">Bender et al., Stochastic Parrots</a> (FAccT 2021)</li>
+                <li>Escobar, <em>Designs for the Pluriverse</em> (Duke, 2018)</li>
+                <li><a href="https://en.wikipedia.org/wiki/Tools_for_Conviviality" target="_blank" rel="noopener noreferrer">Illich, Tools for Conviviality</a> (1973)</li>
+                <li><a href="https://link.springer.com/article/10.1007/s13347-020-00405-8" target="_blank" rel="noopener noreferrer">Mohamed, Png, Isaac, Decolonial AI</a> (2020)</li>
+                <li><a href="https://arxiv.org/abs/2310.13548" target="_blank" rel="noopener noreferrer">Sharma et al., Sycophancy</a> (Anthropic, ICLR 2024)</li>
+                <li>Shaw &amp; Nave, <em>Thinking, Fast, Slow, and Artificial</em> (Wharton, 2026)</li>
+                <li><a href="https://arxiv.org/abs/2502.10844" target="_blank" rel="noopener noreferrer">Sun et al., Be Friendly Not Friends</a> (CHI 2026)</li>
+              </ul>
+            </details>
+            <p style={{ marginTop: '12px', fontSize: '11px', opacity: 0.6 }}>inspired by Claude, works with any LLM. use, fork, share. the output is yours.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}

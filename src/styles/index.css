@@ -1,0 +1,41 @@
+/* Base reset (the original relied on Tailwind preflight inside claude.ai artifacts) */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+button { font: inherit; background: none; }
+
+/* Utility classes replacing the handful of Tailwind classes the component uses.
+   Kept the same names so the JSX stays unchanged. */
+.min-h-screen { min-height: 100vh; }
+.max-w-3xl { max-width: 48rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.gap-3 { gap: 0.75rem; }
+.gap-5 { gap: 1.25rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-8 { margin-bottom: 2rem; }
+
+@media (min-width: 640px) {
+  .sm\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+  .sm\:py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Visible keyboard focus (accessibility pass, handoff item 6) */
+.cd-slider:focus-visible::-webkit-slider-thumb,
+button:focus-visible,
+input[type="checkbox"]:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #3C69FD;
+  outline-offset: 2px;
+}
+.cd-slider:focus-visible { outline: none; }
+.cd-slider:focus-visible::-moz-range-thumb { outline: 2px solid #3C69FD; outline-offset: 2px; }
