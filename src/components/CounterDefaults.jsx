@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CREAM, PAPER, INK, CORAL, CORAL_TEXT, GREEN, PINK, BLUE, LILAC, YELLOW, COBALT, PURPLE } from '../utils/constants.js';
 import { DIMENSIONS } from '../data/dimensions.js';
 import { SECTIONS } from '../data/sections.js';
@@ -32,6 +32,19 @@ const initialState = {
   voice: 0, frugality: 0, calibration: 0, tropes: [],
 };
 
+// Section index for the sticky nav: the 5 slider sections plus the output.
+const NAV_ITEMS = [
+  ...SECTIONS.map(s => ({ id: s.id, num: s.num, title: s.title, color: s.color })),
+  { id: 'output', num: '06', title: 'Your preferences', color: PURPLE },
+];
+
+const scrollToSection = (id) => {
+  const el = document.getElementById(`sec-${id}`);
+  if (!el) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+};
+
 // Sections that should start open for a given state: any section with a moved
 // advanced dim, plus Writing if tropes are set. Used on preset click and on
 // restore from localStorage or a shared URL.
@@ -57,10 +70,56 @@ function matchPreset(state) {
 export default function CounterDefaults() {
   const [state, setState] = usePersistedState(initialState);
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   const [showRefs, setShowRefs] = useState(false);
   const [editedOutput, setEditedOutput] = useState(null);
   const [activePreset, setActivePreset] = useState(() => matchPreset(state));
   const [expandedSections, setExpandedSections] = useState(() => expandedForState(state));
+  const [pasteTab, setPasteTab] = useState('claude');
+  const [outputInView, setOutputInView] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const outputRef = useRef(null);
+
+  // Hide the jump pill while the output section is on screen
+  useEffect(() => {
+    const el = outputRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(([entry]) => setOutputInView(entry.isIntersecting));
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Track scroll for the section nav highlight and the mobile progress bar
+  useEffect(() => {
+    let raf = null;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - window.innerHeight;
+        setProgress(max > 0 ? window.scrollY / max : 0);
+        const marker = window.innerHeight * 0.35;
+        let current = null;
+        NAV_ITEMS.forEach(item => {
+          const el = document.getElementById(`sec-${item.id}`);
+          if (el && el.getBoundingClientRect().top <= marker) current = item.id;
+        });
+        setActiveSection(current);
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const changeCount = Object.keys(DIMENSIONS).filter(k => state[k] !== 0).length + state.tropes.length;
 
   const toggleSection = (id) => setExpandedSections(prev => ({ ...prev, [id]: !prev[id] }));
 
@@ -79,14 +138,24 @@ export default function CounterDefaults() {
     setExpandedSections(expandedForState(preset.state));
   };
 
-  const copyToClipboard = async () => {
-    try { await navigator.clipboard.writeText(displayOutput); }
+  const copyText = async (text) => {
+    try { await navigator.clipboard.writeText(text); }
     catch (e) {
       const ta = document.createElement('textarea');
-      ta.value = displayOutput; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
     }
+  };
+
+  const copyToClipboard = async () => {
+    await copyText(displayOutput);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareConfig = async () => {
+    await copyText(window.location.href);
+    setShared(true);
+    setTimeout(() => setShared(false), 2000);
   };
 
   const thumbStyles = SECTIONS.flatMap(s => s.dims.map(d => `
@@ -171,9 +240,78 @@ export default function CounterDefaults() {
         }
         a { color: ${INK}; text-decoration: underline; text-underline-offset: 2px; }
         a:hover { background: ${YELLOW}; }
+        .jump-pill {
+          position: fixed; bottom: 18px; right: 18px; z-index: 50;
+          background: ${INK}; color: ${CREAM}; border: 1.5px solid ${INK};
+          font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 1px;
+          padding: 8px 18px; border-radius: 999px; cursor: pointer;
+          box-shadow: 2px 2px 0 rgba(26,24,20,0.25);
+        }
+        .jump-pill:hover { background: ${YELLOW}; color: ${INK}; }
+        .section-nav { display: none; }
+        @media (min-width: 1100px) {
+          .section-nav {
+            display: flex; flex-direction: column; gap: 8px;
+            position: fixed; left: 22px; top: 50%; transform: translateY(-50%); z-index: 40;
+          }
+        }
+        .section-nav-dot {
+          width: 34px; height: 34px; border-radius: 50%;
+          border: 1.5px solid ${INK}; cursor: pointer;
+          font-size: 12px; font-weight: bold; padding: 0;
+          display: inline-flex; align-items: center; justify-content: center;
+          transition: transform 0.1s ease;
+        }
+        .section-nav-dot:hover { transform: scale(1.12); }
+        .scroll-progress {
+          position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 60;
+          background: ${CORAL}; transform-origin: left; pointer-events: none;
+        }
+        @media (min-width: 1100px) { .scroll-progress { display: none; } }
+        .paste-tab {
+          font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.5px;
+          padding: 3px 12px; border: 1.5px solid ${INK}; border-radius: 999px;
+          background: ${PAPER}; color: ${INK}; cursor: pointer;
+        }
+        .paste-tab:hover { background: ${YELLOW}; }
+        .paste-tab.active { background: ${INK}; color: ${CREAM}; }
       `}</style>
 
       <div className="grain min-h-screen">
+        <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
+
+        <nav className="section-nav" aria-label="Sections">
+          {NAV_ITEMS.map((item) => {
+            const active = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="smono section-nav-dot"
+                style={{
+                  background: active ? item.color : 'transparent',
+                  color: active && item.color === COBALT ? '#FFFFFF' : INK,
+                  opacity: active ? 1 : 0.55,
+                }}
+                aria-label={`Jump to section ${item.num}: ${item.title}`}
+                aria-current={active ? 'true' : undefined}
+              >
+                {item.num}
+              </button>
+            );
+          })}
+        </nav>
+
+        {changeCount > 0 && !outputInView && (
+          <button
+            className="jump-pill"
+            onClick={() => scrollToSection('output')}
+            aria-label={`${changeCount} counter-defaults set. Jump to your preferences output.`}
+          >
+            ✱ {changeCount} set → output
+          </button>
+        )}
+
         <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
 
           {/* Header strip */}
@@ -238,7 +376,7 @@ export default function CounterDefaults() {
           {SECTIONS.map((section) => (
             <React.Fragment key={section.id}>
               <Divider />
-              <section style={{ marginBottom: '20px' }}>
+              <section id={`sec-${section.id}`} style={{ marginBottom: '20px', scrollMarginTop: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '32px', flexWrap: 'wrap' }}>
                   <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: section.color, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold', color: section.color === COBALT ? '#FFFFFF' : 'inherit' }}>
                     {section.num}
@@ -297,7 +435,7 @@ export default function CounterDefaults() {
                           aria-label={`${dim.title}: ${dim.poles[0]} to ${dim.poles[1]}. Currently: ${dim.options[value].label}`}
                           aria-valuetext={dim.options[value].label}
                         />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', gap: '4px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', gap: '4px', flexWrap: 'wrap' }}>
                           {dim.options.map((o, i) => (
                             <span key={i} onClick={() => updateField(dimKey, i)} className={`opt-label ${value === i ? 'selected' : ''}`}>
                               {o.label}
@@ -381,7 +519,7 @@ export default function CounterDefaults() {
 
           {/* Output section */}
           <Divider />
-          <section style={{ marginBottom: '40px' }}>
+          <section id="sec-output" ref={outputRef} style={{ marginBottom: '40px', scrollMarginTop: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', flexWrap: 'wrap' }}>
               <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: PURPLE, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>06</span>
               <h2 className="display" style={{ fontSize: 'clamp(27px, 5vw, 42px)', lineHeight: 1, textTransform: 'uppercase' }}>Your preferences</h2>
@@ -390,8 +528,11 @@ export default function CounterDefaults() {
               <p style={{ fontSize: '13px', fontStyle: 'italic', opacity: 0.75, maxWidth: '40ch' }}>
                 Editable. Tweak the text directly before copying.
               </p>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <button onClick={reset} className="btn-secondary">RESET</button>
+                <button onClick={shareConfig} className="btn-secondary" style={{ background: shared ? GREEN : PAPER }}>
+                  {shared ? '✓ LINK COPIED' : 'SHARE'}
+                </button>
                 <button onClick={copyToClipboard} className="btn-primary" style={{ background: copied ? GREEN : PURPLE }}>
                   {copied ? '✓ COPIED' : 'COPY ▸'}
                 </button>
@@ -407,8 +548,31 @@ export default function CounterDefaults() {
 
             <div className="callout" style={{ marginTop: '24px', background: BLUE }}>
               <div className="callout-tab" style={{ background: PAPER }}>▶ WHERE TO PASTE</div>
-              <p style={{ fontSize: '14px', lineHeight: 1.6, marginTop: '4px' }}>
-                Most chat-based LLMs have a place for this in your account settings, usually labeled 'Custom Instructions,' 'Personalization,' 'Personal Preferences,' or 'Profile.' Paste it there. If you're using an LLM through an API, use the system prompt instead.
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', marginBottom: '10px' }}>
+                {[
+                  { id: 'claude', label: 'Claude' },
+                  { id: 'chatgpt', label: 'ChatGPT' },
+                  { id: 'gemini', label: 'Gemini' },
+                  { id: 'other', label: 'Other / API' },
+                ].map((t) => (
+                  <button key={t.id} onClick={() => setPasteTab(t.id)} className={`paste-tab ${pasteTab === t.id ? 'active' : ''}`} aria-pressed={pasteTab === t.id}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <p style={{ fontSize: '14px', lineHeight: 1.6 }}>
+                {pasteTab === 'claude' && (
+                  <>Open <a href="https://claude.ai/settings/profile" target="_blank" rel="noopener noreferrer">claude.ai/settings/profile</a> and paste into the personal preferences field. Applies to new chats.</>
+                )}
+                {pasteTab === 'chatgpt' && (
+                  <>In ChatGPT, click your profile → Settings → Personalization → Custom instructions. Paste into "How would you like ChatGPT to respond?".</>
+                )}
+                {pasteTab === 'gemini' && (
+                  <>Open <a href="https://gemini.google.com/saved-info" target="_blank" rel="noopener noreferrer">gemini.google.com/saved-info</a> and paste it there. Gemini calls this "Saved info".</>
+                )}
+                {pasteTab === 'other' && (
+                  <>Look for 'Custom Instructions,' 'Personalization,' or 'Profile' in the settings. Using an LLM through an API? Paste it at the top of your system prompt.</>
+                )}
               </p>
             </div>
 
@@ -438,6 +602,7 @@ export default function CounterDefaults() {
               </ul>
             </details>
             <p style={{ marginTop: '12px', fontSize: '11px', opacity: 0.6 }}>inspired by Claude, works with any LLM. use, fork, share. the output is yours.</p>
+            <p style={{ marginTop: '4px', fontSize: '11px', opacity: 0.6 }}>your config lives in this page's URL. share the link, share the setup.</p>
           </div>
 
         </div>
