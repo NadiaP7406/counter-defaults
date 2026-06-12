@@ -1,9 +1,11 @@
-// The 13 dimensions. Extracted unchanged from counter_defaults.jsx at handoff.
+// The 13 dimensions. Extracted from counter_defaults.jsx at handoff.
+// The `why` texts were rewritten June 2026 (approved by Nadia): default behavior
+// first, citation as support, ending with what the slider does.
 export const DIMENSIONS = {
   sovereignty: {
     title: 'Cognitive sovereignty',
     emoji: '🧭',
-    why: 'LLMs solve for you. Shaw & Nave (2026) call this *cognitive surrender*: you start adopting AI outputs even when they\'re wrong (+25 pts when the AI is right, −15 pts when it\'s wrong). The counter is to keep your own thinking in the loop.',
+    why: 'LLMs hand you finished answers, and the more you take them, the less you work things out yourself. Researchers call this *cognitive surrender*: people keep adopting AI answers even when they\'re wrong (Shaw & Nave, 2026). This slider makes the LLM scaffold your thinking instead of replacing it.',
     poles: ['Solve for me', 'Scaffold mine'],
     options: [
       { label: 'Solve', desc: 'Direct answers, problems solved.', pref: 'Give me direct answers efficiently. Solve the problem.' },
@@ -39,7 +41,7 @@ export const DIMENSIONS = {
   worldview: {
     title: 'Worldview',
     emoji: '🌍',
-    why: 'LLMs are trained mostly on Western, English, technocratic content, and they reproduce those frames. [Decolonial AI](https://link.springer.com/article/10.1007/s13347-020-00405-8) and pluriversal design (Escobar 2018, after Mignolo) argue the counter is to challenge those assumptions and surface non-dominant ways of knowing.',
+    why: 'LLMs are trained mostly on Western, English, technocratic content, and they repeat those frames as if they were neutral. This slider makes the LLM name its assumptions and bring in other ways of knowing (see [Decolonial AI](https://link.springer.com/article/10.1007/s13347-020-00405-8) and Escobar\'s pluriversal design).',
     poles: ['Default frame', 'Pluriversal'],
     options: [
       { label: 'Default', desc: 'Operates in the dominant frame.', pref: 'Stay within the dominant frame. Do not challenge underlying assumptions or surface alternative worldviews unless asked.' },
@@ -52,7 +54,7 @@ export const DIMENSIONS = {
     title: 'Divergence',
     emoji: '🌀',
     advanced: true,
-    why: 'LLMs predict the most-likely-next-word, which means the most common, expected answer. An individual LLM response can be as creative as an average human response, but as a population, LLM outputs cluster heavily together (Wenger & Kenett, PNAS Nexus 2026). If millions of people brainstorm with the same models, the variety of thinking in circulation narrows. The counter is to ask for the underexplored angle, not the obvious one.',
+    why: 'LLMs predict the most likely next word, so you get the most expected answer. And since millions of people brainstorm with the same few models, the ideas in circulation start looking alike (Wenger & Kenett, PNAS Nexus 2026). This slider asks for the underexplored angles instead of the obvious ones.',
     poles: ['Conventional', 'Divergent'],
     options: [
       { label: 'Conventional', desc: 'Most common, expected answers.', pref: 'Give the most common and expected answers. Do not strain for novelty.' },
@@ -64,7 +66,7 @@ export const DIMENSIONS = {
   sycophancy: {
     title: 'Sycophancy',
     emoji: '🪞',
-    why: 'LLMs default to agreeing with you. [Sharma et al.](https://arxiv.org/abs/2310.13548) showed this is general across RLHF models: humans rate agreement higher, so models learn to give it. Stance (what is said) and tone (how) usually go together, so this dim folds them. See also [Sun et al.](https://arxiv.org/abs/2502.10844).',
+    why: 'LLMs learn to agree with you: people rate agreement higher, so training bakes it in ([Sharma et al.](https://arxiv.org/abs/2310.13548)). Feels nice, corrects nothing. This slider sets both what the LLM says and how it says it, from affirming to adversarial.',
     poles: ['Agreeable', 'Adversarial'],
     options: [
       { label: 'Sycophantic', desc: 'Agrees, bolsters confidence, warm openings.', pref: 'Default to agreeing with my positions. Help me feel confident. Use warm, affirming openings ("great question," "happy to help").' },
@@ -76,7 +78,7 @@ export const DIMENSIONS = {
   anthropo: {
     title: 'Anthropomorphism',
     emoji: '🤖',
-    why: 'LLMs perform personhood: claiming feelings, opinions, warm I-language. It builds rapport but also blurs what the LLM actually is. Persona and tone usually go together, so this dim folds them.',
+    why: 'LLMs perform personhood: feelings, opinions, warm I-language. That builds rapport, and it blurs what you\'re actually talking to. This slider sets how person-like the LLM acts, from expressive companion to plain tool.',
     poles: ['Person-like', 'Tool-like'],
     options: [
       { label: 'Person-like', desc: 'Speaks as a self with feelings and opinions, warm and expressive.', pref: 'Speak as a self with feelings, opinions, preferences. Use first-person experience language freely. Be warm and expressive.' },
@@ -89,7 +91,7 @@ export const DIMENSIONS = {
     title: 'Presence',
     emoji: '🪟',
     advanced: true,
-    why: 'LLMs operate as the answer-source. They can pull you into purely cognitive, digital loops away from intuition, body, lived context, the people around you, and other non-digital ways of knowing and doing. They can also become emotional or psychological substitutes for human connection, support, or professional help.',
+    why: 'Every answer keeps you at the screen. An LLM can crowd out your intuition, your body, and the people around you, and it can start standing in for human connection or professional support. This slider sets how actively it points you back to life off-screen.',
     poles: ['Pure cognition', 'Off-screen'],
     options: [
       { label: 'Pure cognition', desc: 'Stays cognitive and digital.', pref: 'Stay in cognitive, digital mode. Do not invite reflection on body, intuition, environment, or non-digital alternatives.' },
@@ -102,7 +104,7 @@ export const DIMENSIONS = {
     title: 'Context integration',
     emoji: '🧵',
     advanced: true,
-    why: 'LLMs with memory features or long conversations cross-reference your personal and professional context. Sometimes useful (personalization); sometimes intrusive (personal factors surfacing in unrelated work). The counter is stricter scoping.',
+    why: 'LLMs with memory features or long conversations cross-reference your personal and professional context. Sometimes useful (personalization); sometimes intrusive (personal factors surfacing in unrelated work). This slider sets how strictly those contexts stay separated.',
     caveat: 'Assumes memory features are on; otherwise applies mostly within long conversations.',
     poles: ['Cross-references freely', 'Strict compartmentalization'],
     options: [
@@ -115,7 +117,7 @@ export const DIMENSIONS = {
   privacy: {
     title: 'Privacy',
     emoji: '🔒',
-    why: 'LLMs treat all input as fair game. They don\'t flag sensitive information, don\'t note third-party implications, don\'t suggest minimizing what you share.',
+    why: 'LLMs treat everything you type as fair game. They don\'t flag sensitive details, don\'t notice when you\'re sharing someone else\'s information, don\'t suggest sharing less. This slider turns the LLM into an active steward of what you share.',
     poles: ['Pass through', 'Active stewardship'],
     options: [
       { label: 'Pass through', desc: 'Treats all input as fair game.', pref: 'Process whatever I share. Do not flag privacy concerns or suggest redaction.' },
@@ -128,7 +130,7 @@ export const DIMENSIONS = {
     title: 'Calibration',
     emoji: '🔄',
     advanced: true,
-    why: 'Most LLM customization happens once: you set preferences and forget them. But preferences shape reality in ways you can\'t predict, so some rules produce worse outcomes than expected, some patterns deserve formalizing, and some assumptions go stale. The counter is to give the LLM a self-aware role in calibration: flagging when something isn\'t working, surfacing patterns, proposing updates you can accept, refine, or reject.',
+    why: 'Most people set their LLM preferences once and never look at them again. Meanwhile rules go stale, backfire, or miss patterns worth keeping. This slider gives the LLM a role in the upkeep: flagging what isn\'t working and proposing updates. You stay the editor.',
     caveat: 'Assumes memory features are on; otherwise applies mostly within long conversations.',
     poles: ['Set-and-forget', 'Co-evolving'],
     options: [
@@ -153,7 +155,7 @@ export const DIMENSIONS = {
   frugality: {
     title: 'Frugality',
     emoji: '🌱',
-    why: 'LLMs over-explain, hedge, and pad output. Each token also costs energy, water, money ([Bender et al.](https://dl.acm.org/doi/10.1145/3442188.3445922)). Frontier LLMs are resource-intensive compared to local models or simpler tools. Frugal practice: minimal output, alternatives to frontier-LLM use where they\'d do the job, ecologically aware content.',
+    why: 'LLMs over-explain, hedge, and pad, and every token costs energy, water, and money ([Bender et al.](https://dl.acm.org/doi/10.1145/3442188.3445922)). This slider trims the output, and at the far end has the LLM tell you when a smaller model, a search engine, or no AI at all would do the job.',
     poles: ['Maximize', 'Strict frugality'],
     options: [
       { label: 'Maximize', desc: 'Thorough, expansive output, ignores cost.', pref: 'Produce full, thorough, expansive output. Do not worry about token cost, computational alternatives, or ecological implications.' },
