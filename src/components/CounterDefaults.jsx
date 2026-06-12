@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CREAM, PAPER, INK, CORAL, CORAL_TEXT, GREEN, PINK, BLUE, LILAC, YELLOW, COBALT, PURPLE } from '../utils/constants.js';
 import { DIMENSIONS } from '../data/dimensions.js';
-import { SECTIONS } from '../data/sections.js';
+import { SECTIONS, DIM_COLORS } from '../data/sections.js';
 import { TROPES } from '../data/tropes.js';
 import { PRESETS } from '../data/presets.js';
 import { generateMarkdown } from '../utils/generateMarkdown.js';
@@ -32,10 +32,10 @@ const initialState = {
   voice: 0, frugality: 0, calibration: 0, tropes: [],
 };
 
-// Section index for the sticky nav: the 5 slider sections plus the output.
+// Section index for the sticky nav: the dimensions section plus the output.
 const NAV_ITEMS = [
   ...SECTIONS.map(s => ({ id: s.id, num: s.num, title: s.title, color: s.color })),
-  { id: 'output', num: '06', title: 'Your preferences', color: PURPLE },
+  { id: 'output', num: '02', title: 'Your preferences', color: PURPLE },
 ];
 
 const scrollToSection = (id) => {
@@ -44,19 +44,6 @@ const scrollToSection = (id) => {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 };
-
-// Sections that should start open for a given state: any section with a moved
-// advanced dim, plus Writing if tropes are set. Used on preset click and on
-// restore from localStorage or a shared URL.
-function expandedForState(state) {
-  const expanded = {};
-  SECTIONS.forEach(section => {
-    const hasAdvancedSet = section.dims.some(dimKey => DIMENSIONS[dimKey].advanced && state[dimKey] > 0);
-    const hasTropesSet = section.id === 'writing' && state.tropes && state.tropes.length > 0;
-    if (hasAdvancedSet || hasTropesSet) expanded[section.id] = true;
-  });
-  return expanded;
-}
 
 function matchPreset(state) {
   return Object.keys(PRESETS).find(key => {
@@ -74,7 +61,9 @@ export default function CounterDefaults() {
   const [showRefs, setShowRefs] = useState(false);
   const [editedOutput, setEditedOutput] = useState(null);
   const [activePreset, setActivePreset] = useState(() => matchPreset(state));
-  const [expandedSections, setExpandedSections] = useState(() => expandedForState(state));
+  // Toggled dims start collapsed even when set; the toggle label and the jump
+  // pill carry the active count instead, so nothing expands uninvited.
+  const [expandedSections, setExpandedSections] = useState({});
   const [pasteTab, setPasteTab] = useState('claude');
   const [outputInView, setOutputInView] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
@@ -135,7 +124,6 @@ export default function CounterDefaults() {
     const preset = PRESETS[key];
     setState({ ...preset.state });
     setActivePreset(key);
-    setExpandedSections(expandedForState(preset.state));
   };
 
   const copyText = async (text) => {
@@ -158,10 +146,10 @@ export default function CounterDefaults() {
     setTimeout(() => setShared(false), 2000);
   };
 
-  const thumbStyles = SECTIONS.flatMap(s => s.dims.map(d => `
-    input.cd-slider-${d}::-webkit-slider-thumb { background: ${s.color}; }
-    input.cd-slider-${d}::-moz-range-thumb { background: ${s.color}; }
-  `)).join('\n');
+  const thumbStyles = Object.entries(DIM_COLORS).map(([d, color]) => `
+    input.cd-slider-${d}::-webkit-slider-thumb { background: ${color}; }
+    input.cd-slider-${d}::-moz-range-thumb { background: ${color}; }
+  `).join('\n');
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: CREAM, color: INK }}>
@@ -445,7 +433,7 @@ export default function CounterDefaults() {
                       </div>
 
                       {/* Selected option box */}
-                      <div style={{ marginTop: '8px', background: `${section.color}55`, border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '12px 18px' }}>
+                      <div style={{ marginTop: '8px', background: `${DIM_COLORS[dimKey]}55`, border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '12px 18px' }}>
                         <div className="mono" style={{ fontSize: '15px', marginBottom: '2px' }}>
                           <strong>▸ {opt.label.toUpperCase()}</strong>
                           {isAtDefault && <span style={{ marginLeft: '10px', opacity: 0.65 }}>[DEFAULT]</span>}
@@ -456,7 +444,7 @@ export default function CounterDefaults() {
                   );
                 })}
 
-                {section.id === 'writing' && expandedSections[section.id] && (
+                {section.id === 'dims' && expandedSections[section.id] && (
                   <div style={{ marginBottom: '36px' }}>
                     <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px' }}>
                       <span style={{ marginRight: '6px' }}>🚫</span>Patterns to avoid
@@ -469,7 +457,7 @@ export default function CounterDefaults() {
                         const checked = state.tropes.includes(trope.id);
                         return (
                           <label key={trope.id} className={`trope-card ${checked ? 'checked' : ''}`} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <input type="checkbox" checked={checked} onChange={() => toggleTrope(trope.id)} style={{ marginTop: '3px', accentColor: section.color, transform: 'scale(1.15)' }} />
+                            <input type="checkbox" checked={checked} onChange={() => toggleTrope(trope.id)} style={{ marginTop: '3px', accentColor: PINK, transform: 'scale(1.15)' }} />
                             <div>
                               <p style={{ fontWeight: 600, fontSize: '14px' }}>{trope.label}</p>
                               <p style={{ fontStyle: 'italic', fontSize: '12.5px', opacity: 0.75, marginTop: '2px', lineHeight: 1.5 }}>{trope.text}</p>
@@ -483,10 +471,11 @@ export default function CounterDefaults() {
 
                 {(() => {
                   const advancedDims = section.dims.filter(k => DIMENSIONS[k].advanced);
-                  const hasPatterns = section.id === 'writing';
+                  const hasPatterns = section.id === 'dims';
                   const items = [...advancedDims.map(k => DIMENSIONS[k].title)];
                   if (hasPatterns) items.push('Patterns to avoid');
                   if (items.length === 0) return null;
+                  const activeCount = advancedDims.filter(k => state[k] > 0).length + (hasPatterns && state.tropes.length > 0 ? 1 : 0);
                   const expanded = expandedSections[section.id];
                   return (
                     <button
@@ -509,7 +498,7 @@ export default function CounterDefaults() {
                     >
                       {expanded
                         ? `▾ Show fewer`
-                        : `▸ ${items.length} more: ${items.join(', ')}`}
+                        : `▸ ${items.length} more${activeCount > 0 ? ` (${activeCount} active)` : ''}: ${items.join(', ')}`}
                     </button>
                   );
                 })()}
@@ -521,7 +510,7 @@ export default function CounterDefaults() {
           <Divider />
           <section id="sec-output" ref={outputRef} style={{ marginBottom: '40px', scrollMarginTop: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: PURPLE, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>06</span>
+              <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: PURPLE, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>02</span>
               <h2 className="display" style={{ fontSize: 'clamp(27px, 5vw, 42px)', lineHeight: 1, textTransform: 'uppercase' }}>Your preferences</h2>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>

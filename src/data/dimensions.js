@@ -41,6 +41,7 @@ export const DIMENSIONS = {
   worldview: {
     title: 'Worldview',
     emoji: '🌍',
+    advanced: true,
     why: 'LLMs are trained mostly on Western, English, technocratic content, and they repeat those frames as if they were neutral. This slider makes the LLM name its assumptions and bring in other ways of knowing (see [Decolonial AI](https://link.springer.com/article/10.1007/s13347-020-00405-8) and Escobar\'s pluriversal design).',
     poles: ['Default frame', 'Pluriversal'],
     options: [
@@ -78,6 +79,7 @@ export const DIMENSIONS = {
   anthropo: {
     title: 'Anthropomorphism',
     emoji: '🤖',
+    advanced: true,
     why: 'LLMs perform personhood: feelings, opinions, warm I-language. That builds rapport, and it blurs what you\'re actually talking to. This slider sets how person-like the LLM acts, from expressive companion to plain tool.',
     poles: ['Person-like', 'Tool-like'],
     options: [
@@ -117,6 +119,7 @@ export const DIMENSIONS = {
   privacy: {
     title: 'Privacy',
     emoji: '🔒',
+    advanced: true,
     why: 'LLMs treat everything you type as fair game. They don\'t flag sensitive details, don\'t notice when you\'re sharing someone else\'s information, don\'t suggest sharing less. This slider turns the LLM into an active steward of what you share.',
     poles: ['Pass through', 'Active stewardship'],
     options: [
