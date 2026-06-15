@@ -60,6 +60,8 @@ export default function CounterDefaults() {
   const [state, setState] = usePersistedState(initialState);
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
+  const [preReset, setPreReset] = useState(null);
+  const undoTimer = useRef(null);
   const [showRefs, setShowRefs] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
   const [showHow, setShowHow] = useState(false);
@@ -123,7 +125,26 @@ export default function CounterDefaults() {
 
   const updateField = (id, value) => { setState((s) => ({ ...s, [id]: value })); setActivePreset(null); };
   const toggleTrope = (id) => { setState((s) => ({ ...s, tropes: s.tropes.includes(id) ? s.tropes.filter((t) => t !== id) : [...s.tropes, id] })); setActivePreset(null); };
-  const reset = () => { setState(initialState); setActivePreset(null); };
+  // Reset stashes the prior state so an accidental wipe is recoverable for a few
+  // seconds; the RESET button morphs into UNDO during that window.
+  const reset = () => {
+    if (changeCount > 0) {
+      setPreReset(state);
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+      undoTimer.current = setTimeout(() => setPreReset(null), 7000);
+    }
+    setState(initialState);
+    setActivePreset(null);
+  };
+  const undoReset = () => {
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    if (preReset) {
+      setState(preReset);
+      setActivePreset(matchPreset(preReset));
+    }
+    setPreReset(null);
+  };
+  useEffect(() => () => { if (undoTimer.current) clearTimeout(undoTimer.current); }, []);
   const applyPreset = (key) => {
     const preset = PRESETS[key];
     setState({ ...preset.state });
@@ -472,13 +493,13 @@ export default function CounterDefaults() {
                         </div>
                       </div>
 
-                      {/* Selected option box */}
+                      {/* Detail for the selected option. The label already shows as the
+                          highlighted pill above, so the box carries only the description. */}
                       <div style={{ marginTop: '8px', background: `${DIM_COLORS[dimKey]}55`, border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '12px 18px' }}>
-                        <div className="mono" style={{ fontSize: '15px', marginBottom: '2px' }}>
-                          <strong>▸ {opt.label.toUpperCase()}</strong>
-                          {isAtDefault && <span style={{ marginLeft: '10px', opacity: 0.65 }}>[DEFAULT]</span>}
-                        </div>
-                        <p style={{ fontSize: '14px', lineHeight: 1.5 }}>{opt.desc}</p>
+                        <p style={{ fontSize: '14px', lineHeight: 1.5 }}>
+                          {isAtDefault && <span className="mono" style={{ fontSize: '12px', letterSpacing: '0.5px', opacity: 0.65, marginRight: '8px' }}>[ LLM DEFAULT ]</span>}
+                          {opt.desc}
+                        </p>
                       </div>
                     </div>
                   );
@@ -558,7 +579,9 @@ export default function CounterDefaults() {
                 Editable. Tweak the text directly before copying.
               </p>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <button onClick={reset} className="btn-secondary">RESET</button>
+                <button onClick={preReset ? undoReset : reset} className="btn-secondary" style={{ background: preReset ? GREEN : PAPER }} aria-label={preReset ? 'Undo reset, restore previous settings' : 'Reset all settings'}>
+                  {preReset ? '↩ UNDO' : 'RESET'}
+                </button>
                 <button onClick={shareConfig} className="btn-secondary" style={{ background: shared ? GREEN : PAPER }}>
                   {shared ? '✓ LINK COPIED' : 'SHARE'}
                 </button>
@@ -572,7 +595,7 @@ export default function CounterDefaults() {
                 <span>preferences.md {editedOutput !== null && <span style={{ opacity: 0.7 }}>● edited</span>}</span>
                 <span style={{ opacity: 0.7 }}>● ● ●</span>
               </div>
-              <textarea className="editable-output" value={displayOutput} onChange={(e) => setEditedOutput(e.target.value)} spellCheck={false} />
+              <textarea className="editable-output" value={displayOutput} onChange={(e) => setEditedOutput(e.target.value)} spellCheck={false} aria-label="Your generated LLM preferences, editable before copying" />
             </div>
 
             <div className="callout" style={{ marginTop: '24px', background: BLUE }}>
@@ -633,7 +656,7 @@ export default function CounterDefaults() {
                   </p>
                 ))}
               </div>
-              <p style={{ fontSize: '12px', fontStyle: 'italic', opacity: 0.7, marginTop: '8px' }}>Keep it short. These ride along in every chat, so for each line ask: would cutting it change the answer?</p>
+              <p style={{ fontSize: '12px', fontStyle: 'italic', opacity: 0.9, marginTop: '8px' }}>Keep it short. These ride along in every chat, so for each line ask: would cutting it change the answer?</p>
             </div>
           </section>
 
