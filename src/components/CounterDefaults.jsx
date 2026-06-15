@@ -269,28 +269,28 @@ export default function CounterDefaults() {
         .section-nav { display: none; }
         @media (min-width: 1100px) {
           .section-nav {
-            display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
-            position: fixed; bottom: 18px; right: 18px; z-index: 50;
-            background: ${INK}; border: 1.5px solid ${INK}; border-radius: 14px;
-            padding: 9px 16px; box-shadow: 2px 2px 0 rgba(26,24,20,0.25);
+            display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+            position: fixed; bottom: 24px; right: 28px; z-index: 50;
           }
         }
         .section-nav-header {
           font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px;
-          text-transform: uppercase; color: ${CREAM}; opacity: 0.5; margin-bottom: 1px;
+          text-transform: uppercase; color: ${INK}; opacity: 0.5; margin-bottom: 2px;
         }
-        .section-nav-link {
-          background: none; border: none; cursor: pointer; padding: 1px 0;
-          font-family: 'VT323', monospace; font-size: 20px; letter-spacing: 1px;
-          line-height: 1.1; text-align: left; color: ${CREAM};
+        .nav-stop {
+          display: flex; align-items: center; gap: 9px;
+          background: none; border: none; cursor: pointer; padding: 2px 0;
+          font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.5px;
+          color: ${INK}; text-align: left;
         }
-        .section-nav-link:hover { color: ${YELLOW}; }
+        .nav-stop:hover { opacity: 1 !important; }
+        .nav-stop-dot {
+          width: 12px; height: 12px; border-radius: 50%;
+          border: 1.5px solid ${INK}; flex-shrink: 0; transition: background 0.1s ease;
+        }
         .section-nav-count {
-          font-family: 'VT323', monospace; font-size: 15px; letter-spacing: 1px;
-          color: ${CREAM}; opacity: 0.7; margin: 3px 0;
-          padding: 2px 0; align-self: stretch;
-          border-top: 1px dashed rgba(248,240,223,0.3);
-          border-bottom: 1px dashed rgba(248,240,223,0.3);
+          font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.5px;
+          color: ${INK}; opacity: 0.6; margin-left: 21px; padding: 1px 0;
         }
         .scroll-progress {
           position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 60;
@@ -317,11 +317,12 @@ export default function CounterDefaults() {
               <React.Fragment key={item.id}>
                 <button
                   onClick={() => scrollToSection(item.id)}
-                  className="section-nav-link"
-                  style={{ color: active ? item.color : CREAM, opacity: active ? 1 : 0.75 }}
+                  className="nav-stop"
+                  style={{ opacity: active ? 1 : 0.5 }}
                   aria-current={active ? 'true' : undefined}
                 >
-                  {active ? '▸ ' : ''}{item.label}
+                  <span className="nav-stop-dot" style={{ background: active ? item.color : 'transparent' }} />
+                  <span style={{ fontWeight: active ? 700 : 400 }}>{item.label}</span>
                 </button>
                 {i < NAV_ITEMS.length - 1 && <span className="section-nav-count">set: {changeCount}</span>}
               </React.Fragment>
