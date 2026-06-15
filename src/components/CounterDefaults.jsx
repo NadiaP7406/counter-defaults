@@ -197,7 +197,13 @@ export default function CounterDefaults() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: CREAM, color: INK }}>
       <style>{`
-        body { font-family: 'Inter', system-ui, sans-serif; }
+        body {
+          font-family: 'Inter', system-ui, sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+          font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'cv05' 1, 'cv08' 1;
+        }
         .mono { font-family: 'VT323', monospace; letter-spacing: 1px; }
         .smono { font-family: 'Space Mono', monospace; letter-spacing: 0.5px; }
         .display { font-family: 'Jersey 25', 'Darker Grotesque', 'Inter', sans-serif; font-weight: 400; letter-spacing: -0.01em; }
@@ -378,7 +384,7 @@ export default function CounterDefaults() {
           </h1>
 
           {/* Subtitle */}
-          <p style={{ fontSize: '17px', lineHeight: 1.5, marginBottom: '24px', maxWidth: '54ch' }}>
+          <p style={{ fontSize: '18px', lineHeight: 1.45, marginBottom: '24px', maxWidth: '52ch', letterSpacing: '-0.011em' }}>
             Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. This tool writes the instructions that override them. Paste them into your settings once, and every conversation after follows your rules.
           </p>
 
@@ -484,10 +490,10 @@ export default function CounterDefaults() {
                   if (dim.advanced && !sectionExpanded) return null;
                   return (
                     <div key={dimKey} style={{ marginBottom: '36px' }}>
-                      <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px' }}>
+                      <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px', letterSpacing: '-0.012em' }}>
                         <span style={{ marginRight: '6px' }}>{dim.emoji}</span>{dim.title}
                       </h3>
-                      <p style={{ fontSize: '14px', lineHeight: 1.55, marginBottom: '14px', opacity: 0.82, maxWidth: '58ch' }}>
+                      <p style={{ fontSize: '14.5px', lineHeight: 1.6, marginBottom: '14px', opacity: 0.85, maxWidth: '60ch' }}>
                         {renderInline(dim.why)}
                       </p>
 
