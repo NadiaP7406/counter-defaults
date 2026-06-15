@@ -160,7 +160,7 @@ export const DIMENSIONS = {
   frugality: {
     title: 'Frugality',
     emoji: '🌱',
-    why: 'LLMs over-explain, hedge, and pad, and every token costs energy, water, and money ([Bender et al.](https://dl.acm.org/doi/10.1145/3442188.3445922)). This slider trims the output, and at the far end has the LLM tell you when a smaller model, a search engine, or no AI at all would do the job.',
+    why: 'LLMs over-explain, hedge, and pad, and every token costs energy, water, and money ([Bender et al.](https://dl.acm.org/doi/10.1145/3442188.3445922)). The lever is the answer\'s length, not whether you say please: asking for a minimal answer can cut response length by up to 88% and the energy for that query by about 58% ([Poddar et al., ACL 2025](https://aclanthology.org/2025.findings-acl.1125/)). This slider trims the output, and at the far end has the LLM tell you when a smaller model, a search engine, or no AI at all would do the job.',
     poles: ['Maximize', 'Strict frugality'],
     options: [
       { label: 'Maximize', desc: 'Thorough, expansive output, ignores cost.', pref: 'Produce full, thorough, expansive output. Do not worry about token cost, computational alternatives, or ecological implications.' },

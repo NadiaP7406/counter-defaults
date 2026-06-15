@@ -727,6 +727,7 @@ export default function CounterDefaults() {
                 <li>Escobar, <em>Designs for the Pluriverse</em> (Duke, 2018)</li>
                 <li><a href="https://en.wikipedia.org/wiki/Tools_for_Conviviality" target="_blank" rel="noopener noreferrer">Illich, Tools for Conviviality</a> (1973)</li>
                 <li><a href="https://link.springer.com/article/10.1007/s13347-020-00405-8" target="_blank" rel="noopener noreferrer">Mohamed, Png, Isaac, Decolonial AI</a> (2020)</li>
+                <li><a href="https://aclanthology.org/2025.findings-acl.1125/" target="_blank" rel="noopener noreferrer">Poddar et al., Brevity is the soul of sustainability</a> (Findings of ACL 2025)</li>
                 <li><a href="https://arxiv.org/abs/2310.13548" target="_blank" rel="noopener noreferrer">Sharma et al., Sycophancy</a> (Anthropic, ICLR 2024)</li>
                 <li>Shaw &amp; Nave, <em>Thinking, Fast, Slow, and Artificial</em> (Wharton, 2026)</li>
                 <li><a href="https://arxiv.org/abs/2502.10844" target="_blank" rel="noopener noreferrer">Sun et al., Be Friendly Not Friends</a> (CHI 2026)</li>
