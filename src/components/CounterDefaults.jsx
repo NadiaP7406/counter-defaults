@@ -568,10 +568,32 @@ export default function CounterDefaults() {
             <div className="callout" style={{ marginTop: '24px', background: LILAC }}>
               <div className="callout-tab" style={{ background: PAPER }}>＋ ADD YOURSELF (after pasting)</div>
               <div style={{ fontSize: '14px', lineHeight: 1.6, marginTop: '4px' }}>
-                <p style={{ marginBottom: '6px' }}><span className="mono" style={{ background: INK, color: CREAM, padding: '1px 8px', fontSize: '12px', borderRadius: '3px', marginRight: '6px' }}>about you</span>who you are, what you work on, context you usually bring.</p>
-                <p><span className="mono" style={{ background: INK, color: CREAM, padding: '1px 8px', fontSize: '12px', borderRadius: '3px', marginRight: '6px' }}>working modes</span>e.g. thinking mode (sparring) vs. drafting mode. The configurator can't guess these.</p>
+                {[
+                  { tag: 'about you', text: `your role, your field, and how much you already know, so it stops over- or under-explaining.` },
+                  { tag: 'your voice', text: `if you set Voice toward "sounds like me," paste a few lines you've written or describe your style. It can't match a voice it hasn't seen.`, flag: state.voice > 0 },
+                  { tag: 'your work', text: `the projects, tools, and terms that come up a lot, so you're not re-explaining them every time.` },
+                  { tag: 'working modes', text: `e.g. sparring mode vs drafting mode, and how to tell which you're in.` },
+                ].map((item) => (
+                  <p
+                    key={item.tag}
+                    style={{
+                      marginBottom: '8px',
+                      ...(item.flag ? { background: `${YELLOW}AA`, borderRadius: '6px', padding: '6px 10px', marginLeft: '-4px' } : {}),
+                    }}
+                  >
+                    <span className="mono" style={{ background: item.flag ? CORAL : INK, color: item.flag ? INK : CREAM, padding: '1px 8px', fontSize: '12px', borderRadius: '3px', marginRight: '6px' }}>
+                      {item.flag ? '★ ' : ''}{item.tag}
+                    </span>
+                    {item.text}
+                    {item.flag && (
+                      <em style={{ display: 'block', fontSize: '12px', opacity: 0.8, marginTop: '3px' }}>
+                        You moved Voice toward your own style, so this one matters for you.
+                      </em>
+                    )}
+                  </p>
+                ))}
               </div>
-              <p style={{ fontSize: '12px', fontStyle: 'italic', opacity: 0.7, marginTop: '8px' }}>These are personal and contextual. Better written by you.</p>
+              <p style={{ fontSize: '12px', fontStyle: 'italic', opacity: 0.7, marginTop: '8px' }}>Keep it short. These ride along in every chat, so for each line ask: would cutting it change the answer?</p>
             </div>
           </section>
 
@@ -590,7 +612,7 @@ export default function CounterDefaults() {
                 <li><a href="https://arxiv.org/abs/2502.10844" target="_blank" rel="noopener noreferrer">Sun et al., Be Friendly Not Friends</a> (CHI 2026)</li>
               </ul>
             </details>
-            <p style={{ marginTop: '12px', fontSize: '11px', opacity: 0.6 }}>inspired by Claude, works with any LLM. use, fork, share. the output is yours.</p>
+            <p style={{ marginTop: '12px', fontSize: '11px', opacity: 0.6 }}>grew out of Nadia Piet's experiments tweaking Claude, works with any LLM. use, fork, share. the output is yours.</p>
             <p style={{ marginTop: '4px', fontSize: '11px', opacity: 0.6 }}>your config lives in this page's URL. share the link, share the setup.</p>
           </div>
 
