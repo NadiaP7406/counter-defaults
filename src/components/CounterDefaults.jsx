@@ -33,9 +33,11 @@ const initialState = {
 };
 
 // Section index for the sticky nav: the dimensions section plus the output.
+// Two stops: the sliders, then the generated output. The count of set
+// counter-defaults rides on the 'preferences' stop (B-2 layout).
 const NAV_ITEMS = [
-  ...SECTIONS.map(s => ({ id: s.id, num: s.num, title: s.title, color: s.color })),
-  { id: 'output', num: '02', title: 'Your preferences', color: PURPLE },
+  { id: 'dims', label: 'tune', color: CORAL },
+  { id: 'output', label: 'preferences', color: PURPLE },
 ];
 
 const scrollToSection = (id) => {
@@ -244,21 +246,31 @@ export default function CounterDefaults() {
           box-shadow: 2px 2px 0 rgba(26,24,20,0.25);
         }
         .jump-pill:hover { background: ${YELLOW}; color: ${INK}; }
+        /* On wide screens the count lives in the section nav, so the pill hides */
+        @media (min-width: 1100px) { .jump-pill { display: none; } }
         .section-nav { display: none; }
         @media (min-width: 1100px) {
           .section-nav {
-            display: flex; flex-direction: column; gap: 8px;
-            position: fixed; left: 22px; top: 50%; transform: translateY(-50%); z-index: 40;
+            display: flex; flex-direction: column; gap: 0;
+            position: fixed; left: 24px; top: 50%; transform: translateY(-50%); z-index: 40;
           }
         }
-        .section-nav-dot {
-          width: 34px; height: 34px; border-radius: 50%;
-          border: 1.5px solid ${INK}; cursor: pointer;
-          font-size: 12px; font-weight: bold; padding: 0;
-          display: inline-flex; align-items: center; justify-content: center;
-          transition: transform 0.1s ease;
+        .nav-stop {
+          display: flex; align-items: center; gap: 9px;
+          background: none; border: none; cursor: pointer; padding: 5px 0;
+          font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.5px;
+          color: ${INK}; text-align: left;
         }
-        .section-nav-dot:hover { transform: scale(1.12); }
+        .nav-stop:hover { opacity: 1 !important; }
+        .nav-stop-dot {
+          width: 12px; height: 12px; border-radius: 50%;
+          border: 1.5px solid ${INK}; flex-shrink: 0; transition: background 0.1s ease;
+        }
+        .nav-rail-line { width: 1.5px; height: 16px; background: ${INK}; opacity: 0.35; margin-left: 5.25px; }
+        .nav-count {
+          font-size: 10px; font-weight: 700; background: ${CORAL}; color: ${INK};
+          border: 1.5px solid ${INK}; border-radius: 999px; padding: 0 6px; line-height: 16px;
+        }
         .scroll-progress {
           position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 60;
           background: ${CORAL}; transform-origin: left; pointer-events: none;
@@ -277,23 +289,23 @@ export default function CounterDefaults() {
         <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
 
         <nav className="section-nav" aria-label="Sections">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.map((item, i) => {
             const active = activeSection === item.id;
             return (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="smono section-nav-dot"
-                style={{
-                  background: active ? item.color : 'transparent',
-                  color: active && item.color === COBALT ? '#FFFFFF' : INK,
-                  opacity: active ? 1 : 0.55,
-                }}
-                aria-label={`Jump to section ${item.num}: ${item.title}`}
-                aria-current={active ? 'true' : undefined}
-              >
-                {item.num}
-              </button>
+              <React.Fragment key={item.id}>
+                <button
+                  onClick={() => scrollToSection(item.id)}
+                  className="nav-stop"
+                  style={{ opacity: active ? 1 : 0.5 }}
+                  aria-label={`Jump to ${item.label}`}
+                  aria-current={active ? 'true' : undefined}
+                >
+                  <span className="nav-stop-dot" style={{ background: active ? item.color : 'transparent' }} />
+                  <span style={{ fontWeight: active ? 700 : 400 }}>{item.label}</span>
+                  {item.id === 'output' && changeCount > 0 && <span className="nav-count">{changeCount}</span>}
+                </button>
+                {i < NAV_ITEMS.length - 1 && <div className="nav-rail-line" aria-hidden="true" />}
+              </React.Fragment>
             );
           })}
         </nav>
@@ -302,9 +314,9 @@ export default function CounterDefaults() {
           <button
             className="jump-pill"
             onClick={() => scrollToSection('output')}
-            aria-label={`${changeCount} counter-defaults set. Jump to your preferences output.`}
+            aria-label={`See your preferences. ${changeCount} counter-defaults set.`}
           >
-            ✱ {changeCount} set → output
+            ✱ See your preferences ({changeCount})
           </button>
         )}
 
