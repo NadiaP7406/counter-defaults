@@ -315,8 +315,8 @@ export default function CounterDefaults() {
           </h1>
 
           {/* Subtitle */}
-          <p style={{ fontSize: '17px', lineHeight: 1.5, marginBottom: '24px', maxWidth: '52ch' }}>
-            A workbook for setting your own LLM defaults, instead of the model's. Move some sliders, copy what comes out, paste it into your LLM's settings.
+          <p style={{ fontSize: '17px', lineHeight: 1.5, marginBottom: '24px', maxWidth: '54ch' }}>
+            Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. This tool writes the instructions that override them. Paste them into your settings once, and every conversation after follows your rules.
           </p>
 
           {/* Two callouts: WHY left, HOW right */}
@@ -324,7 +324,7 @@ export default function CounterDefaults() {
             <div className="callout" style={{ background: PINK }}>
               <div className="callout-tab" style={{ background: GREEN }}>● WHY THIS EXISTS</div>
               <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '4px' }}>
-                Most LLMs default to agreeing with you, sounding sure, and writing for you. Useful when you want a confident assistant. Less useful when you want a thinking partner, your own voice, or your own judgment kept sharp. The gains and the costs come from the same capabilities. This is for keeping one while drawing limits on the other.
+                Most LLMs default to agreeing with you, sounding sure, and writing for you. Useful when you want a confident assistant. Less useful when you want to stay the one doing the thinking. The gains and the costs come from the same capabilities. This is for keeping one while drawing limits on the other: your judgment, your voice, your attention stay yours.
               </p>
               <button onClick={() => setShowRefs(!showRefs)} className="mono" style={{ marginTop: '8px', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', opacity: 0.75 }}>
                 {showRefs ? '> hide note' : '> read more'}
@@ -343,7 +343,7 @@ export default function CounterDefaults() {
             <div className="callout" style={{ background: YELLOW }}>
               <div className="callout-tab" style={{ background: PAPER }}>▶ HOW THIS WORKS</div>
               <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '4px' }}>
-                Each slider starts on the left, where the LLM already is. Drag right to swap that default for yours.
+                Each slider starts on the left, where LLMs already are. Drag right to swap that default for yours. Your choices become one block of custom instructions: paste it into your LLM's settings once, and it applies to every conversation from then on, in ChatGPT, Claude, Gemini, or anything else with a settings field.
               </p>
               <p style={{ fontSize: '14px', fontStyle: 'italic', marginTop: '6px' }}>Only sliders you've moved show up in your output.</p>
             </div>

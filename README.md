@@ -1,6 +1,6 @@
 # Counter-Defaults
 
-A workbook for setting your own LLM defaults, instead of the model's. Move some sliders, copy what comes out, paste it into your LLM's settings. Built by [AIxDESIGN](https://aixdesign.co).
+Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Built by [AIxDESIGN](https://aixdesign.co).
 
 13 dimensions across 5 sections (Thinking, Perspective, Relating, Boundaries, Writing). Each slider starts where the LLM already is; drag right to swap that default for yours. Only moved sliders appear in the generated Markdown.
 
