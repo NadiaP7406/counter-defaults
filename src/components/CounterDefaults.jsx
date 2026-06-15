@@ -6,6 +6,7 @@ import { TROPES } from '../data/tropes.js';
 import { PRESETS } from '../data/presets.js';
 import { generateMarkdown } from '../utils/generateMarkdown.js';
 import { usePersistedState } from '../hooks/usePersistedState.js';
+import { decodeState } from '../utils/urlState.js';
 
 function renderInline(text) {
   const parts = [];
@@ -29,7 +30,7 @@ const Divider = () => (
 const initialState = {
   sovereignty: 0, uncertainty: 0, referencing: 0, worldview: 0, divergence: 0,
   sycophancy: 0, anthropo: 0, presence: 0, memory: 0, privacy: 0,
-  voice: 0, frugality: 0, calibration: 0, tropes: [],
+  voice: 0, frugality: 0, calibration: 0, reflection: 0, tropes: [],
 };
 
 // Section index for the sticky nav: the dimensions section plus the output.
@@ -62,6 +63,12 @@ export default function CounterDefaults() {
   const [shared, setShared] = useState(false);
   const [preReset, setPreReset] = useState(null);
   const undoTimer = useRef(null);
+  const [presetApplied, setPresetApplied] = useState(null);
+  const presetTimer = useRef(null);
+  // True when this page loaded from a shared link (encoded state in the URL hash).
+  const [fromShared, setFromShared] = useState(() => {
+    try { return !!decodeState(window.location.hash); } catch { return false; }
+  });
   const [showRefs, setShowRefs] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
   const [showHow, setShowHow] = useState(false);
@@ -117,11 +124,16 @@ export default function CounterDefaults() {
 
   const generated = useMemo(() => generateMarkdown(state), [state]);
   const displayOutput = editedOutput !== null ? editedOutput : generated;
+  const outChars = displayOutput.length;
+  const outWords = displayOutput.trim() ? displayOutput.trim().split(/\s+/).length : 0;
 
   useEffect(() => { setEditedOutput(null); }, [state]);
 
-  const updateField = (id, value) => { setState((s) => ({ ...s, [id]: value })); setActivePreset(null); };
-  const toggleTrope = (id) => { setState((s) => ({ ...s, tropes: s.tropes.includes(id) ? s.tropes.filter((t) => t !== id) : [...s.tropes, id] })); setActivePreset(null); };
+  // Any manual edit dismisses the transient preset confirmation and the
+  // shared-link banner (you're now editing your own thing, not just viewing).
+  const onManualChange = () => { setActivePreset(null); setPresetApplied(null); setFromShared(false); };
+  const updateField = (id, value) => { setState((s) => ({ ...s, [id]: value })); onManualChange(); };
+  const toggleTrope = (id) => { setState((s) => ({ ...s, tropes: s.tropes.includes(id) ? s.tropes.filter((t) => t !== id) : [...s.tropes, id] })); onManualChange(); };
   // Reset stashes the prior state so an accidental wipe is recoverable for a few
   // seconds; the RESET button morphs into UNDO during that window.
   const reset = () => {
@@ -132,6 +144,8 @@ export default function CounterDefaults() {
     }
     setState(initialState);
     setActivePreset(null);
+    setPresetApplied(null);
+    setFromShared(false);
   };
   const undoReset = () => {
     if (undoTimer.current) clearTimeout(undoTimer.current);
@@ -141,11 +155,18 @@ export default function CounterDefaults() {
     }
     setPreReset(null);
   };
-  useEffect(() => () => { if (undoTimer.current) clearTimeout(undoTimer.current); }, []);
+  useEffect(() => () => {
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    if (presetTimer.current) clearTimeout(presetTimer.current);
+  }, []);
   const applyPreset = (key) => {
     const preset = PRESETS[key];
     setState({ ...preset.state });
     setActivePreset(key);
+    setFromShared(false);
+    setPresetApplied(key);
+    if (presetTimer.current) clearTimeout(presetTimer.current);
+    presetTimer.current = setTimeout(() => setPresetApplied(null), 6000);
   };
 
   const copyText = async (text) => {
@@ -188,22 +209,24 @@ export default function CounterDefaults() {
         }
         .cd-slider::-webkit-slider-thumb {
           -webkit-appearance: none; appearance: none;
-          width: 16px; height: 16px;
+          width: 20px; height: 20px;
           cursor: pointer; border: 1.5px solid ${INK};
           border-radius: 50%;
           transition: transform 0.15s ease;
         }
         .cd-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
         .cd-slider::-moz-range-thumb {
-          width: 16px; height: 16px;
+          width: 20px; height: 20px;
           cursor: pointer; border: 1.5px solid ${INK};
           border-radius: 50%;
         }
         ${thumbStyles}
         .opt-label {
           font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer;
-          padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+          padding: 6px 11px; border-radius: 999px; white-space: nowrap;
           transition: all 0.1s ease; color: ${INK};
+          background: none; border: none; min-height: 28px;
+          display: inline-flex; align-items: center;
         }
         .opt-label:hover { background: rgba(26,24,20,0.08); }
         .opt-label.selected { background: ${INK}; color: ${CREAM}; font-weight: 500; }
@@ -406,6 +429,17 @@ export default function CounterDefaults() {
             </div>
           </div>
 
+          {/* Shared-link banner: shown when the page opened from a shared config */}
+          {fromShared && changeCount > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', background: LILAC, border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '14px', lineHeight: 1.5, flex: 1, minWidth: '200px' }}>
+                ↩ You opened a shared setup, <strong>{changeCount} behaviors set</strong>. Tweak any slider to make it yours, or start over.
+              </span>
+              <button onClick={reset} className="btn-secondary" style={{ fontSize: '15px', padding: '5px 14px' }}>START FRESH</button>
+              <button onClick={() => setFromShared(false)} aria-label="Dismiss" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, padding: '2px 6px', color: INK }}>×</button>
+            </div>
+          )}
+
           {/* Presets */}
           <div className="smono" style={{ fontSize: '13px', marginBottom: '12px', opacity: 0.75 }}>▶ I WANT MY LLM TO… / pick a starting point</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
@@ -416,6 +450,16 @@ export default function CounterDefaults() {
               </button>
             ))}
           </div>
+
+          {/* Preset confirmation: transient, names what was applied and points to the output */}
+          {presetApplied && PRESETS[presetApplied] && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', background: GREEN, border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '10px 16px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '14px', lineHeight: 1.5, flex: 1, minWidth: '200px' }}>
+                ✓ Applied <strong>{PRESETS[presetApplied].name}</strong>, {changeCount} behaviors set across the sliders below.
+              </span>
+              <button onClick={() => scrollToSection('output')} className="btn-secondary" style={{ fontSize: '15px', padding: '5px 14px', background: PAPER }}>SEE INSTRUCTIONS ↓</button>
+            </div>
+          )}
 
           {/* Sections */}
           {SECTIONS.map((section) => (
@@ -485,9 +529,16 @@ export default function CounterDefaults() {
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', gap: '4px', flexWrap: 'wrap' }}>
                           {dim.options.map((o, i) => (
-                            <span key={i} onClick={() => updateField(dimKey, i)} className={`opt-label ${value === i ? 'selected' : ''}`}>
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => updateField(dimKey, i)}
+                              className={`opt-label ${value === i ? 'selected' : ''}`}
+                              aria-pressed={value === i}
+                              aria-label={`${dim.title}: ${o.label}${i === 0 ? ' (LLM default)' : ''}`}
+                            >
                               {o.label}
-                            </span>
+                            </button>
                           ))}
                         </div>
                       </div>
@@ -596,6 +647,12 @@ export default function CounterDefaults() {
               </div>
               <textarea className="editable-output" value={displayOutput} onChange={(e) => setEditedOutput(e.target.value)} spellCheck={false} aria-label="Your generated LLM instructions, editable before copying" />
             </div>
+            {changeCount > 0 && (
+              <p className="smono" style={{ fontSize: '11px', opacity: 0.6, marginTop: '7px' }}>
+                ≈ {outWords} words · {outChars.toLocaleString()} characters
+                {outChars > 1500 && <span style={{ color: CORAL_TEXT, opacity: 1, fontWeight: 700 }}> · long, some settings fields cap input. Trim the behaviors you care about least.</span>}
+              </p>
+            )}
 
             <div className="callout" style={{ marginTop: '24px', background: BLUE }}>
               <div className="callout-tab" style={{ background: PAPER }}>▶ WHERE TO PASTE</div>

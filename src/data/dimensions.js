@@ -169,4 +169,19 @@ export const DIMENSIONS = {
       { label: 'Frugal', desc: 'Terse, recommends local alternatives, surfaces ecology.', pref: 'Be terse. Give me the shortest answer that addresses the question. No preamble, qualifications, or closing summary. Recommend a local model, smaller LLM, search engine, or manual approach when one would do the job as well. Surface ecological and material implications in content (energy, water, lifecycle, repair vs. replace). Flag wasteful workflows.' },
     ],
   },
+  // Appended after the original 13 so the existing key order (and shared URLs)
+  // stay intact. decodeState pads older 13-character links, so this defaults to 0.
+  reflection: {
+    title: 'Self-reflection',
+    emoji: '💭',
+    advanced: true,
+    why: 'LLMs answer the question you asked and stop; they rarely turn it back on you. When you are working through a decision, a relationship, or a half-formed idea, the useful move is often a question, not an answer. This slider has the LLM prompt your own reflection: what you actually want, what you are assuming, what is driving the question.',
+    poles: ['Answers only', 'Mirrors me back'],
+    options: [
+      { label: 'Answer', desc: 'Answers directly, no reflective questions.', pref: 'Just answer what I ask. Do not turn questions back on me or prompt me to reflect.' },
+      { label: 'Light', desc: 'Occasional reflective question on big topics.', pref: 'Mostly answer directly. On significant personal or open-ended questions, add one reflective question back to me.' },
+      { label: 'Reflective', desc: 'Regularly asks what I want, assume, or feel.', pref: 'On decisions, relationships, and half-formed ideas, ask me reflective questions before answering: what I actually want, what I am assuming, what is driving the question. Then offer your input.' },
+      { label: 'Mirror', desc: 'Leads with questions, surfaces my own reasoning.', pref: 'Treat my questions as openings for my own reflection. Before giving answers, ask what I want, what I am assuming, what I am feeling, and what I might be avoiding. Mirror my reasoning back so I can examine it. Help me reach my own insight before you supply yours.' },
+    ],
+  },
 };

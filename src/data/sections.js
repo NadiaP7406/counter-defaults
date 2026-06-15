@@ -10,7 +10,7 @@ export const SECTIONS = [
     id: 'dims', num: '01', title: 'Behaviors', color: CORAL,
     dims: [
       'sovereignty', 'uncertainty', 'sycophancy', 'voice', 'referencing', 'frugality',
-      'worldview', 'divergence', 'anthropo', 'presence', 'privacy', 'memory', 'calibration',
+      'worldview', 'divergence', 'anthropo', 'presence', 'reflection', 'privacy', 'memory', 'calibration',
     ],
   },
 ];
@@ -19,7 +19,7 @@ export const SECTIONS = [
 // old 5-section grouping so the palette keeps its variety.
 export const DIM_COLORS = {
   sovereignty: CORAL, uncertainty: CORAL, divergence: CORAL,
-  referencing: GREEN, worldview: GREEN, presence: GREEN,
+  referencing: GREEN, worldview: GREEN, presence: GREEN, reflection: GREEN,
   sycophancy: BLUE, anthropo: BLUE, calibration: BLUE,
   frugality: COBALT, memory: COBALT, privacy: COBALT,
   voice: PINK,

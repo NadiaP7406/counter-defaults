@@ -21,10 +21,12 @@ export function decodeState(hash) {
   if (!hash) return null;
   const params = new URLSearchParams(hash.replace(/^#/, ''));
   const s = params.get('s');
-  if (!s || s.length !== DIM_ORDER.length || /\D/.test(s)) return null;
+  // Accept links with up to DIM_ORDER.length digits. Older links (encoded before
+  // a dimension was appended) are shorter; the missing trailing dims default to 0.
+  if (!s || s.length === 0 || s.length > DIM_ORDER.length || /\D/.test(s)) return null;
   const state = {};
   DIM_ORDER.forEach((k, i) => {
-    const v = parseInt(s[i], 10);
+    const v = i < s.length ? parseInt(s[i], 10) : 0;
     state[k] = v < DIMENSIONS[k].options.length ? v : 0;
   });
   const t = params.get('t');
