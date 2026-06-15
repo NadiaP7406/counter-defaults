@@ -7,7 +7,7 @@ export const DIMENSIONS = {
   sovereignty: {
     title: 'Cognitive sovereignty',
     emoji: '🧭',
-    why: 'LLMs hand you finished answers, and the more you take them, the less you work things out yourself. Researchers call this *cognitive surrender*: people keep adopting AI answers even when they\'re wrong (Shaw & Nave, 2026). This slider makes the LLM scaffold your thinking instead of replacing it.',
+    why: 'LLMs hand you finished answers, and the more you take them, the less you work things out yourself. Researchers call this *cognitive surrender*: people keep adopting AI answers even when they\'re wrong (Shaw & Nave, 2026). This slider makes the LLM push you to think it through first, before it offers an answer.',
     poles: ['Solve for me', 'Scaffold mine'],
     options: [
       { label: 'Solve', desc: 'Direct answers, problems solved.', pref: 'Give me direct answers efficiently. Solve the problem.' },
