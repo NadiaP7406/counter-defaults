@@ -85,24 +85,22 @@ export default function CounterDefaults() {
     return () => obs.disconnect();
   }, []);
 
-  // Track scroll for the section nav highlight and the mobile progress bar
+  // Track scroll for the section nav highlight and the mobile progress bar.
+  // Runs directly (the work is two getBoundingClientRect calls); React bails on
+  // the setState when the value is unchanged, so no rAF throttle is needed, and
+  // it keeps working when the tab is backgrounded (rAF would be throttled).
   useEffect(() => {
-    let raf = null;
     const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = null;
-        const doc = document.documentElement;
-        const max = doc.scrollHeight - window.innerHeight;
-        setProgress(max > 0 ? window.scrollY / max : 0);
-        const marker = window.innerHeight * 0.35;
-        let current = null;
-        NAV_ITEMS.forEach(item => {
-          const el = document.getElementById(`sec-${item.id}`);
-          if (el && el.getBoundingClientRect().top <= marker) current = item.id;
-        });
-        setActiveSection(current);
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? window.scrollY / max : 0);
+      const marker = window.innerHeight * 0.35;
+      let current = null;
+      NAV_ITEMS.forEach(item => {
+        const el = document.getElementById(`sec-${item.id}`);
+        if (el && el.getBoundingClientRect().top <= marker) current = item.id;
       });
+      setActiveSection(current);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -110,7 +108,6 @@ export default function CounterDefaults() {
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
-      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 
@@ -267,30 +264,33 @@ export default function CounterDefaults() {
           box-shadow: 2px 2px 0 rgba(26,24,20,0.25);
         }
         .jump-pill:hover { background: ${YELLOW}; color: ${INK}; }
-        /* On wide screens the count lives in the section nav, so the pill hides */
+        /* On wide screens the bottom-right nav carries the count, so the pill hides */
         @media (min-width: 1100px) { .jump-pill { display: none; } }
         .section-nav { display: none; }
         @media (min-width: 1100px) {
           .section-nav {
-            display: flex; flex-direction: column; gap: 0;
-            position: fixed; left: 24px; top: 50%; transform: translateY(-50%); z-index: 40;
+            display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+            position: fixed; bottom: 18px; right: 18px; z-index: 50;
+            background: ${INK}; border: 1.5px solid ${INK}; border-radius: 14px;
+            padding: 9px 16px; box-shadow: 2px 2px 0 rgba(26,24,20,0.25);
           }
         }
-        .nav-stop {
-          display: flex; align-items: center; gap: 9px;
-          background: none; border: none; cursor: pointer; padding: 5px 0;
-          font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.5px;
-          color: ${INK}; text-align: left;
+        .section-nav-header {
+          font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px;
+          text-transform: uppercase; color: ${CREAM}; opacity: 0.5; margin-bottom: 1px;
         }
-        .nav-stop:hover { opacity: 1 !important; }
-        .nav-stop-dot {
-          width: 12px; height: 12px; border-radius: 50%;
-          border: 1.5px solid ${INK}; flex-shrink: 0; transition: background 0.1s ease;
+        .section-nav-link {
+          background: none; border: none; cursor: pointer; padding: 1px 0;
+          font-family: 'VT323', monospace; font-size: 20px; letter-spacing: 1px;
+          line-height: 1.1; text-align: left; color: ${CREAM};
         }
-        .nav-rail-line { width: 1.5px; height: 16px; background: ${INK}; opacity: 0.35; margin-left: 5.25px; }
-        .nav-count {
-          font-size: 10px; font-weight: 700; background: ${CORAL}; color: ${INK};
-          border: 1.5px solid ${INK}; border-radius: 999px; padding: 0 6px; line-height: 16px;
+        .section-nav-link:hover { color: ${YELLOW}; }
+        .section-nav-count {
+          font-family: 'VT323', monospace; font-size: 15px; letter-spacing: 1px;
+          color: ${CREAM}; opacity: 0.7; margin: 3px 0;
+          padding: 2px 0; align-self: stretch;
+          border-top: 1px dashed rgba(248,240,223,0.3);
+          border-bottom: 1px dashed rgba(248,240,223,0.3);
         }
         .scroll-progress {
           position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 60;
@@ -309,23 +309,21 @@ export default function CounterDefaults() {
       <div className="grain min-h-screen">
         <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
 
-        <nav className="section-nav" aria-label="Sections">
+        <nav className="section-nav" aria-label="Go to section">
+          <span className="section-nav-header">go to</span>
           {NAV_ITEMS.map((item, i) => {
             const active = activeSection === item.id;
             return (
               <React.Fragment key={item.id}>
                 <button
                   onClick={() => scrollToSection(item.id)}
-                  className="nav-stop"
-                  style={{ opacity: active ? 1 : 0.5 }}
-                  aria-label={`Jump to ${item.label}`}
+                  className="section-nav-link"
+                  style={{ color: active ? item.color : CREAM, opacity: active ? 1 : 0.75 }}
                   aria-current={active ? 'true' : undefined}
                 >
-                  <span className="nav-stop-dot" style={{ background: active ? item.color : 'transparent' }} />
-                  <span style={{ fontWeight: active ? 700 : 400 }}>{item.label}</span>
-                  {item.id === 'output' && changeCount > 0 && <span className="nav-count">{changeCount}</span>}
+                  {active ? '▸ ' : ''}{item.label}
                 </button>
-                {i < NAV_ITEMS.length - 1 && <div className="nav-rail-line" aria-hidden="true" />}
+                {i < NAV_ITEMS.length - 1 && <span className="section-nav-count">set: {changeCount}</span>}
               </React.Fragment>
             );
           })}
