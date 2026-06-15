@@ -7,7 +7,7 @@ import { CORAL, GREEN, BLUE, COBALT, PINK } from '../utils/constants.js';
 // URL encoding and must not change.
 export const SECTIONS = [
   {
-    id: 'dims', num: '01', title: 'Behaviors', color: CORAL,
+    id: 'dims', num: '01', title: 'Tune behaviors', color: CORAL,
     dims: [
       'sovereignty', 'uncertainty', 'sycophancy', 'voice', 'referencing', 'frugality',
       'worldview', 'divergence', 'anthropo', 'presence', 'reflection', 'privacy', 'memory', 'calibration',
