@@ -691,6 +691,7 @@ export default function CounterDefaults() {
                   { tag: 'about you', text: `your role, your field, and how much you already know, so it stops over- or under-explaining.` },
                   { tag: 'your voice', text: `if you set Voice toward "sounds like me," paste a few lines you've written or describe your style. It can't match a voice it hasn't seen.`, flag: state.voice > 0 },
                   { tag: 'your work', text: `the projects, tools, and terms that come up a lot, so you're not re-explaining them every time.` },
+                  { tag: 'your aspirations', text: `what you want to do, learn, or get better at, so it can steer toward those instead of just answering what's in front of you.` },
                   { tag: 'working modes', text: `e.g. sparring mode vs drafting mode, and how to tell which you're in.` },
                 ].map((item) => (
                   <p
