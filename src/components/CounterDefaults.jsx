@@ -34,10 +34,10 @@ const initialState = {
 
 // Section index for the sticky nav: the dimensions section plus the output.
 // Two stops: the sliders, then the generated output. The count of set
-// counter-defaults rides on the 'preferences' stop (B-2 layout).
+// counter-defaults rides on the 'instructions' stop (B-2 layout).
 const NAV_ITEMS = [
   { id: 'dims', label: 'tune', color: CORAL },
-  { id: 'output', label: 'preferences', color: PURPLE },
+  { id: 'output', label: 'instructions', color: PURPLE },
 ];
 
 const scrollToSection = (id) => {
@@ -335,9 +335,9 @@ export default function CounterDefaults() {
           <button
             className="jump-pill"
             onClick={() => scrollToSection('output')}
-            aria-label={`See your preferences. ${changeCount} counter-defaults set.`}
+            aria-label={`See your instructions. ${changeCount} counter-defaults set.`}
           >
-            ✱ See your preferences ({changeCount})
+            ✱ See your instructions ({changeCount})
           </button>
         )}
 
@@ -572,7 +572,7 @@ export default function CounterDefaults() {
           <section id="sec-output" ref={outputRef} style={{ marginBottom: '40px', scrollMarginTop: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', flexWrap: 'wrap' }}>
               <span className="smono" style={{ width: '38px', height: '38px', borderRadius: '50%', background: PURPLE, border: `1.5px solid ${INK}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>02</span>
-              <h2 className="display" style={{ fontSize: 'clamp(27px, 5vw, 42px)', lineHeight: 1, textTransform: 'uppercase' }}>Your preferences</h2>
+              <h2 className="display" style={{ fontSize: 'clamp(27px, 5vw, 42px)', lineHeight: 1, textTransform: 'uppercase' }}>Your instructions</h2>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
               <p style={{ fontSize: '13px', fontStyle: 'italic', opacity: 0.75, maxWidth: '40ch' }}>
@@ -592,10 +592,10 @@ export default function CounterDefaults() {
             </div>
             <div style={{ border: `1.5px solid ${INK}`, borderRadius: '10px', overflow: 'hidden', background: PAPER }}>
               <div className="mono" style={{ background: INK, color: CREAM, padding: '5px 14px', fontSize: '14px', display: 'flex', justifyContent: 'space-between' }}>
-                <span>preferences.md {editedOutput !== null && <span style={{ opacity: 0.7 }}>● edited</span>}</span>
+                <span>instructions.md {editedOutput !== null && <span style={{ opacity: 0.7 }}>● edited</span>}</span>
                 <span style={{ opacity: 0.7 }}>● ● ●</span>
               </div>
-              <textarea className="editable-output" value={displayOutput} onChange={(e) => setEditedOutput(e.target.value)} spellCheck={false} aria-label="Your generated LLM preferences, editable before copying" />
+              <textarea className="editable-output" value={displayOutput} onChange={(e) => setEditedOutput(e.target.value)} spellCheck={false} aria-label="Your generated LLM instructions, editable before copying" />
             </div>
 
             <div className="callout" style={{ marginTop: '24px', background: BLUE }}>

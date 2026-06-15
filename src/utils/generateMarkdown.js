@@ -12,7 +12,7 @@ export function generateMarkdown(state, dateLabel) {
   // Stamped automatically with the month the user generated this, so they (and
   // the model) know how current it is. Ties to the Calibration dimension.
   const stamp = dateLabel || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  lines.push('# My LLM Preferences');
+  lines.push('# My LLM Instructions');
   lines.push('');
   lines.push(`Last set: ${stamp}`);
   lines.push('');
