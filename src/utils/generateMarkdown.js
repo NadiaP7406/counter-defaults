@@ -3,16 +3,14 @@ import { TROPES } from '../data/tropes.js';
 
 export function generateMarkdown(state) {
   const lines = [];
-  lines.push('# My LLM Preferences');
-  lines.push('');
-  lines.push('*Generated with Counter-Defaults by AIxDESIGN. A starting point, not a final answer. Edit freely.*');
-  lines.push('');
   const movedDims = Object.keys(DIMENSIONS).filter((key) => state[key] !== 0);
   const hasContent = movedDims.length > 0 || state.tropes.length > 0;
   if (!hasContent) {
     lines.push('*No counter-defaults set yet. Move the sliders above to specify how you want the LLM to behave differently from default. Only the dimensions you change appear here.*');
     return lines.join('\n');
   }
+  lines.push('# My LLM Preferences');
+  lines.push('');
   if (movedDims.length > 0) {
     lines.push('## How I Want You to Work With Me');
     lines.push('');
@@ -32,5 +30,9 @@ export function generateMarkdown(state) {
     });
     lines.push('');
   }
+  // Attribution as a trailing HTML comment: keeps the AIxDESIGN credit and URL
+  // with every shared config, but reads as metadata so the LLM doesn't treat it
+  // as an instruction. Human-facing "edit freely" guidance lives in the UI.
+  lines.push('<!-- Generated with Counter-Defaults by AIxDESIGN · counterdefaults.netlify.app -->');
   return lines.join('\n');
 }
