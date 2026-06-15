@@ -394,7 +394,7 @@ export default function CounterDefaults() {
             <div className="callout" style={{ background: PINK }}>
               <div className="callout-tab" style={{ background: GREEN }}>● WHY THIS EXISTS</div>
               <button onClick={() => setShowWhy(!showWhy)} aria-expanded={showWhy} className="callout-toggle">
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>Why counter the defaults</span>
+                <span style={{ fontSize: '15px', fontWeight: 700 }}>Why counter the defaults</span>
                 <span className="mono" style={{ fontSize: '18px', lineHeight: 1 }}>{showWhy ? '–' : '+'}</span>
               </button>
               {showWhy && (
@@ -421,7 +421,7 @@ export default function CounterDefaults() {
             <div className="callout" style={{ background: YELLOW }}>
               <div className="callout-tab" style={{ background: PAPER }}>▶ HOW THIS WORKS</div>
               <button onClick={() => setShowHow(!showHow)} aria-expanded={showHow} className="callout-toggle">
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>From sliders to settings</span>
+                <span style={{ fontSize: '15px', fontWeight: 700 }}>From sliders to settings</span>
                 <span className="mono" style={{ fontSize: '18px', lineHeight: 1 }}>{showHow ? '–' : '+'}</span>
               </button>
               {showHow && (
@@ -452,7 +452,7 @@ export default function CounterDefaults() {
             {Object.entries(PRESETS).map(([key, preset]) => (
               <button key={key} onClick={() => applyPreset(key)} className={`preset-btn ${activePreset === key ? 'active' : ''}`}>
                 <p style={{ fontWeight: 700, fontSize: '15px' }}>{preset.name}</p>
-                <p style={{ fontStyle: 'italic', fontSize: '13px', opacity: 0.75, marginTop: '2px' }}>{preset.desc}</p>
+                <p style={{ fontStyle: 'italic', fontSize: '14px', opacity: 0.7, marginTop: '3px' }}>{preset.desc}</p>
               </button>
             ))}
           </div>
@@ -576,7 +576,7 @@ export default function CounterDefaults() {
                           <label key={trope.id} className={`trope-card ${checked ? 'checked' : ''}`} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                             <input type="checkbox" checked={checked} onChange={() => toggleTrope(trope.id)} style={{ marginTop: '3px', accentColor: PINK, transform: 'scale(1.15)' }} />
                             <div>
-                              <p style={{ fontWeight: 600, fontSize: '14px' }}>{trope.label}</p>
+                              <p style={{ fontWeight: 700, fontSize: '14px' }}>{trope.label}</p>
                               <p style={{ fontStyle: 'italic', fontSize: '12.5px', opacity: 0.75, marginTop: '2px', lineHeight: 1.5 }}>{trope.text}</p>
                             </div>
                           </label>
