@@ -59,6 +59,8 @@ export default function CounterDefaults() {
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
   const [showRefs, setShowRefs] = useState(false);
+  const [showWhy, setShowWhy] = useState(false);
+  const [showHow, setShowHow] = useState(false);
   const [editedOutput, setEditedOutput] = useState(null);
   const [activePreset, setActivePreset] = useState(() => matchPreset(state));
   // Toggled dims start collapsed even when set; the toggle label and the jump
@@ -195,6 +197,12 @@ export default function CounterDefaults() {
           position: relative; border: 1.5px dashed ${INK}; border-radius: 10px;
           padding: 22px 20px 18px;
         }
+        .callout-toggle {
+          display: flex; justify-content: space-between; align-items: center;
+          width: 100%; margin-top: 4px; padding: 0; background: none; border: none;
+          cursor: pointer; text-align: left; color: ${INK}; font-family: 'Inter', sans-serif;
+        }
+        .callout-toggle:hover span:first-child { text-decoration: underline; }
         .preset-btn {
           background: ${PAPER}; border: 1.5px solid ${INK}; border-radius: 8px;
           padding: 12px 16px; cursor: pointer; text-align: left;
@@ -319,38 +327,55 @@ export default function CounterDefaults() {
             Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. This tool writes the instructions that override them. Paste them into your settings once, and every conversation after follows your rules.
           </p>
 
-          {/* Two callouts: WHY left, HOW right */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+          {/* Two callouts: WHY left, HOW right. Collapsed by default; the subtitle
+              carries the core framing, these hold the deeper rationale + mechanism. */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8" style={{ alignItems: 'start' }}>
             <div className="callout" style={{ background: PINK }}>
               <div className="callout-tab" style={{ background: GREEN }}>● WHY THIS EXISTS</div>
-              <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '4px' }}>
-                Most LLMs default to agreeing with you, sounding sure, and writing for you. Useful when you want a confident assistant. Less useful when you want to stay the one doing the thinking. The gains and the costs come from the same capabilities. This is for keeping one while drawing limits on the other: your judgment, your voice, your attention stay yours.
-              </p>
-              <button onClick={() => setShowRefs(!showRefs)} className="mono" style={{ marginTop: '8px', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', opacity: 0.75 }}>
-                {showRefs ? '> hide note' : '> read more'}
+              <button onClick={() => setShowWhy(!showWhy)} aria-expanded={showWhy} className="callout-toggle">
+                <span style={{ fontSize: '14px', fontWeight: 600 }}>Why counter the defaults</span>
+                <span className="mono" style={{ fontSize: '18px', lineHeight: 1 }}>{showWhy ? '–' : '+'}</span>
               </button>
-              {showRefs && (
-                <div style={{ marginTop: '10px', fontSize: '13px', lineHeight: 1.5, borderTop: `1px dashed ${INK}`, paddingTop: '10px', opacity: 0.85 }}>
-                  <p style={{ marginBottom: '6px' }}><strong>On tools and capacity.</strong> Illich, <em>Tools for Conviviality</em> (1973): tools tip from extending capacity into substituting for it past a threshold he called <em>radical monopoly</em>.</p>
-                  <p style={{ marginBottom: '6px' }}><strong>On cognitive surrender.</strong> Shaw &amp; Nave (Wharton, 2026): people adopt AI outputs even when wrong (+25 pts when AI right, −15 pts when wrong). Lee et al. (Microsoft Research, CHI '25, n=319): higher confidence in AI correlates with lower critical thinking effort.</p>
-                  <p style={{ marginBottom: '6px' }}><strong>On sycophancy.</strong> Sharma, Tong, Korbak et al. (Anthropic, ICLR 2024): five AI assistants consistently exhibit sycophancy; partly traced to human preference data favoring sycophantic responses. Fanous et al. (Stanford, SycEval 2025): 58.19% sycophancy baseline across major models.</p>
-                  <p style={{ marginBottom: '6px' }}><strong>On preference writing.</strong> Scott Waddell (Medium, 2025): the "behavioral spec" approach. Specifying behavior with contrast pairs (do X, not Y) works better than abstract requests for honesty or directness. This tool's preference outputs follow that pattern.</p>
-                  <p><strong>On homogeneity.</strong> Wenger &amp; Kenett (Duke, PNAS Nexus 2026): individual LLM responses can be as creative as average human responses, but LLM responses cluster heavily together. Widespread use narrows the variety of thinking in circulation.</p>
-                </div>
+              {showWhy && (
+                <>
+                  <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '10px' }}>
+                    Most LLMs default to agreeing with you, sounding sure, and writing for you. Useful when you want a confident assistant. Less useful when you want to stay the one doing the thinking. The gains and the costs come from the same capabilities. This is for keeping one while drawing limits on the other: your judgment, your voice, your attention stay yours.
+                  </p>
+                  <button onClick={() => setShowRefs(!showRefs)} className="mono" style={{ marginTop: '8px', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', opacity: 0.75 }}>
+                    {showRefs ? '> hide note' : '> read more'}
+                  </button>
+                  {showRefs && (
+                    <div style={{ marginTop: '10px', fontSize: '13px', lineHeight: 1.5, borderTop: `1px dashed ${INK}`, paddingTop: '10px', opacity: 0.85 }}>
+                      <p style={{ marginBottom: '6px' }}><strong>On tools and capacity.</strong> Illich, <em>Tools for Conviviality</em> (1973): tools tip from extending capacity into substituting for it past a threshold he called <em>radical monopoly</em>.</p>
+                      <p style={{ marginBottom: '6px' }}><strong>On cognitive surrender.</strong> Shaw &amp; Nave (Wharton, 2026): people adopt AI outputs even when wrong (+25 pts when AI right, −15 pts when wrong). Lee et al. (Microsoft Research, CHI '25, n=319): higher confidence in AI correlates with lower critical thinking effort.</p>
+                      <p style={{ marginBottom: '6px' }}><strong>On sycophancy.</strong> Sharma, Tong, Korbak et al. (Anthropic, ICLR 2024): five AI assistants consistently exhibit sycophancy; partly traced to human preference data favoring sycophantic responses. Fanous et al. (Stanford, SycEval 2025): 58.19% sycophancy baseline across major models.</p>
+                      <p style={{ marginBottom: '6px' }}><strong>On preference writing.</strong> Scott Waddell (Medium, 2025): the "behavioral spec" approach. Specifying behavior with contrast pairs (do X, not Y) works better than abstract requests for honesty or directness. This tool's preference outputs follow that pattern.</p>
+                      <p><strong>On homogeneity.</strong> Wenger &amp; Kenett (Duke, PNAS Nexus 2026): individual LLM responses can be as creative as average human responses, but LLM responses cluster heavily together. Widespread use narrows the variety of thinking in circulation.</p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
             <div className="callout" style={{ background: YELLOW }}>
               <div className="callout-tab" style={{ background: PAPER }}>▶ HOW THIS WORKS</div>
-              <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '4px' }}>
-                Each slider starts on the left, where LLMs already are. Drag right to swap that default for yours. Your choices become one block of custom instructions: paste it into your LLM's settings once, and it applies to every conversation from then on, in ChatGPT, Claude, Gemini, or anything else with a settings field.
-              </p>
-              <p style={{ fontSize: '14px', fontStyle: 'italic', marginTop: '6px' }}>Only sliders you've moved show up in your output.</p>
+              <button onClick={() => setShowHow(!showHow)} aria-expanded={showHow} className="callout-toggle">
+                <span style={{ fontSize: '14px', fontWeight: 600 }}>From sliders to settings</span>
+                <span className="mono" style={{ fontSize: '18px', lineHeight: 1 }}>{showHow ? '–' : '+'}</span>
+              </button>
+              {showHow && (
+                <>
+                  <p style={{ fontSize: '14px', lineHeight: 1.55, marginTop: '10px' }}>
+                    Each slider starts on the left, where LLMs already are. Drag right to swap that default for yours. Your choices become one block of custom instructions: paste it into your LLM's settings once, and it applies to every conversation from then on, in ChatGPT, Claude, Gemini, or anything else with a settings field.
+                  </p>
+                  <p style={{ fontSize: '14px', fontStyle: 'italic', marginTop: '6px' }}>Only sliders you've moved show up in your output.</p>
+                </>
+              )}
             </div>
           </div>
 
           {/* Presets */}
-          <div className="smono" style={{ fontSize: '13px', marginBottom: '12px', opacity: 0.75 }}>▶ PRESETS / starting points</div>
+          <div className="smono" style={{ fontSize: '13px', marginBottom: '12px', opacity: 0.75 }}>▶ I WANT MY LLM TO… / pick a starting point</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             {Object.entries(PRESETS).map(([key, preset]) => (
               <button key={key} onClick={() => applyPreset(key)} className={`preset-btn ${activePreset === key ? 'active' : ''}`}>
@@ -409,9 +434,12 @@ export default function CounterDefaults() {
 
                       {/* Slider frame */}
                       <div style={{ border: `1.5px solid ${INK}`, borderRadius: '10px', padding: '14px 20px 12px', background: PAPER }}>
-                        <div className="smono" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', opacity: 0.7, marginBottom: '10px' }}>
-                          <span>{dim.poles[0]}</span>
-                          <span>{dim.poles[1]}</span>
+                        <div className="smono" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '12px', opacity: 0.7, marginBottom: '10px', gap: '10px' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '9px', letterSpacing: '0.5px', border: `1px solid ${INK}`, borderRadius: '3px', padding: '0 4px', whiteSpace: 'nowrap' }}>LLM DEFAULT</span>
+                            {dim.poles[0]}
+                          </span>
+                          <span style={{ textAlign: 'right' }}>{dim.poles[1]}</span>
                         </div>
                         <input
                           type="range"
