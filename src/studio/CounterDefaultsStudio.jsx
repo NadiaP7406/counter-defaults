@@ -243,6 +243,7 @@ export default function CounterDefaultsStudio() {
   }, []);
 
   const engaged = levels.filter((v) => v > 0).length;
+  const empty = engaged === 0 && tropes.length === 0;
   const sum = levels.reduce((a, v) => a + v, 0);
   const lit = Math.min(15, Math.round(sum / 3));
   let pushWord = 'dormant', pushColor = FAINT;
@@ -341,7 +342,7 @@ export default function CounterDefaultsStudio() {
           )}
           <div style={{ flex: 'none', marginBottom: 11 }}>
             <p style={{ fontSize: 13, lineHeight: 1.5, color: BODY, maxWidth: 720, margin: 0 }}>
-              Your LLM ships with default behaviours — it agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once — every chat after follows your rules.
+              Your LLM ships with default behaviours. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
             </p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('#F0C8C8')}>
@@ -368,7 +369,7 @@ export default function CounterDefaultsStudio() {
                 )}
               </ExplainerCard>
             )}
-            {howOpen && <ExplainerCard tint="rgba(245,255,110,0.4)">Each fader starts on the left, where the LLM already is. Push it right to swap that default for yours. Your choices are written live into an <span style={{ fontFamily: sm, color: COBALT }}>instructions.md</span> panel. Paste it into your LLM's settings once, and it applies to every conversation from then on — in ChatGPT, Claude, Gemini, or anything with a settings field.</ExplainerCard>}
+            {howOpen && <ExplainerCard tint="rgba(245,255,110,0.4)">Each fader starts on the left, where the LLM already is. Push it right to swap that default for yours. Your choices are written live into an <span style={{ fontFamily: sm, color: COBALT }}>instructions.md</span> panel. Paste it into your LLM's settings once, and it applies to every conversation from then on, in ChatGPT, Claude, Gemini, or anything with a settings field.</ExplainerCard>}
             {presetOpen && (
               <div style={{ display: 'flex', gap: 8, marginTop: 9, flexWrap: 'wrap' }}>
                 {PRESETS.map((p) => (
@@ -555,7 +556,7 @@ export default function CounterDefaultsStudio() {
                 </div>
 
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="cd-bright cd-hov" onClick={onCopy} style={{ flex: 1, background: '#68FF9E', color: INK, border: `2px solid ${INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: 13, cursor: 'pointer' }}>{copied ? 'COPIED ✓' : 'COPY INSTRUCTIONS'}</button>
+                  <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onCopy} disabled={empty} style={{ flex: 1, background: empty ? TRACK : '#68FF9E', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: 13, cursor: empty ? 'not-allowed' : 'pointer' }}>{copied ? 'COPIED ✓' : empty ? 'NOTHING TO COPY YET' : 'COPY INSTRUCTIONS'}</button>
                   <button className="cd-bright cd-hov" onClick={onShare} aria-label="Copy a shareable link to this mix" style={{ flexShrink: 0, background: linkCopied ? '#68FF9E' : 'transparent', color: INK, border: `2px solid ${INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: '13px 14px', cursor: 'pointer' }}>{linkCopied ? '✓ LINK' : 'SHARE'}</button>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
@@ -572,7 +573,7 @@ export default function CounterDefaultsStudio() {
                 )}
                 {addYouOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(165,166,246,0.28)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.55, maxHeight: narrow ? 'none' : '34vh', overflowY: 'auto', flexShrink: 0 }}>
-                    <div style={{ marginBottom: 6 }}>The configurator can't guess these — add them after pasting:</div>
+                    <div style={{ marginBottom: 6 }}>The configurator can't guess these, so add them after pasting:</div>
                     {[
                       { tag: 'about you', text: `your role, your field, and how much you already know.` },
                       { tag: 'your voice', text: `if you pushed Voice, paste a few lines you've written so it can match you.`, flag: levels[KEYS.indexOf('voice')] > 0 },
@@ -595,7 +596,7 @@ export default function CounterDefaultsStudio() {
               <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 640, width: '100%', background: WARM, border: `2px solid ${INK}`, borderRadius: 16, padding: '20px 24px 22px', boxShadow: '0 24px 70px rgba(0,0,0,0.6)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
                   <div>
-                    <div style={{ fontFamily: sm, fontSize: 11, color: INK }}>◉ SIGNATURE{narrow ? '' : ' — EDIT MODE'}</div>
+                    <div style={{ fontFamily: sm, fontSize: 11, color: INK }}>◉ SIGNATURE{narrow ? '' : ' · EDIT MODE'}</div>
                     <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>{narrow ? 'Each spoke is one dimension. The centre is the LLM’s default; the edge is your full counter. Open on a desktop to drag the shape; here, tune with the faders above.' : 'Each spoke is one dimension. The centre is the LLM’s default; drag a node outward to push your counter further.'}</div>
                   </div>
                   <button onClick={() => setCockpitOpen(false)} className="cd-hov" style={{ width: 30, height: 30, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, cursor: 'pointer' }}>✕</button>
@@ -618,7 +619,7 @@ export default function CounterDefaultsStudio() {
         {narrow && (
           <div style={{ position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 55, background: BG, borderTop: `1.5px solid ${INK}`, padding: '9px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ fontFamily: sm, fontSize: 9.5, color: LABEL, lineHeight: 1.25, flexShrink: 0 }}>{engaged}/{N_CH} set<br />{words}w · {text.length}c</div>
-            <button className="cd-bright cd-hov" onClick={onCopy} style={{ flex: 1, background: '#68FF9E', color: INK, border: `2px solid ${INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 8, padding: 12, cursor: 'pointer' }}>{copied ? 'COPIED ✓' : 'COPY INSTRUCTIONS'}</button>
+            <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onCopy} disabled={empty} style={{ flex: 1, background: empty ? TRACK : '#68FF9E', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 8, padding: 12, cursor: empty ? 'not-allowed' : 'pointer' }}>{copied ? 'COPIED ✓' : empty ? 'NOTHING TO COPY YET' : 'COPY INSTRUCTIONS'}</button>
           </div>
         )}
       </div>
