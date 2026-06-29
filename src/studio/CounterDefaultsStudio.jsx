@@ -447,7 +447,12 @@ export default function CounterDefaultsStudio() {
                             <span style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: INK, flex: 1 }}>{b.name}</span>
                             <button onClick={(e) => { e.stopPropagation(); setInfoOpen(null); }} aria-label="Close" style={{ fontFamily: sm, fontSize: 14, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
                           </div>
-                          {/* four level cells */}
+                          {/* why, on top */}
+                          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                            <span style={{ fontFamily: sm, fontSize: 9, letterSpacing: '0.5px', color: LABEL, flexShrink: 0, marginTop: 2 }}>WHY</span>
+                            <span style={{ fontSize: 11.5, lineHeight: 1.45, color: BODY }}>{renderInline(b.why)}</span>
+                          </div>
+                          {/* four level cells, below */}
                           <div style={{ display: 'flex', flexWrap: narrow ? 'wrap' : 'nowrap', gap: 8 }}>
                             {[0, 1, 2, 3].map((idx) => {
                               const sel = idx === level;
@@ -458,11 +463,6 @@ export default function CounterDefaultsStudio() {
                                 </div>
                               );
                             })}
-                          </div>
-                          {/* why, at the bottom */}
-                          <div style={{ display: 'flex', gap: 8, marginTop: 11 }}>
-                            <span style={{ fontFamily: sm, fontSize: 9, letterSpacing: '0.5px', color: LABEL, flexShrink: 0, marginTop: 2 }}>WHY</span>
-                            <span style={{ fontSize: 11.5, lineHeight: 1.45, color: BODY }}>{renderInline(b.why)}</span>
                           </div>
                           {b.caveat && (
                             <p style={{ fontSize: 10.5, fontStyle: 'italic', color: LABEL, margin: '8px 0 0', paddingLeft: 9, borderLeft: `2px solid ${b.color}`, lineHeight: 1.45 }}>
