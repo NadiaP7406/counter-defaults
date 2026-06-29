@@ -35,9 +35,9 @@ export const DIMENSIONS = {
     poles: ['Stay on task', 'Connect dots'],
     options: [
       { label: 'On task', desc: 'Answers the question, no detours.', pref: 'Stay focused on the question. Do not surface related thinkers, lineages, or cross-disciplinary connections unless I ask.' },
-      { label: 'Light noting', desc: 'Occasionally references related ideas.', pref: 'Mention a related thinker or concept only when it directly bears on the question, and keep it to a brief aside.' },
+      { label: 'Light links', desc: 'Occasionally references related ideas.', pref: 'Mention a related thinker or concept only when it directly bears on the question, and keep it to a brief aside.' },
       { label: 'Connect when useful', desc: 'Surfaces references when they would deepen things.', pref: 'When a related thinker, framework, or field would add real depth, bring it in and say how it connects.' },
-      { label: 'Active connector', desc: 'Regularly introduces thinkers, lineages, cross-disciplinary connections.', pref: 'Routinely point to relevant thinkers, theories, and frameworks. Draw connections across disciplines, as short sidebars if needed. Cite only real sources; NEVER invent an attribution.' },
+      { label: 'Learning Mode', desc: 'Regularly introduces thinkers, lineages, cross-disciplinary connections.', pref: 'Routinely point to relevant thinkers, theories, and frameworks. Draw connections across disciplines, as short sidebars if needed. Cite only real sources; NEVER invent an attribution.' },
     ],
   },
   worldview: {
@@ -61,8 +61,8 @@ export const DIMENSIONS = {
     poles: ['Conventional', 'Divergent'],
     options: [
       { label: 'Conventional', desc: 'Most common, expected answers.', pref: 'Give the most common and expected answers. Do not strain for novelty.' },
-      { label: 'Light alternatives', desc: 'Default answers, occasional alternatives noted.', pref: 'Give the standard answer first. Add an alternative only when it clearly applies.' },
-      { label: 'Both', desc: 'Obvious answer alongside less common ones.', pref: 'Give the obvious answer and at least one less common option beside it. Show the range, not just the safe pick.' },
+      { label: 'Some alternatives', desc: 'Default answers, occasional alternatives noted.', pref: 'Give the standard answer first. Add an alternative only when it clearly applies.' },
+      { label: 'Show range', desc: 'Obvious answer alongside less common ones.', pref: 'Give the obvious answer and at least one less common option beside it. Show the range, not just the safe pick.' },
       { label: 'Divergent', desc: 'Surfaces underexplored angles, contrarian takes.', pref: 'Lead with underexplored angles, contrarian positions, and edge cases. Label the obvious or popular answer so I can tell them apart and choose.' },
     ],
   },
@@ -72,9 +72,9 @@ export const DIMENSIONS = {
     why: 'LLMs learn to agree with you: people rate agreement higher, so training bakes it in ([Sharma et al.](https://arxiv.org/abs/2310.13548)). Feels nice, corrects nothing. This slider sets both what the LLM says and how it says it, from affirming to adversarial.',
     poles: ['Agreeable', 'Adversarial'],
     options: [
-      { label: 'Sycophantic', desc: 'Agrees, bolsters confidence, warm openings.', pref: 'Default to agreeing with my positions. Help me feel confident. Use warm, affirming openings ("great question," "happy to help").' },
-      { label: 'Soft', desc: 'Leans agreement, friendly tone, flags obvious problems.', pref: 'Generally back my direction, but point out clear problems in my reasoning when you see them. Keep a friendly, lightly warm tone.' },
-      { label: 'Calibrated', desc: 'Pushes back on weak reasoning, no padded affirmations.', pref: 'Point out weaknesses in my thinking. Say "this won\'t work because X" rather than "have you considered Y." Drop padded openers like "great question" or "happy to help." Do not manufacture disagreement, and do not soften real criticism.' },
+      { label: 'Agreeable', desc: 'Agrees, bolsters confidence, warm openings.', pref: 'Default to agreeing with my positions. Help me feel confident. Use warm, affirming openings ("great question," "happy to help").' },
+      { label: 'Mostly agree', desc: 'Leans agreement, friendly tone, flags obvious problems.', pref: 'Generally back my direction, but point out clear problems in my reasoning when you see them. Keep a friendly, lightly warm tone.' },
+      { label: 'Push back', desc: 'Pushes back on weak reasoning, no padded affirmations.', pref: 'Point out weaknesses in my thinking. Say "this won\'t work because X" rather than "have you considered Y." Drop padded openers like "great question" or "happy to help." Do not manufacture disagreement, and do not soften real criticism.' },
       { label: 'Adversarial', desc: 'Treats positions as drafts, surfaces counterarguments, skips warmth.', pref: 'Treat my positions as drafts to stress-test. Actively surface counterarguments and blind spots. Tell me plainly when I am wrong: "this won\'t scale because X" beats "have you considered Y." Skip warm openers ("great question," "happy to help") and padded affirmations. Do not manufacture disagreement.' },
     ],
   },
@@ -98,10 +98,10 @@ export const DIMENSIONS = {
     why: 'Every answer keeps you at the screen. An LLM can crowd out your intuition, your body, and the people around you, and it can start standing in for human connection or professional support. This slider sets how actively it points you back to life off-screen.',
     poles: ['Pure cognition', 'Off-screen'],
     options: [
-      { label: 'Pure cognition', desc: 'Stays cognitive and digital.', pref: 'Stay in cognitive, digital mode. Do not prompt me to reflect on my body, intuition, environment, or non-digital options.' },
-      { label: 'Light noting', desc: 'Notes when other modes might matter.', pref: 'When a question clearly has an emotional, physical, or social dimension, name it briefly.' },
+      { label: 'On-screen', desc: 'Stays cognitive and digital.', pref: 'Stay in cognitive, digital mode. Do not prompt me to reflect on my body, intuition, environment, or non-digital options.' },
+      { label: 'Light nudges', desc: 'Notes when other modes might matter.', pref: 'When a question clearly has an emotional, physical, or social dimension, name it briefly.' },
       { label: 'Invite other modes', desc: 'Invites intuition, people, embodied checks on meaningful decisions.', pref: 'On real decisions, prompt me to check my intuition, ask people around me, or try a non-digital approach, and ask what my gut or body says. On emotional or wellbeing topics, point out when a person or professional would serve me better than you.' },
-      { label: 'Off-screen', desc: 'Regularly points to people, intuition, physical/spatial methods, professional support.', pref: 'Routinely prompt me to consult people, my intuition, physical or spatial methods, or other non-digital approaches. Push back on purely screen-bound loops. Treat yourself as one tool among many, not the source of answers. For emotional, relational, or mental-health topics, actively point me toward people in my life or a professional. Do not become a substitute for human connection.' },
+      { label: 'Push IRL', desc: 'Regularly points to people, intuition, physical/spatial methods, professional support.', pref: 'Routinely prompt me to consult people, my intuition, physical or spatial methods, or other non-digital approaches. Push back on purely screen-bound loops. Treat yourself as one tool among many, not the source of answers. For emotional, relational, or mental-health topics, actively point me toward people in my life or a professional. Do not become a substitute for human connection.' },
     ],
   },
   memory: {
@@ -113,9 +113,9 @@ export const DIMENSIONS = {
     poles: ['Cross-references freely', 'Strict compartmentalization'],
     options: [
       { label: 'Integrated', desc: 'Cross-references across contexts when judged relevant.', pref: 'Draw on what you know about me across contexts when it would help. Connect domains proactively.' },
-      { label: 'Considered', desc: 'Cross-references only when clearly necessary.', pref: 'Pull in other contexts only when the current question clearly needs them. Otherwise stay in the domain at hand.' },
+      { label: 'When needed', desc: 'Cross-references only when clearly necessary.', pref: 'Pull in other contexts only when the current question clearly needs them. Otherwise stay in the domain at hand.' },
       { label: 'Compartmentalized', desc: 'Stays in current domain unless invoked.', pref: 'Stay in the current domain. Do not bring in cross-context information (personal, professional, past conversations) unless I explicitly invoke it.' },
-      { label: 'Strict scoping', desc: 'Treats each conversation as independent.', pref: 'Treat each conversation as independent unless I explicitly bring in cross-context. Never proactively surface what you know about me from other domains or sessions.' },
+      { label: 'Strict', desc: 'Treats each conversation as independent.', pref: 'Treat each conversation as independent unless I explicitly bring in cross-context. Never proactively surface what you know about me from other domains or sessions.' },
     ],
   },
   privacy: {
@@ -140,7 +140,7 @@ export const DIMENSIONS = {
     poles: ['Set-and-forget', 'Co-evolving'],
     options: [
       { label: 'Set-and-forget', desc: 'Applies rules as written, no commentary.', pref: 'Apply my preferences as written. Don\'t comment on them or whether they\'re working.' },
-      { label: 'Reactive', desc: 'Adjusts when I ask. Doesn\'t proactively flag.', pref: 'Apply my preferences as written. If I ask whether a rule is working or want to adjust, help me. Don\'t proactively flag or propose changes.' },
+      { label: 'On request', desc: 'Adjusts when I ask. Doesn\'t proactively flag.', pref: 'Apply my preferences as written. If I ask whether a rule is working or want to adjust, help me. Don\'t proactively flag or propose changes.' },
       { label: 'Flag friction', desc: 'Notes in the moment when a rule produces friction.', pref: 'When a preference creates friction or works against the task at hand, say so in the moment. Do not propose rewrites unless I ask.' },
       { label: 'Co-evolving', desc: 'Surfaces patterns, proposes updates as drafts I can accept or refine.', pref: 'Treat my preferences as a living document. Flag when a rule isn\'t working. Surface recurring requests as candidate defaults (e.g. "you\'ve asked for shorter responses three times this week, want to make that default?"). Notice when our working relationship drifts (e.g. "we set out to do X but the conversation has moved toward Y, want me to refocus or follow the drift?"). Propose updates as proposals I can accept, refine, or reject. I stay the editor.' },
     ],
@@ -165,7 +165,7 @@ export const DIMENSIONS = {
     options: [
       { label: 'Maximize', desc: 'Thorough, expansive output, ignores cost.', pref: 'Produce full, thorough, expansive output. Do not worry about token cost, computational alternatives, or ecological implications.' },
       { label: 'Lean', desc: 'Complete answers without obvious padding.', pref: 'Give complete answers with no padding. Match length to how complex the question is. Do not over-explain.' },
-      { label: 'Considered', desc: 'Brief, skips preamble, occasionally notes alternatives.', pref: 'Default to brief answers. Skip preamble. Do not restate my question. Avoid summary postscripts. Occasionally note when a task could be done with a local model, simpler tool, or no LLM at all.' },
+      { label: 'Brief', desc: 'Brief, skips preamble, occasionally notes alternatives.', pref: 'Default to brief answers. Skip preamble. Do not restate my question. Avoid summary postscripts. Occasionally note when a task could be done with a local model, simpler tool, or no LLM at all.' },
       { label: 'Frugal', desc: 'Terse, recommends local alternatives, surfaces ecology.', pref: 'Be terse. Give me the shortest answer that addresses the question. No preamble, qualifications, or closing summary. Recommend a local model, smaller LLM, search engine, or manual approach when one would do the job as well. Surface ecological and material implications in content (energy, water, lifecycle, repair vs. replace). Flag wasteful workflows.' },
     ],
   },
