@@ -1,7 +1,7 @@
 import { DIMENSIONS } from '../data/dimensions.js';
 import { TROPES } from '../data/tropes.js';
 
-export function generateMarkdown(state, dateLabel) {
+export function generateMarkdown(state) {
   const lines = [];
   const movedDims = Object.keys(DIMENSIONS).filter((key) => state[key] !== 0);
   const hasContent = movedDims.length > 0 || state.tropes.length > 0;
@@ -9,13 +9,6 @@ export function generateMarkdown(state, dateLabel) {
     lines.push('*No counter-defaults set yet. Move the sliders above to specify how you want the LLM to behave differently from default. Only the dimensions you change appear here.*');
     return lines.join('\n');
   }
-  // Stamped automatically with the month the user generated this, so they (and
-  // the model) know how current it is. Ties to the Calibration dimension.
-  const stamp = dateLabel || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  lines.push('# My LLM Instructions');
-  lines.push('');
-  lines.push(`Last set: ${stamp}`);
-  lines.push('');
   if (movedDims.length > 0) {
     lines.push('## How I Want You to Work With Me');
     lines.push('');
