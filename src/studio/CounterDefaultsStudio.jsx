@@ -527,7 +527,7 @@ export default function CounterDefaultsStudio() {
               <div style={{ flex: narrow ? 'none' : 1, display: 'flex', flexDirection: 'column', minHeight: 0, background: BG, border: `2px solid ${INK}`, borderRadius: 10, padding: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8, gap: 8, flexWrap: 'wrap' }}>
                   <span style={{ fontFamily: sm, fontSize: 11, letterSpacing: '0.1em', color: INK }}>YOUR INSTRUCTIONS</span>
-                  <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>~ {words} words · {text.length} characters{text.length > 1500 && <span style={{ color: '#c63a26', fontWeight: 700 }}> · long, may exceed some fields</span>}</span>
+                  <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>~ {words} words · {text.length} characters{text.length > 1500 && <span style={{ color: '#c63a26', fontWeight: 700 }}> · over ChatGPT's 1,500 limit, trim or split</span>}</span>
                 </div>
                 <div className="cd-scroll" tabIndex={0} role="group" aria-label="Generated instructions (read-only)" style={{ flex: narrow ? 'none' : 1, overflowY: 'auto', background: WARM, border: `1.5px solid ${INK}`, borderRadius: 7, padding: 13, fontFamily: sm, fontSize: 11, lineHeight: 1.55, minHeight: narrow ? 180 : 0, maxHeight: narrow ? '48vh' : 'none' }}>
                   {lines.map((l) => (
