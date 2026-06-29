@@ -30,7 +30,8 @@ function darkenForText(hex, bg = '#fbf7ec') {
 }
 // title (e.g. "Cognitive sovereignty") -> readable color
 const TITLE_COLOR = {};
-CHANNELS.forEach((c) => { TITLE_COLOR[c.name] = darkenForText(c.color); });
+const TITLE_BG = {};
+CHANNELS.forEach((c) => { TITLE_COLOR[c.name] = darkenForText(c.color); TITLE_BG[c.name] = c.color; });
 
 // Dark or white text, whichever actually contrasts better on a given fill.
 function idealText(hex) {
@@ -398,7 +399,7 @@ export default function CounterDefaultsStudio() {
                       {(() => {
                         const labelEl = (
                           <button onClick={(e) => { e.stopPropagation(); setFocused(bi); setInfoOpen((p) => (p === bi ? null : bi)); }} aria-label={`${b.name} info`} style={{ width: narrow ? 'auto' : 128, flex: narrow ? 1 : 'none', flexShrink: 0, minWidth: 0, background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', padding: 0 }}>
-                            <div style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: on ? INK : '#6a6452' }}>{b.short}</div>
+                            <div style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: on ? INK : '#6a6452' }}><span style={{ marginRight: 4 }}>{b.emoji}</span>{b.short}</div>
                             <div style={{ fontSize: 8, color: LABEL, marginTop: 2 }}>{b.poles[0]} → {b.poles[1]}</div>
                           </button>
                         );
@@ -480,12 +481,12 @@ export default function CounterDefaultsStudio() {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {CHANNELS.map((c, i) => (loaded.indexOf(i) >= 0 ? null : (
                         <button key={c.key} onClick={() => toggleLoaded(i)} title={c.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
-                          <span style={{ width: 8, height: 8, borderRadius: 2, background: c.color, flexShrink: 0 }} />{c.short}
+                          <span style={{ flexShrink: 0 }}>{c.emoji}</span>{c.short}
                         </button>
                       )))}
                       {!patternsLoaded && (
                         <button onClick={togglePatterns} title="Ban specific AI writing tics (em-dashes, filler, negative parallelism, etc.)" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
-                          <span style={{ width: 8, height: 8, borderRadius: 2, background: '#FF55CF', flexShrink: 0 }} />Ban writing patterns
+                          <span style={{ flexShrink: 0 }}>🚫</span>Ban writing patterns
                         </button>
                       )}
                     </div>
@@ -523,8 +524,7 @@ export default function CounterDefaultsStudio() {
                     <span style={{ fontFamily: sm, fontSize: 9.5, letterSpacing: '0.12em', color: INK }}>◉ SIGNATURE</span>
                     <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>⤢ {narrow ? 'VIEW' : 'EDIT'}</span>
                   </div>
-                  <p style={{ fontSize: 10.5, lineHeight: 1.4, color: BODY, margin: '6px 0 0' }}>Each spoke is one default. The further out, the harder you counter it.</p>
-                  <p style={{ fontFamily: sm, fontSize: 8.5, color: LABEL, margin: '5px 0 0' }}>centre = LLM default · edge = your override</p>
+                  <p style={{ fontSize: 10.5, lineHeight: 1.4, color: BODY, margin: '6px 0 0' }}>Edit the shape of your settings. Each spoke is a dimension. <span style={{ color: LABEL }}>Tap to open →</span></p>
                 </div>
               </div>
 
@@ -536,7 +536,7 @@ export default function CounterDefaultsStudio() {
                 <div className="cd-scroll" tabIndex={0} role="group" aria-label="Generated instructions (read-only)" style={{ flex: narrow ? 'none' : 1, overflowY: 'auto', background: WARM, border: `1.5px solid ${INK}`, borderRadius: 7, padding: 13, fontFamily: sm, fontSize: 11, lineHeight: 1.55, minHeight: narrow ? 180 : 0, maxHeight: narrow ? '48vh' : 'none' }}>
                   {lines.map((l) => (
                     <div key={l.idx} style={{ color: l.color, whiteSpace: 'pre-wrap', fontStyle: l.italic ? 'italic' : 'normal' }}>
-                      {l.bold ? <><strong style={{ color: TITLE_COLOR[l.bold.replace(/\.$/, '')] || INK }}>{l.bold}</strong><span style={{ color: MONO }}>{l.content}</span></> : (l.content || ' ')}
+                      {l.bold ? (() => { const nm = l.bold.replace(/\.$/, ''); const bg = TITLE_BG[nm]; return <><strong style={bg ? { background: bg, color: idealText(bg), padding: '1px 6px', borderRadius: 4, fontWeight: 700 } : { color: INK }}>{nm}</strong><span style={{ color: MONO }}>{l.bold.endsWith('.') ? '.' : ''}{l.content}</span></>; })() : (l.content || ' ')}
                     </div>
                   ))}
                   <span style={{ display: 'inline-block', width: 7, height: 13, background: INK, animation: 'cdblink 1s step-end infinite', verticalAlign: 'text-bottom' }} />
@@ -596,7 +596,7 @@ export default function CounterDefaultsStudio() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
                   <div>
                     <div style={{ fontFamily: sm, fontSize: 11, color: INK }}>◉ SIGNATURE{narrow ? '' : ' — EDIT MODE'}</div>
-                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3 }}>{narrow ? 'Your signature so far. Open on a desktop to drag the shape; here you can tune with the faders above.' : 'Drag a node outward to push that counter harder.'}</div>
+                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>{narrow ? 'Each spoke is one dimension. The centre is the LLM’s default; the edge is your full counter. Open on a desktop to drag the shape; here, tune with the faders above.' : 'Each spoke is one dimension. The centre is the LLM’s default; drag a node outward to push your counter further.'}</div>
                   </div>
                   <button onClick={() => setCockpitOpen(false)} className="cd-hov" style={{ width: 30, height: 30, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, cursor: 'pointer' }}>✕</button>
                 </div>
