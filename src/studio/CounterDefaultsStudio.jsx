@@ -198,7 +198,9 @@ export default function CounterDefaultsStudio() {
     dirs.forEach((d, k) => {
       const bi = axes[k], lr = RR + 46, lx = cx + d.ux * lr, ly = cy + d.uy * lr;
       g.fillStyle = INK; g.font = "700 22px 'Space Mono', monospace"; g.fillText(CHANNELS[bi].short, lx, ly);
-      g.fillStyle = CHANNELS[bi].color; g.font = "18px 'Space Mono', monospace"; g.fillText(CHANNELS[bi].labels[levels[bi]], lx, ly + 24);
+      // Trim the one playfully long label so it doesn't crowd the canvas edge.
+      const capLabel = CHANNELS[bi].labels[levels[bi]].replace('Dare say "I don\'t know"', 'Says "I don\'t know"');
+      g.fillStyle = CHANNELS[bi].color; g.font = "18px 'Space Mono', monospace"; g.fillText(capLabel, lx, ly + 24);
     });
     g.textAlign = 'left';
     g.fillStyle = INK; g.font = "22px 'Space Mono', monospace";
