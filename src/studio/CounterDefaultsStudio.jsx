@@ -16,6 +16,32 @@ const clamp = (v) => Math.max(0, Math.min(3, v));
 const KEYS = CHANNELS.map((c) => c.key);
 const STORE_KEY = 'counter-defaults-state';
 
+// Darken a channel hue until it reads at >=4.5:1 on the warm output bg, so the
+// color-coded titles stay legible (the raw neons are far too light on cream).
+function darkenForText(hex, bg = '#fbf7ec') {
+  const toRGB = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const lum = (rgb) => { const c = rgb.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const bl = lum(toRGB(bg));
+  let rgb = toRGB(hex);
+  const ratio = () => { const l = lum(rgb); const [a, b] = [l, bl].sort((x, y) => y - x); return (a + 0.05) / (b + 0.05); };
+  let guard = 0;
+  while (ratio() < 4.5 && guard++ < 60) rgb = rgb.map((v) => Math.max(0, Math.round(v * 0.9)));
+  return '#' + rgb.map((v) => v.toString(16).padStart(2, '0')).join('');
+}
+// title (e.g. "Cognitive sovereignty") -> readable color
+const TITLE_COLOR = {};
+CHANNELS.forEach((c) => { TITLE_COLOR[c.name] = darkenForText(c.color); });
+
+// Dark or white text, whichever actually contrasts better on a given fill.
+function idealText(hex) {
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  const rgb = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const L = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+  const cInk = (L + 0.05) / (0.0055 + 0.05);  // contrast vs #15130d
+  const cWhite = 1.05 / (L + 0.05);            // contrast vs #ffffff
+  return cWhite > cInk ? '#ffffff' : '#15130d';
+}
+
 // Loaded channels = the 6 core, plus any channel that's been pushed above 0.
 function deriveLoaded(lvls) {
   const ld = [...CORE];
@@ -30,7 +56,7 @@ function readInit() {
   if (!st) { try { const s = localStorage.getItem(STORE_KEY); if (s) st = JSON.parse(s); } catch (e) { /* ignore */ } }
   const levels = CHANNELS.map((c) => { const v = st && Number.isInteger(st[c.key]) ? st[c.key] : 0; return v >= 0 && v < 4 ? v : 0; });
   const tropes = st && Array.isArray(st.tropes) ? st.tropes.filter((id) => TROPES.some((t) => t.id === id)) : [];
-  return { levels, tropes, loaded: deriveLoaded(levels), fromShared: shared && (levels.some((v) => v > 0) || tropes.length > 0) };
+  return { levels, tropes, loaded: deriveLoaded(levels), patternsLoaded: tropes.length > 0, fromShared: shared && (levels.some((v) => v > 0) || tropes.length > 0) };
 }
 
 // Render our why-text markdown ([link](url) + *italic*) inline.
@@ -53,6 +79,7 @@ export default function CounterDefaultsStudio() {
   const [levels, setLevels] = useState(initRef.current.levels);
   const [tropes, setTropes] = useState(initRef.current.tropes);
   const [loaded, setLoaded] = useState(initRef.current.loaded);
+  const [patternsLoaded, setPatternsLoaded] = useState(initRef.current.patternsLoaded);
   const [fromShared, setFromShared] = useState(initRef.current.fromShared);
   const [focused, setFocused] = useState(initRef.current.loaded[0] ?? CORE[0]);
   const [infoOpen, setInfoOpen] = useState(null);
@@ -62,7 +89,6 @@ export default function CounterDefaultsStudio() {
   const [pasteOpen, setPasteOpen] = useState(false);
   const [addYouOpen, setAddYouOpen] = useState(false);
   const [cockpitOpen, setCockpitOpen] = useState(false);
-  const [libOpen, setLibOpen] = useState(false);
   const [presetOpen, setPresetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -102,20 +128,21 @@ export default function CounterDefaultsStudio() {
         setFocused((f) => (f === i ? (ld.length ? ld[0] : null) : f));
         return ld;
       }
-      setLevels((lv) => (lv[i] === 0 ? lv.map((v, k) => (k === i ? 2 : v)) : lv));
+      // Load at level 0 (off) — the user pushes the fader to engage it.
       setFocused(i);
       return [...prevLd, i];
     });
   };
 
   const toggleTrope = (id) => { touched(); setTropes((t) => (t.includes(id) ? t.filter((x) => x !== id) : [...t, id])); };
+  const togglePatterns = () => { touched(); setPatternsLoaded((v) => { if (v) setTropes([]); return !v; }); };
   const onReset = () => {
     if (levels.some((v) => v > 0) || tropes.length > 0) {
       setPreReset({ levels: levels.slice(), tropes: tropes.slice(), loaded: loaded.slice() });
       clearTimeout(undoT.current);
       undoT.current = setTimeout(() => setPreReset(null), 7000);
     }
-    setLevels(DEFAULTS.slice()); setTropes([]); setLoaded(CORE.slice()); setFocused(CORE[0]); setInfoOpen(null); touched();
+    setLevels(DEFAULTS.slice()); setTropes([]); setPatternsLoaded(false); setLoaded(CORE.slice()); setFocused(CORE[0]); setInfoOpen(null); touched();
   };
   const undoReset = () => {
     clearTimeout(undoT.current);
@@ -127,7 +154,7 @@ export default function CounterDefaultsStudio() {
     const lv = p.levels.slice();
     const ld = [...CORE];
     lv.forEach((v, i) => { if (v > 0 && ld.indexOf(i) < 0) ld.push(i); });
-    setLevels(lv); setTropes((p.tropes || []).slice()); setLoaded(ld); setFocused(ld[0]); setPresetOpen(false);
+    setLevels(lv); setTropes((p.tropes || []).slice()); setPatternsLoaded((p.tropes || []).length > 0); setLoaded(ld); setFocused(ld[0]); setPresetOpen(false);
   };
 
   // Output text = OUR generateMarkdown over the current levels (byte-identical to
@@ -218,10 +245,10 @@ export default function CounterDefaultsStudio() {
   const sum = levels.reduce((a, v) => a + v, 0);
   const lit = Math.min(15, Math.round(sum / 3));
   let pushWord = 'dormant', pushColor = FAINT;
-  if (sum > 0 && sum <= 6) { pushWord = 'gentle'; pushColor = '#1d8a4f'; }
-  else if (sum > 6 && sum <= 14) { pushWord = 'moderate'; pushColor = '#b88a00'; }
-  else if (sum > 14 && sum <= 26) { pushWord = 'firm'; pushColor = '#d97a1a'; }
-  else if (sum > 26) { pushWord = 'aggressive'; pushColor = CORAL; }
+  if (sum > 0 && sum <= 6) { pushWord = 'gentle'; pushColor = '#16793f'; }
+  else if (sum > 6 && sum <= 14) { pushWord = 'moderate'; pushColor = '#8a6800'; }
+  else if (sum > 14 && sum <= 26) { pushWord = 'firm'; pushColor = '#b8531a'; }
+  else if (sum > 26) { pushWord = 'aggressive'; pushColor = '#c63a26'; }
   const words = text.replace(/[#*]/g, '').split(/\s+/).filter(Boolean).length;
 
   const radar = (size, big, editable) => {
@@ -244,9 +271,9 @@ export default function CounterDefaultsStudio() {
         const x = Math.round(cx + d.ux * lr), y = Math.round(cy + d.uy * lr + (d.uy < -0.5 ? -1 : 5));
         let anchor = 'middle'; if (d.ux > 0.25) anchor = 'start'; else if (d.ux < -0.25) anchor = 'end';
         kids.push(
-          <text key={'lb' + k} x={x} y={y} textAnchor={anchor} fontFamily={sm} fontSize={lsize} fontWeight="700" fill={INK}>
+          <text key={'lb' + k} x={x} y={y} textAnchor={anchor} fontFamily={sm} fontSize={vsize} fontWeight="400" fill={LABEL}>
             {CHANNELS[bi].short}
-            <tspan x={x} dy="14" fontSize={vsize} fontWeight="400" fill={CHANNELS[bi].color}>{CHANNELS[bi].labels[levels[bi]]}</tspan>
+            <tspan x={x} dy="16" fontSize={lsize} fontWeight="700" fill={TITLE_COLOR[CHANNELS[bi].name] || INK}>{CHANNELS[bi].labels[levels[bi]]}</tspan>
           </text>
         );
       });
@@ -361,26 +388,6 @@ export default function CounterDefaultsStudio() {
                   <span style={{ fontSize: 11, color: LABEL, letterSpacing: '0.1em' }}>{engaged}/{N_CH} counters set</span>
                   <button className={preReset ? 'cd-bright cd-hov' : 'cd-inv cd-hov'} onClick={preReset ? undoReset : onReset} aria-label={preReset ? 'Undo reset' : 'Reset everything and start over'} style={{ fontFamily: sm, fontSize: 10, color: INK, background: preReset ? '#68FF9E' : 'transparent', border: `1.5px solid ${INK}`, borderRadius: 999, padding: '6px 12px', cursor: 'pointer' }}>{preReset ? '↩ UNDO' : 'RESET'}</button>
                 </div>
-                <div style={{ position: 'relative' }}>
-                  <button className="cd-bright cd-hov" onClick={() => setLibOpen((v) => !v)} style={{ fontFamily: sm, fontSize: 11, fontWeight: 700, color: INK, background: '#68FF9E', border: `1.5px solid ${INK}`, borderRadius: 8, padding: '9px 15px', cursor: 'pointer' }}>
-                    ＋ ADD MORE DIMENSIONS · {loaded.length}/{N_CH} ▾
-                  </button>
-                  {libOpen && (
-                    <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, width: narrow ? 'min(330px, calc(100vw - 32px))' : 330, background: BG, border: `2px solid ${INK}`, borderRadius: 10, padding: 14, zIndex: 30, boxShadow: '0 10px 28px rgba(21,19,13,0.18)' }}>
-                      <div style={{ fontFamily: sm, fontSize: 9, letterSpacing: '0.12em', color: LABEL, marginBottom: 9 }}>CHANNEL LIBRARY — tap to load / unload</div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                        {CHANNELS.map((b, i) => {
-                          const on = loaded.indexOf(i) >= 0;
-                          return (
-                            <button key={b.key} onClick={() => toggleLoaded(i)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 5, padding: '5px 8px', color: on ? '#14130f' : '#9a948a', background: on ? b.color : 'transparent', border: on ? `1px solid ${b.color}` : '1px solid #3a372a' }}>
-                              <span style={{ width: 8, height: 8, borderRadius: 2, background: on ? '#15130d' : b.color }} />{b.short}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
 
               <div className="cd-scroll" style={{ flex: 1, overflowY: narrow ? 'visible' : 'auto', display: 'flex', flexDirection: 'column', gap: 6, minHeight: 0, paddingRight: narrow ? 0 : 4 }}>
@@ -390,10 +397,10 @@ export default function CounterDefaultsStudio() {
                     <div key={bi}>
                       {(() => {
                         const labelEl = (
-                          <div style={{ width: narrow ? 'auto' : 128, flex: narrow ? 1 : 'none', flexShrink: 0, minWidth: 0 }}>
+                          <button onClick={(e) => { e.stopPropagation(); setFocused(bi); setInfoOpen((p) => (p === bi ? null : bi)); }} aria-label={`${b.name} info`} style={{ width: narrow ? 'auto' : 128, flex: narrow ? 1 : 'none', flexShrink: 0, minWidth: 0, background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', padding: 0 }}>
                             <div style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: on ? INK : '#6a6452' }}>{b.short}</div>
                             <div style={{ fontSize: 8, color: LABEL, marginTop: 2 }}>{b.poles[0]} → {b.poles[1]}</div>
-                          </div>
+                          </button>
                         );
                         const trackEl = (
                           <div ref={(el) => { tracks.current[bi] = el; }}
@@ -414,7 +421,7 @@ export default function CounterDefaultsStudio() {
                             <div style={{ position: 'absolute', top: '50%', left: `calc(8px + (100% - 16px) * ${level / 3})`, transform: 'translate(-50%,-50%)', width: 15, height: 22, borderRadius: 4, background: INK, boxShadow: `0 1px 3px rgba(21,19,13,0.35), 0 0 0 2px ${b.color}`, cursor: 'grab' }} />
                           </div>
                         );
-                        const pillEl = <div style={{ width: narrow ? 'auto' : 96, minWidth: narrow ? 80 : 0, flexShrink: 0, textAlign: 'center', fontFamily: sm, fontSize: 9, borderRadius: 3, padding: '4px 8px', background: on ? b.color : TRACK, color: on ? INK : '#6a6452' }}>{b.labels[level]}</div>;
+                        const pillEl = <div style={{ width: narrow ? 'auto' : 96, minWidth: narrow ? 80 : 0, flexShrink: 0, textAlign: 'center', fontFamily: sm, fontSize: 9, borderRadius: 3, padding: '4px 8px', background: on ? b.color : TRACK, color: on ? idealText(b.color) : '#6a6452' }}>{b.labels[level]}</div>;
                         const infoEl = <button className="cd-inv cd-hov" onClick={(e) => { e.stopPropagation(); setInfoOpen((p) => (p === bi ? null : bi)); }} style={{ flexShrink: 0, width: 24, height: 24, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, fontStyle: 'italic', fontFamily: sm, fontSize: 12, cursor: 'pointer' }}>i</button>;
                         const card = { padding: narrow ? '11px 13px' : '10px 14px', borderRadius: 9, cursor: 'pointer', background: isFocus ? WHITE : WARM, border: isFocus ? `1.5px solid ${b.color}` : '1.5px solid rgba(21,19,13,0.5)' };
                         if (narrow) return (
@@ -462,56 +469,70 @@ export default function CounterDefaultsStudio() {
                   );
                 })}
 
-                {/* TEST: add-dimensions as a preview chip block (alongside the button above) */}
-                {loaded.length < N_CH && (
+                {/* Add more dimensions: unloaded channels + the optional "ban writing patterns" dimension, as preview chips */}
+                {(loaded.length < N_CH || !patternsLoaded) && (
                   <div style={{ marginTop: 8, border: '1.5px dashed rgba(21,19,13,0.5)', borderRadius: 9, padding: '12px 14px', background: WARM }}>
-                    <div style={{ fontFamily: sm, fontSize: 10, letterSpacing: '0.08em', color: LABEL, marginBottom: 9 }}>＋ ADD MORE DIMENSIONS · {N_CH - loaded.length} more · tap to add</div>
+                    <div style={{ fontFamily: sm, fontSize: 10, letterSpacing: '0.08em', color: LABEL, marginBottom: 9 }}>＋ ADD MORE DIMENSIONS · {(N_CH - loaded.length) + (patternsLoaded ? 0 : 1)} available · tap to add</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {CHANNELS.map((c, i) => (loaded.indexOf(i) >= 0 ? null : (
                         <button key={c.key} onClick={() => toggleLoaded(i)} title={c.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
                           <span style={{ width: 8, height: 8, borderRadius: 2, background: c.color, flexShrink: 0 }} />{c.short}
                         </button>
                       )))}
+                      {!patternsLoaded && (
+                        <button onClick={togglePatterns} title="Ban specific AI writing tics (em-dashes, filler, negative parallelism, etc.)" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
+                          <span style={{ width: 8, height: 8, borderRadius: 2, background: '#FF55CF', flexShrink: 0 }} />Ban writing patterns
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* Writing patterns (tropes) — binary bans, drive the output's Behavior Rules */}
-                <div style={{ marginTop: 8, border: '1.5px dashed rgba(21,19,13,0.5)', borderRadius: 9, padding: '12px 14px', background: WARM }}>
-                  <div style={{ fontFamily: sm, fontSize: 10, letterSpacing: '0.08em', color: LABEL, marginBottom: 9 }}>🚫 WRITING PATTERNS TO BAN{tropes.length > 0 ? ` · ${tropes.length} on` : ''}</div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {TROPES.map((tp) => {
-                      const on = tropes.includes(tp.id);
-                      return (
-                        <button key={tp.id} onClick={() => toggleTrope(tp.id)} title={tp.text} style={{ fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: on ? INK : DEEMPH, background: on ? '#F5FF6E' : 'transparent', border: on ? `1.5px solid ${INK}` : '1px solid rgba(21,19,13,0.35)' }}>
-                          {on ? '✕ ' : ''}{tp.label}
-                        </button>
-                      );
-                    })}
+                {/* "Ban writing patterns" dimension — only when chosen; solid border to match the dimension cards */}
+                {patternsLoaded && (
+                  <div style={{ marginTop: 8, border: `1.5px solid ${INK}`, borderRadius: 9, padding: '12px 14px', background: WARM }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 9, gap: 8 }}>
+                      <span style={{ fontFamily: sm, fontSize: 10, letterSpacing: '0.08em', color: INK }}>🚫 BAN WRITING PATTERNS{tropes.length > 0 ? ` · ${tropes.length} on` : ''}</span>
+                      <button className="cd-inv cd-hov" onClick={togglePatterns} aria-label="Remove the writing-patterns dimension" style={{ flexShrink: 0, width: 22, height: 22, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, fontFamily: sm, fontSize: 11, cursor: 'pointer', lineHeight: 1 }}>✕</button>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {TROPES.map((tp) => {
+                        const on = tropes.includes(tp.id);
+                        return (
+                          <button key={tp.id} onClick={() => toggleTrope(tp.id)} title={tp.text} style={{ fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: on ? INK : DEEMPH, background: on ? '#F5FF6E' : 'transparent', border: on ? `1.5px solid ${INK}` : '1px solid rgba(21,19,13,0.35)' }}>
+                            {on ? '✕ ' : ''}{tp.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 
             {/* RIGHT */}
             <div style={{ width: narrow ? '100%' : 320, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0 }}>
-              <div className="cd-hov" onClick={() => setCockpitOpen(true)} style={{ flex: 'none', cursor: 'pointer', background: WARM, border: `2px solid ${INK}`, borderRadius: 10, padding: '11px 12px 9px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontFamily: sm, fontSize: 9.5, letterSpacing: '0.12em', color: INK }}>◉ SIGNATURE</span>
-                  <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>⤢ {narrow ? 'VIEW SHAPE' : 'EDIT SHAPE'}</span>
+              <div className="cd-hov" onClick={() => setCockpitOpen(true)} style={{ flex: 'none', cursor: 'pointer', background: WARM, border: `2px solid ${INK}`, borderRadius: 10, padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ filter: 'drop-shadow(0 0 7px rgba(252,102,83,0.32))', flexShrink: 0 }}>{radar(104, false)}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontFamily: sm, fontSize: 9.5, letterSpacing: '0.12em', color: INK }}>◉ SIGNATURE</span>
+                    <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>⤢ {narrow ? 'VIEW' : 'EDIT'}</span>
+                  </div>
+                  <p style={{ fontSize: 10.5, lineHeight: 1.4, color: BODY, margin: '6px 0 0' }}>Each spoke is one default. The further out, the harder you counter it.</p>
+                  <p style={{ fontFamily: sm, fontSize: 8.5, color: LABEL, margin: '5px 0 0' }}>centre = LLM default · edge = your override</p>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 6, filter: 'drop-shadow(0 0 7px rgba(252,102,83,0.32))' }}>{radar(132, false)}</div>
               </div>
 
               <div style={{ flex: narrow ? 'none' : 1, display: 'flex', flexDirection: 'column', minHeight: 0, background: BG, border: `2px solid ${INK}`, borderRadius: 10, padding: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8, gap: 8, flexWrap: 'wrap' }}>
                   <span style={{ fontFamily: sm, fontSize: 11, letterSpacing: '0.1em', color: INK }}>YOUR INSTRUCTIONS</span>
-                  <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>~ {words} words · {text.length} characters{text.length > 1500 && <span style={{ color: CORAL, fontWeight: 700 }}> · long, may exceed some fields</span>}</span>
+                  <span style={{ fontFamily: sm, fontSize: 9, color: LABEL }}>~ {words} words · {text.length} characters{text.length > 1500 && <span style={{ color: '#c63a26', fontWeight: 700 }}> · long, may exceed some fields</span>}</span>
                 </div>
                 <div className="cd-scroll" tabIndex={0} role="group" aria-label="Generated instructions (read-only)" style={{ flex: narrow ? 'none' : 1, overflowY: 'auto', background: WARM, border: `1.5px solid ${INK}`, borderRadius: 7, padding: 13, fontFamily: sm, fontSize: 11, lineHeight: 1.55, minHeight: narrow ? 180 : 0, maxHeight: narrow ? '48vh' : 'none' }}>
                   {lines.map((l) => (
                     <div key={l.idx} style={{ color: l.color, whiteSpace: 'pre-wrap', fontStyle: l.italic ? 'italic' : 'normal' }}>
-                      {l.bold ? <><strong style={{ color: INK }}>{l.bold}</strong><span style={{ color: MONO }}>{l.content}</span></> : (l.content || ' ')}
+                      {l.bold ? <><strong style={{ color: TITLE_COLOR[l.bold.replace(/\.$/, '')] || INK }}>{l.bold}</strong><span style={{ color: MONO }}>{l.content}</span></> : (l.content || ' ')}
                     </div>
                   ))}
                   <span style={{ display: 'inline-block', width: 7, height: 13, background: INK, animation: 'cdblink 1s step-end infinite', verticalAlign: 'text-bottom' }} />
@@ -538,7 +559,7 @@ export default function CounterDefaultsStudio() {
                   <button onClick={() => setAddYouOpen((v) => !v)} style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
                 </div>
                 {pasteOpen && (
-                  <div style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6 }}>
+                  <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
                     <div><strong style={{ color: INK }}>Claude</strong> → <a href="https://claude.ai/settings/profile" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>claude.ai/settings/profile</a></div>
                     <div><strong style={{ color: INK }}>ChatGPT</strong> → Settings → Personalization → Custom instructions</div>
                     <div><strong style={{ color: INK }}>Gemini</strong> → <a href="https://gemini.google.com/saved-info" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>gemini.google.com/saved-info</a></div>
@@ -546,7 +567,7 @@ export default function CounterDefaultsStudio() {
                   </div>
                 )}
                 {addYouOpen && (
-                  <div style={{ marginTop: 8, background: 'rgba(165,166,246,0.28)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.55 }}>
+                  <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(165,166,246,0.28)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.55, maxHeight: narrow ? 'none' : '34vh', overflowY: 'auto', flexShrink: 0 }}>
                     <div style={{ marginBottom: 6 }}>The configurator can't guess these — add them after pasting:</div>
                     {[
                       { tag: 'about you', text: `your role, your field, and how much you already know.` },
