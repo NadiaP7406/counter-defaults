@@ -247,12 +247,12 @@ export default function CounterDefaultsStudio() {
   const engaged = levels.filter((v) => v > 0).length;
   const empty = engaged === 0 && tropes.length === 0;
   const sum = levels.reduce((a, v) => a + v, 0);
-  const lit = Math.min(15, Math.round(sum / 3));
+  const lit = Math.min(15, Math.ceil(sum / 2));
   let pushWord = 'dormant', pushColor = FAINT;
-  if (sum > 0 && sum <= 6) { pushWord = 'gentle'; pushColor = '#16793f'; }
-  else if (sum > 6 && sum <= 14) { pushWord = 'moderate'; pushColor = '#8a6800'; }
-  else if (sum > 14 && sum <= 26) { pushWord = 'firm'; pushColor = '#b8531a'; }
-  else if (sum > 26) { pushWord = 'aggressive'; pushColor = '#c63a26'; }
+  if (sum > 0 && sum <= 4) { pushWord = 'gentle'; pushColor = '#16793f'; }
+  else if (sum > 4 && sum <= 10) { pushWord = 'moderate'; pushColor = '#8a6800'; }
+  else if (sum > 10 && sum <= 18) { pushWord = 'firm'; pushColor = '#b8531a'; }
+  else if (sum > 18) { pushWord = 'aggressive'; pushColor = '#c63a26'; }
   const words = text.replace(/[#*]/g, '').split(/\s+/).filter(Boolean).length;
 
   const radar = (size, big, editable) => {
@@ -350,13 +350,13 @@ export default function CounterDefaultsStudio() {
               Your LLM ships with default behaviours. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
             </p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
-              <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('#F0C8C8')}>
+              <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('rgba(240,200,200,0.5)')}>
                 <span style={{ width: 7, height: 7, borderRadius: '50%', background: CORAL, display: 'inline-block' }} /> Why counter the defaults <span style={{ color: '#6a6452' }}>{whyOpen ? '–' : '+'}</span>
               </button>
-              <button className="cd-pill cd-hov" onClick={() => setHowOpen((v) => !v)} style={pillStyle('#F5FF6E')}>
+              <button className="cd-pill cd-hov" onClick={() => setHowOpen((v) => !v)} style={pillStyle('rgba(245,255,110,0.45)')}>
                 <span>▸</span> How this works <span style={{ color: '#6a6452' }}>{howOpen ? '–' : '+'}</span>
               </button>
-              <button className="cd-pill cd-hov" onClick={() => setPresetOpen((v) => !v)} style={pillStyle('#80F2FF')}>
+              <button className="cd-pill cd-hov" onClick={() => setPresetOpen((v) => !v)} style={pillStyle('rgba(128,242,255,0.45)')}>
                 <span>◆</span> Start from a preset <span style={{ color: '#6a6452' }}>{presetOpen ? '–' : '+'}</span>
               </button>
             </div>
@@ -519,7 +519,7 @@ export default function CounterDefaultsStudio() {
             {/* RIGHT */}
             <div style={{ width: narrow ? '100%' : 320, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0 }}>
               <div className="cd-hov" onClick={() => setCockpitOpen(true)} style={{ flex: 'none', cursor: 'pointer', background: WARM, border: `2px solid ${INK}`, borderRadius: 10, padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ filter: 'drop-shadow(0 0 7px rgba(252,102,83,0.32))', flexShrink: 0 }}>{radar(104, false)}</div>
+                <div style={{ filter: 'drop-shadow(0 0 5px rgba(252,102,83,0.18))', flexShrink: 0 }}>{radar(104, false)}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
                     <span style={{ fontFamily: sm, fontSize: 9.5, letterSpacing: '0.12em', color: INK }}>◉ SIGNATURE</span>
@@ -560,8 +560,8 @@ export default function CounterDefaultsStudio() {
                   <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onShare} disabled={empty} aria-label="Copy a shareable link to this mix" style={{ flexShrink: 0, background: linkCopied ? '#68FF9E' : 'transparent', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: '13px 14px', cursor: empty ? 'not-allowed' : 'pointer' }}>{linkCopied ? '✓ LINK' : 'SHARE'}</button>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
-                  <button onClick={() => setPasteOpen((v) => !v)} style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
-                  <button onClick={() => setAddYouOpen((v) => !v)} style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
+                  <button onClick={() => { setPasteOpen((v) => !v); setAddYouOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: pasteOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
+                  <button onClick={() => { setAddYouOpen((v) => !v); setPasteOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: addYouOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
                 </div>
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
