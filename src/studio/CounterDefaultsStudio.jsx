@@ -413,7 +413,7 @@ export default function CounterDefaultsStudio() {
                               else if (e.key === 'Home') { e.preventDefault(); setLevel(bi, 0); }
                               else if (e.key === 'End') { e.preventDefault(); setLevel(bi, 3); }
                             }}
-                            onPointerDown={(e) => { e.preventDefault(); e.currentTarget.focus(); setFocused(bi); drag.current = { kind: 'faderH', index: bi }; const r = e.currentTarget.getBoundingClientRect(); setLevel(bi, Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 3)); }}
+                            onPointerDown={(e) => { e.preventDefault(); e.currentTarget.focus(); setFocused(bi); setInfoOpen(bi); drag.current = { kind: 'faderH', index: bi }; const r = e.currentTarget.getBoundingClientRect(); setLevel(bi, Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 3)); }}
                             style={{ flex: narrow ? 'none' : 1, width: narrow ? '100%' : 'auto', position: 'relative', height: 30, borderRadius: 7, background: TRACK, border: `1.5px solid ${INK}`, cursor: 'grab', touchAction: 'none' }}>
                             <div style={{ position: 'absolute', left: 8, right: 8, top: '50%', transform: 'translateY(-50%)', height: 3, background: 'repeating-linear-gradient(90deg,#cabfa0 0 2px,transparent 2px 11px)' }} />
                             {[0, 1, 2, 3].map((t) => (<div key={t} style={{ position: 'absolute', top: '50%', left: `calc(8px + (100% - 16px) * ${t / 3})`, transform: 'translate(-50%,-50%)', width: 2, height: 14, background: '#b3a888' }} />))}
@@ -439,20 +439,14 @@ export default function CounterDefaultsStudio() {
 
                       {infoOpen === bi && (
                         <div style={{ background: BG, border: `2px solid ${b.color}`, borderRadius: 9, padding: '13px 15px', marginTop: 6 }}>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                            <span style={{ marginTop: 1, flexShrink: 0 }}>{b.emoji}</span>
-                            <div style={{ flex: 1 }}>
-                              <span style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: INK, marginRight: 8 }}>{b.name}</span>
-                              <span style={{ fontSize: 11.5, lineHeight: 1.45, color: BODY }}>{renderInline(b.why)}</span>
-                            </div>
-                            <button onClick={(e) => { e.stopPropagation(); setInfoOpen(null); }} style={{ fontFamily: sm, fontSize: 14, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
+                          {/* header: name + close */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 11 }}>
+                            <span style={{ flexShrink: 0 }}>{b.emoji}</span>
+                            <span style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: INK, flex: 1 }}>{b.name}</span>
+                            <button onClick={(e) => { e.stopPropagation(); setInfoOpen(null); }} aria-label="Close" style={{ fontFamily: sm, fontSize: 14, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
                           </div>
-                          {b.caveat && (
-                            <p style={{ fontSize: 10.5, fontStyle: 'italic', color: LABEL, margin: '8px 0 0', paddingLeft: 9, borderLeft: `2px solid ${b.color}`, lineHeight: 1.45 }}>
-                              <span style={{ fontFamily: sm, fontStyle: 'normal', fontSize: 9, letterSpacing: '0.5px', marginRight: 6 }}>NOTE</span>{b.caveat}
-                            </p>
-                          )}
-                          <div style={{ display: 'flex', flexWrap: narrow ? 'wrap' : 'nowrap', gap: 8, marginTop: 11 }}>
+                          {/* four level cells */}
+                          <div style={{ display: 'flex', flexWrap: narrow ? 'wrap' : 'nowrap', gap: 8 }}>
                             {[0, 1, 2, 3].map((idx) => {
                               const sel = idx === level;
                               return (
@@ -463,6 +457,16 @@ export default function CounterDefaultsStudio() {
                               );
                             })}
                           </div>
+                          {/* why, at the bottom */}
+                          <div style={{ display: 'flex', gap: 8, marginTop: 11 }}>
+                            <span style={{ fontFamily: sm, fontSize: 9, letterSpacing: '0.5px', color: LABEL, flexShrink: 0, marginTop: 2 }}>WHY</span>
+                            <span style={{ fontSize: 11.5, lineHeight: 1.45, color: BODY }}>{renderInline(b.why)}</span>
+                          </div>
+                          {b.caveat && (
+                            <p style={{ fontSize: 10.5, fontStyle: 'italic', color: LABEL, margin: '8px 0 0', paddingLeft: 9, borderLeft: `2px solid ${b.color}`, lineHeight: 1.45 }}>
+                              <span style={{ fontFamily: sm, fontStyle: 'normal', fontSize: 9, letterSpacing: '0.5px', marginRight: 6 }}>NOTE</span>{b.caveat}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
