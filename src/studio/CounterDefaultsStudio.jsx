@@ -342,8 +342,11 @@ export default function CounterDefaultsStudio() {
               <button onClick={() => setFromShared(false)} aria-label="Dismiss" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: INK, padding: '0 4px' }}>×</button>
             </div>
           )}
-          <div style={{ flex: 'none', marginBottom: 11 }}>
-            <p style={{ fontSize: 13, lineHeight: 1.5, color: BODY, maxWidth: 720, margin: 0 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: narrow ? 'column' : 'row', gap: 16, minHeight: 0 }}>
+            {/* LEFT */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+              <div style={{ flex: 'none', marginBottom: 11 }}>
+                <p style={{ fontSize: 13, lineHeight: 1.5, color: BODY, maxWidth: 720, margin: 0 }}>
               Your LLM ships with default behaviours. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
             </p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
@@ -382,11 +385,7 @@ export default function CounterDefaultsStudio() {
                 ))}
               </div>
             )}
-          </div>
-
-          <div style={{ flex: 1, display: 'flex', flexDirection: narrow ? 'column' : 'row', gap: 16, minHeight: 0 }}>
-            {/* LEFT */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+              </div>
               <div style={{ flex: 'none', marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 20, gap: 12, flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontFamily: sm }}>
                   <span style={{ fontSize: 11, color: LABEL, letterSpacing: '0.1em' }}>{engaged}/{N_CH} counters set</span>
@@ -443,9 +442,8 @@ export default function CounterDefaultsStudio() {
 
                       {infoOpen === bi && (
                         <div style={{ background: BG, border: `2px solid ${b.color}`, borderRadius: 9, padding: '13px 15px', marginTop: 6 }}>
-                          {/* header: name + close */}
+                          {/* header: name + close (emoji omitted; the fader label above already shows it) */}
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 11 }}>
-                            <span style={{ flexShrink: 0 }}>{b.emoji}</span>
                             <span style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: INK, flex: 1 }}>{b.name}</span>
                             <button onClick={(e) => { e.stopPropagation(); setInfoOpen(null); }} aria-label="Close" style={{ fontFamily: sm, fontSize: 14, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
                           </div>
