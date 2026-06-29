@@ -181,10 +181,11 @@ export default function CounterDefaultsStudio() {
     const g = cv.getContext('2d');
     g.fillStyle = BG; g.fillRect(0, 0, S, S);
     g.strokeStyle = INK; g.lineWidth = 4; g.strokeRect(22, 22, S - 44, S - 44);
-    g.fillStyle = INK; g.font = "64px 'Jersey 25', sans-serif"; g.fillText('LLM COUNTER-DEFAULTS', 60, 116);
-    g.fillStyle = LABEL; g.font = "20px 'Space Mono', monospace"; g.fillText('MY SIGNATURE · v1.0', 62, 148);
+    g.textAlign = 'center';
+    g.fillStyle = INK; g.font = "54px 'Jersey 25', sans-serif"; g.fillText('MY LLM COUNTER-DEFAULTS', S / 2, 122);
+    g.fillStyle = LABEL; g.font = "19px 'Space Mono', monospace"; g.fillText("the AI defaults I've overridden", S / 2, 156);
     const axes = loaded, N = axes.length;
-    const cx = S / 2, cy = S * 0.5, RR = S * 0.265, inner = 0.16;
+    const cx = S / 2, cy = 544, RR = 238, inner = 0.16;
     const dirs = axes.map((bi, k) => { const a = (-90 + 360 * k / (N || 1)) * Math.PI / 180; return { ux: Math.cos(a), uy: Math.sin(a) }; });
     const rad = (lv) => RR * (inner + (1 - inner) * lv / 3);
     const pt = (k, lv) => { const d = dirs[k]; const r = rad(lv); return [cx + d.ux * r, cy + d.uy * r]; };
@@ -194,19 +195,18 @@ export default function CounterDefaultsStudio() {
     g.beginPath(); axes.forEach((bi, k) => { const [px, py] = pt(k, levels[bi]); k ? g.lineTo(px, py) : g.moveTo(px, py); }); g.closePath();
     g.fillStyle = 'rgba(252,102,83,0.18)'; g.fill(); g.strokeStyle = CORAL; g.lineWidth = 4; g.stroke();
     axes.forEach((bi, k) => { const [px, py] = pt(k, levels[bi]); g.beginPath(); g.arc(px, py, 9, 0, Math.PI * 2); g.fillStyle = CHANNELS[bi].color; g.fill(); g.strokeStyle = INK; g.lineWidth = 2.5; g.stroke(); });
-    g.textAlign = 'center';
     dirs.forEach((d, k) => {
-      const bi = axes[k], lr = RR + 46, lx = cx + d.ux * lr, ly = cy + d.uy * lr;
-      g.fillStyle = INK; g.font = "700 22px 'Space Mono', monospace"; g.fillText(CHANNELS[bi].short, lx, ly);
+      const bi = axes[k], lr = RR + 42, lx = cx + d.ux * lr, ly = cy + d.uy * lr;
+      g.fillStyle = INK; g.font = "700 21px 'Space Mono', monospace"; g.fillText(CHANNELS[bi].short, lx, ly);
       // Trim the one playfully long label so it doesn't crowd the canvas edge.
       const capLabel = CHANNELS[bi].labels[levels[bi]].replace('Dare say "I don\'t know"', 'Says "I don\'t know"');
-      g.fillStyle = CHANNELS[bi].color; g.font = "18px 'Space Mono', monospace"; g.fillText(capLabel, lx, ly + 24);
+      g.fillStyle = CHANNELS[bi].color; g.font = "17px 'Space Mono', monospace"; g.fillText(capLabel, lx, ly + 23);
     });
-    g.textAlign = 'left';
-    g.fillStyle = INK; g.font = "22px 'Space Mono', monospace";
-    g.fillText('My LLM settings, tuned with LLM Counter-Defaults', 60, S - 92);
-    g.fillText('by AIxDESIGN', 60, S - 62);
-    g.fillStyle = COBALT; g.fillText('counterdefaults.netlify.app', 60, S - 32);
+    g.fillStyle = INK; g.font = "700 25px 'Space Mono', monospace";
+    g.fillText(`${engaged}/${N_CH} defaults countered · ${pushWord}`, S / 2, 906);
+    g.fillStyle = LABEL; g.font = "18px 'Space Mono', monospace"; g.fillText('set your own at', S / 2, 968);
+    g.fillStyle = COBALT; g.font = "24px 'Space Mono', monospace"; g.fillText('counterdefaults.netlify.app', S / 2, 1000);
+    g.fillStyle = LABEL; g.font = "16px 'Space Mono', monospace"; g.fillText('Counter-Defaults · by AIxDESIGN', S / 2, 1034);
     cv.toBlob((blob) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-llm-signature.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); });
   };
 
@@ -325,9 +325,9 @@ export default function CounterDefaultsStudio() {
 
       <div className="cdstudio" style={{ height: narrow ? 'auto' : '100vh', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: narrow ? 'visible' : 'hidden' }}>
         {/* HEADER */}
-        <div style={{ flex: 'none', height: 58, background: BG, borderBottom: `1.5px solid ${INK}`, padding: narrow ? '14px 16px' : '14px 26px', display: 'flex', alignItems: 'center', gap: 9, position: narrow ? 'sticky' : 'static', top: 0, zIndex: 40 }}>
-          <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#68FF9E', boxShadow: '0 0 7px #68FF9E', flexShrink: 0 }} />
-          <span style={{ fontFamily: "'Jersey 25','Darker Grotesque',sans-serif", fontSize: narrow ? 16 : 22, letterSpacing: '0.01em', color: INK, whiteSpace: 'nowrap' }}>LLM COUNTER-DEFAULTS</span>
+        <div style={{ flex: 'none', height: 42, background: BG, borderBottom: `1.5px solid ${INK}`, padding: narrow ? '0 16px' : '0 26px', display: 'flex', alignItems: 'center', gap: 8, position: narrow ? 'sticky' : 'static', top: 0, zIndex: 40 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#68FF9E', boxShadow: '0 0 6px #68FF9E', flexShrink: 0 }} />
+          <span style={{ fontFamily: "'Jersey 25','Darker Grotesque',sans-serif", fontSize: narrow ? 15 : 18, letterSpacing: '0.01em', color: INK, whiteSpace: 'nowrap' }}>LLM COUNTER-DEFAULTS</span>
           <span style={{ fontFamily: sm, fontSize: 10, color: LABEL, flexShrink: 0 }}>v1.0</span>
           <span style={{ flex: 1 }} />
           <span style={{ fontFamily: sm, fontSize: 10, color: LABEL, whiteSpace: 'nowrap' }}>● by AIxDESIGN</span>
