@@ -350,13 +350,13 @@ export default function CounterDefaultsStudio() {
               Your LLM ships with default behaviours. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
             </p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
-              <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('rgba(240,200,200,0.5)')}>
+              <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('#F0C8C8')}>
                 <span style={{ width: 7, height: 7, borderRadius: '50%', background: CORAL, display: 'inline-block' }} /> Why counter the defaults <span style={{ color: '#6a6452' }}>{whyOpen ? '–' : '+'}</span>
               </button>
-              <button className="cd-pill cd-hov" onClick={() => setHowOpen((v) => !v)} style={pillStyle('rgba(245,255,110,0.45)')}>
+              <button className="cd-pill cd-hov" onClick={() => setHowOpen((v) => !v)} style={pillStyle('#F5FF6E')}>
                 <span>▸</span> How this works <span style={{ color: '#6a6452' }}>{howOpen ? '–' : '+'}</span>
               </button>
-              <button className="cd-pill cd-hov" onClick={() => setPresetOpen((v) => !v)} style={pillStyle('rgba(128,242,255,0.45)')}>
+              <button className="cd-pill cd-hov" onClick={() => setPresetOpen((v) => !v)} style={pillStyle('#80F2FF')}>
                 <span>◆</span> Start from a preset <span style={{ color: '#6a6452' }}>{presetOpen ? '–' : '+'}</span>
               </button>
             </div>
