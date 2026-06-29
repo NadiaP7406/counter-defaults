@@ -415,7 +415,7 @@ export default function CounterDefaultsStudio() {
                               else if (e.key === 'Home') { e.preventDefault(); setLevel(bi, 0); }
                               else if (e.key === 'End') { e.preventDefault(); setLevel(bi, 3); }
                             }}
-                            onPointerDown={(e) => { e.preventDefault(); e.currentTarget.focus(); setFocused(bi); setInfoOpen(bi); drag.current = { kind: 'faderH', index: bi }; const r = e.currentTarget.getBoundingClientRect(); setLevel(bi, Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 3)); }}
+                            onPointerDown={(e) => { e.preventDefault(); e.currentTarget.focus({ preventScroll: true }); setFocused(bi); setInfoOpen(bi); drag.current = { kind: 'faderH', index: bi }; const r = e.currentTarget.getBoundingClientRect(); setLevel(bi, Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 3)); }}
                             style={{ flex: narrow ? 'none' : 1, width: narrow ? '100%' : 'auto', position: 'relative', height: 30, borderRadius: 7, background: TRACK, border: `1.5px solid ${INK}`, cursor: 'grab', touchAction: 'none' }}>
                             <div style={{ position: 'absolute', left: 8, right: 8, top: '50%', transform: 'translateY(-50%)', height: 3, background: 'repeating-linear-gradient(90deg,#cabfa0 0 2px,transparent 2px 11px)' }} />
                             {[0, 1, 2, 3].map((t) => (<div key={t} style={{ position: 'absolute', top: '50%', left: `calc(8px + (100% - 16px) * ${t / 3})`, transform: 'translate(-50%,-50%)', width: 2, height: 14, background: '#b3a888' }} />))}
@@ -457,7 +457,7 @@ export default function CounterDefaultsStudio() {
                             {[0, 1, 2, 3].map((idx) => {
                               const sel = idx === level;
                               return (
-                                <div key={idx} onClick={(e) => { e.stopPropagation(); setLevel(bi, idx); }} style={{ flex: narrow ? '1 1 calc(50% - 4px)' : 1, cursor: 'pointer', borderRadius: 7, padding: '8px 10px', border: sel ? `2px solid ${b.color}` : '1px solid rgba(21,19,13,0.2)', background: sel ? WHITE : 'transparent' }}>
+                                <div key={idx} onClick={(e) => { e.stopPropagation(); setLevel(bi, idx); }} style={{ flex: narrow ? '1 1 calc(50% - 4px)' : 1, cursor: 'pointer', borderRadius: 7, padding: '8px 10px', border: `2px solid ${sel ? b.color : 'rgba(21,19,13,0.15)'}`, background: sel ? WHITE : 'transparent' }}>
                                   <div style={{ fontFamily: sm, fontSize: 8, color: sel ? INK : FAINT }}>LV {idx} · {b.labels[idx]}{idx === 0 ? ' (default)' : ''}</div>
                                   <div style={{ fontSize: 10.5, marginTop: 3, color: sel ? INK : '#6a6452' }}>{b.descs[idx]}</div>
                                 </div>
@@ -505,7 +505,7 @@ export default function CounterDefaultsStudio() {
                       {TROPES.map((tp) => {
                         const on = tropes.includes(tp.id);
                         return (
-                          <button key={tp.id} onClick={() => toggleTrope(tp.id)} title={tp.text} style={{ fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: on ? INK : DEEMPH, background: on ? '#F5FF6E' : 'transparent', border: on ? `1.5px solid ${INK}` : '1px solid rgba(21,19,13,0.35)' }}>
+                          <button key={tp.id} onClick={() => toggleTrope(tp.id)} title={tp.text} style={{ fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: on ? INK : DEEMPH, background: on ? '#F5FF6E' : 'transparent', border: `1.5px solid ${on ? INK : 'rgba(21,19,13,0.35)'}` }}>
                             {on ? '✕ ' : ''}{tp.label}
                           </button>
                         );
