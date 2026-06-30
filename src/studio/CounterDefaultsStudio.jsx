@@ -265,9 +265,12 @@ export default function CounterDefaultsStudio() {
     const kids = [];
     [1, 2, 3].forEach((lv, i) => kids.push(<polygon key={'r' + i} points={axes.map((bi, k) => pt(k, lv).join(',')).join(' ')} fill="none" stroke={RLINE} strokeWidth="1" />));
     dirs.forEach((d, k) => { const [x, y] = pt(k, 3); kids.push(<line key={'l' + k} x1={cx} y1={cy} x2={x} y2={y} stroke={RLINE} strokeWidth="1" />); });
+    const allZero = sum === 0;
     const prof = axes.map((bi, k) => pt(k, levels[bi]).join(',')).join(' ');
-    if (N >= 3) kids.push(<polygon key="p" points={prof} fill="rgba(252,102,83,0.18)" stroke={CORAL} strokeWidth={big ? 2.5 : 2} strokeLinejoin="round" />);
-    else if (N > 0) kids.push(<polyline key="p" points={prof} fill="none" stroke={CORAL} strokeWidth={big ? 2.5 : 2} />);
+    if (!allZero) {
+      if (N >= 3) kids.push(<polygon key="p" points={prof} fill="rgba(252,102,83,0.18)" stroke={CORAL} strokeWidth={big ? 2.5 : 2} strokeLinejoin="round" />);
+      else if (N > 0) kids.push(<polyline key="p" points={prof} fill="none" stroke={CORAL} strokeWidth={big ? 2.5 : 2} />);
+    }
     if (big) {
       const lsize = N <= 8 ? 12 : 10.5, vsize = N <= 8 ? 9.5 : 8.5;
       dirs.forEach((d, k) => {
@@ -282,12 +285,19 @@ export default function CounterDefaultsStudio() {
         );
       });
     }
-    axes.forEach((bi, k) => {
-      const [x, y] = pt(k, levels[bi]);
-      kids.push(<circle key={'n' + k} cx={x} cy={y} r={big ? 8 : 3} fill={CHANNELS[bi].color} stroke={INK} strokeWidth={big ? 2 : 1}
-        style={big && editable ? { cursor: 'grab' } : undefined}
-        onPointerDown={big && editable ? (e) => { e.preventDefault(); drag.current = { kind: 'axis', index: bi }; } : undefined} />);
-    });
+    // Empty state: the small thumbnail shows a clean faint radar (just an origin
+    // dot) rather than a cluster of nodes piled at the centre, inviting the first
+    // drag. The big editable view keeps its nodes as drag handles.
+    if (allZero && !big) {
+      kids.push(<circle key="origin" cx={cx} cy={cy} r={2.5} fill={RLINE} />);
+    } else {
+      axes.forEach((bi, k) => {
+        const [x, y] = pt(k, levels[bi]);
+        kids.push(<circle key={'n' + k} cx={x} cy={y} r={big ? 8 : 3} fill={CHANNELS[bi].color} stroke={INK} strokeWidth={big ? 2 : 1}
+          style={big && editable ? { cursor: 'grab' } : undefined}
+          onPointerDown={big && editable ? (e) => { e.preventDefault(); drag.current = { kind: 'axis', index: bi }; } : undefined} />);
+      });
+    }
     if (big) return <svg ref={svgEl} viewBox="-44 0 548 500" style={{ width: '100%', maxWidth: '560px', height: 'auto', touchAction: 'none', display: 'block' }}>{kids}</svg>;
     return <svg viewBox={`0 0 ${size} ${size}`} style={{ width: size, height: size, overflow: 'visible', display: 'block' }}>{kids}</svg>;
   };
