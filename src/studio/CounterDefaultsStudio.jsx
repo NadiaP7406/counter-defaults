@@ -155,7 +155,7 @@ export default function CounterDefaultsStudio() {
     const lv = p.levels.slice();
     const ld = [...CORE];
     lv.forEach((v, i) => { if (v > 0 && ld.indexOf(i) < 0) ld.push(i); });
-    setLevels(lv); setTropes((p.tropes || []).slice()); setPatternsLoaded((p.tropes || []).length > 0); setLoaded(ld); setFocused(ld[0]); setPresetOpen(false);
+    setLevels(lv); setTropes((p.tropes || []).slice()); setPatternsLoaded((p.tropes || []).length > 0); setLoaded(ld); setFocused(ld[0]);
   };
 
   // Output text = OUR generateMarkdown over the current levels (byte-identical to
@@ -337,10 +337,13 @@ export default function CounterDefaultsStudio() {
         {/* HEADER */}
         <div style={{ flex: 'none', height: 42, background: BG, borderBottom: `1.5px solid ${INK}`, padding: narrow ? '0 16px' : '0 26px', display: 'flex', alignItems: 'center', gap: 8, position: narrow ? 'sticky' : 'static', top: 0, zIndex: 40 }}>
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#68FF9E', boxShadow: '0 0 6px #68FF9E', flexShrink: 0 }} />
-          <span style={{ fontFamily: "'Jersey 25','Darker Grotesque',sans-serif", fontSize: narrow ? 15 : 18, letterSpacing: '0.01em', color: INK, whiteSpace: 'nowrap' }}>LLM COUNTER-DEFAULTS</span>
+          <span style={{ fontFamily: "'Jersey 25','Darker Grotesque',sans-serif", fontSize: narrow ? 18 : 22, letterSpacing: '0.01em', color: INK, whiteSpace: 'nowrap' }}>LLM COUNTER-DEFAULTS</span>
           <span style={{ fontFamily: sm, fontSize: 10, color: LABEL, flexShrink: 0 }}>v1.0</span>
           <span style={{ flex: 1 }} />
-          <span style={{ fontFamily: sm, fontSize: 10, color: LABEL, whiteSpace: 'nowrap' }}>● by AIxDESIGN</span>
+          <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" aria-label="AIxDESIGN, opens in a new tab" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, textDecoration: 'none', flexShrink: 0 }}>
+            <span style={{ fontFamily: sm, fontSize: 10, color: LABEL }}>by</span>
+            <img src="/aixdesign-logo.png" alt="AIxDESIGN" style={{ height: narrow ? 13 : 15, width: 'auto', display: 'block' }} />
+          </a>
         </div>
 
         {/* STAGE */}
