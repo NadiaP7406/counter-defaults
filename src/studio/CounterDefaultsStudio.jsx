@@ -111,6 +111,7 @@ export default function CounterDefaultsStudio() {
   const curAxes = useRef([]);
   const curDirs = useRef([]);
   const copyT = useRef(null);
+  const infoAutoShown = useRef(false); // auto-open the info card only on the very first fader move
 
   // Any manual edit means you're no longer just viewing a shared link.
   const touched = () => setFromShared(false);
@@ -159,7 +160,7 @@ export default function CounterDefaultsStudio() {
   };
 
   // Output text = OUR generateMarkdown over the current levels (byte-identical to
-  // the live tool: same headings, vetted pref sentences, behavior rules, attribution).
+  // the live tool: same headings, vetted pref sentences, writing rules, attribution).
   const text = useMemo(() => generateMarkdown(levelsToState(levels, tropes)), [levels, tropes]);
   const onCopy = () => {
     try { navigator.clipboard && navigator.clipboard.writeText(text); } catch (e) { /* ignore */ }
@@ -429,7 +430,7 @@ export default function CounterDefaultsStudio() {
                               else if (e.key === 'Home') { e.preventDefault(); setLevel(bi, 0); }
                               else if (e.key === 'End') { e.preventDefault(); setLevel(bi, 3); }
                             }}
-                            onPointerDown={(e) => { e.preventDefault(); e.currentTarget.focus({ preventScroll: true }); setFocused(bi); setInfoOpen(bi); drag.current = { kind: 'faderH', index: bi }; const r = e.currentTarget.getBoundingClientRect(); setLevel(bi, Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 3)); }}
+                            onPointerDown={(e) => { e.preventDefault(); e.currentTarget.focus({ preventScroll: true }); setFocused(bi); if (!infoAutoShown.current) { infoAutoShown.current = true; setInfoOpen(bi); } drag.current = { kind: 'faderH', index: bi }; const r = e.currentTarget.getBoundingClientRect(); setLevel(bi, Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 3)); }}
                             style={{ flex: narrow ? 'none' : 1, width: narrow ? '100%' : 'auto', position: 'relative', height: 30, borderRadius: 7, background: TRACK, border: `1.5px solid ${INK}`, cursor: 'grab', touchAction: 'none' }}>
                             <div style={{ position: 'absolute', left: 8, right: 8, top: '50%', transform: 'translateY(-50%)', height: 3, background: 'repeating-linear-gradient(90deg,#cabfa0 0 2px,transparent 2px 11px)' }} />
                             {[0, 1, 2, 3].map((t) => (<div key={t} style={{ position: 'absolute', top: '50%', left: `calc(8px + (100% - 16px) * ${t / 3})`, transform: 'translate(-50%,-50%)', width: 2, height: 14, background: '#b3a888' }} />))}

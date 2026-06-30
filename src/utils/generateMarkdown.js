@@ -20,7 +20,7 @@ export function generateMarkdown(state) {
     });
   }
   if (state.tropes.length > 0) {
-    lines.push('## Behavior Rules');
+    lines.push('## Writing Rules');
     lines.push('');
     state.tropes.forEach((tropeId) => {
       const trope = TROPES.find((t) => t.id === tropeId);
