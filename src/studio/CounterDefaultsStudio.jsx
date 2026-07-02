@@ -383,7 +383,19 @@ export default function CounterDefaultsStudio() {
                     <p style={{ margin: '0 0 6px' }}><strong>Cognitive surrender.</strong> Shaw &amp; Nave (Wharton, 2026); Lee et al. (Microsoft Research, CHI '25, n=319): higher confidence in AI correlates with lower critical-thinking effort.</p>
                     <p style={{ margin: '0 0 6px' }}><strong>Sycophancy.</strong> Sharma, Tong, Korbak et al. (Anthropic, ICLR 2024); Fanous et al. (Stanford, SycEval 2025): 58% sycophancy baseline across major models.</p>
                     <p style={{ margin: '0 0 6px' }}><strong>Homogeneity.</strong> Wenger &amp; Kenett (Duke, PNAS Nexus 2026): LLM outputs cluster tightly, narrowing the variety of thinking in circulation.</p>
-                    <p style={{ margin: 0 }}><strong>Preference writing.</strong> Waddell (Medium, 2025): behavioural specs (do X, not Y) beat abstract requests, the pattern this tool's output follows.</p>
+                    <p style={{ margin: '0 0 6px' }}><strong>Preference writing.</strong> Waddell (Medium, 2025): behavioural specs (do X, not Y) beat abstract requests, the pattern this tool's output follows.</p>
+                    <div style={{ fontFamily: sm, fontSize: 9, letterSpacing: '0.08em', color: LABEL, margin: '2px 0 5px' }}>FURTHER READING</div>
+                    <ul style={{ margin: 0, paddingLeft: 16, fontSize: 10.5, lineHeight: 1.65, color: BODY }}>
+                      <li><a href="https://maggieappleton.com/ai-enlightenment" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Appleton, A Treatise on AI Chatbots Undermining the Enlightenment</a> (2025)</li>
+                      <li><a href="https://dl.acm.org/doi/10.1145/3442188.3445922" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Bender et al., Stochastic Parrots</a> (FAccT 2021)</li>
+                      <li>Escobar, <em>Designs for the Pluriverse</em> (Duke, 2018)</li>
+                      <li><a href="https://en.wikipedia.org/wiki/Tools_for_Conviviality" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Illich, Tools for Conviviality</a> (1973)</li>
+                      <li><a href="https://link.springer.com/article/10.1007/s13347-020-00405-8" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Mohamed, Png, Isaac, Decolonial AI</a> (2020)</li>
+                      <li><a href="https://aclanthology.org/2025.findings-acl.1125/" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Poddar et al., Brevity is the soul of sustainability</a> (Findings of ACL 2025)</li>
+                      <li><a href="https://arxiv.org/abs/2310.13548" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Sharma et al., Sycophancy</a> (Anthropic, ICLR 2024)</li>
+                      <li>Shaw &amp; Nave, <em>Thinking, Fast, Slow, and Artificial</em> (Wharton, 2026)</li>
+                      <li><a href="https://arxiv.org/abs/2502.10844" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Sun et al., Be Friendly Not Friends</a> (CHI 2026)</li>
+                    </ul>
                   </div>
                 )}
               </ExplainerCard>
