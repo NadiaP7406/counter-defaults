@@ -2,7 +2,7 @@
 
 Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Built by [AIxDESIGN](https://aixdesign.co).
 
-13 dimensions across 5 sections (Thinking, Perspective, Relating, Boundaries, Writing). Each slider starts where the LLM already is; drag right to swap that default for yours. Only moved sliders appear in the generated Markdown.
+14 behaviors to counter, from how hard the model pushes back to how much it discloses uncertainty or protects your writing voice. Six load to start; add the rest as you go, plus a "Ban writing patterns" set. Each fader starts where the LLM already is; push it to swap that default for yours. Only the faders you move appear in the generated instructions.
 
 ## Run it
 
@@ -12,15 +12,15 @@ npm run dev      # local dev server
 npm run build    # production build to dist/
 ```
 
-No backend, no auth, no analytics, no tracking. State lives in localStorage and in the URL hash, so any configuration is shareable as a link (for example `#s=3322233021312&t=emdash.fillers`).
+No backend, no auth, no analytics, no tracking. State lives in localStorage and in the URL hash, so any configuration is shareable as a link (for example `#s=33222330213120&t=emdash.fillers`).
 
 ## Structure
 
 ```
 src/
-  data/         dimensions, sections, tropes, presets (the content)
-  components/   CounterDefaults.jsx (the whole UI)
-  hooks/        usePersistedState (localStorage + URL hash sync)
+  studio/       CounterDefaultsStudio.jsx + studioData (the live mixing-desk UI)
+  data/         dimensions, tropes, presets (the content)
+  components/   CounterDefaults.jsx (earlier slider version, kept for reference)
   utils/        generateMarkdown, urlState, color constants
   styles/       fonts.css (self-hosted), index.css (reset + utilities)
 public/fonts/   self-hosted font files

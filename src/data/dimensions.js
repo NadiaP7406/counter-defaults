@@ -1,4 +1,4 @@
-// The 13 dimensions. Extracted from counter_defaults.jsx at handoff.
+// The 14 dimensions. Extracted from counter_defaults.jsx at handoff.
 // `why` texts are written for humans (default behavior first, citation as support,
 // ending with what the slider does). `pref` texts are written for the LLM that
 // reads them: imperative directives, no hedging, concrete contrast pairs, hard
