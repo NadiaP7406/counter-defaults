@@ -1,6 +1,6 @@
-# Counter-Defaults
+# LLM Counter-Defaults
 
-Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Built by [AIxDESIGN](https://aixdesign.co).
+Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. LLM Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Built by [AIxDESIGN](https://aixdesign.co).
 
 14 behaviors to counter, from how hard the model pushes back to how much it discloses uncertainty or protects your writing voice. Six load to start; add the rest as you go, plus a "Ban writing patterns" set. Each fader starts where the LLM already is; push it to swap that default for yours. Only the faders you move appear in the generated instructions.
 
