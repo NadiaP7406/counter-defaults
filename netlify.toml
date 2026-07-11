@@ -5,6 +5,10 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Serverless functions (guestbook -> Notion). Reachable at /.netlify/functions/<name>
+[functions]
+  directory = "netlify/functions"
+
 # Long cache for fonts (filenames are stable, content never changes)
 [[headers]]
   for = "/fonts/*"

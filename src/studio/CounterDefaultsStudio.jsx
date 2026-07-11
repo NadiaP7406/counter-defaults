@@ -91,6 +91,11 @@ export default function CounterDefaultsStudio() {
   const [addYouOpen, setAddYouOpen] = useState(false);
   const [cockpitOpen, setCockpitOpen] = useState(false);
   const [presetOpen, setPresetOpen] = useState(false);
+  const [guestOpen, setGuestOpen] = useState(false);
+  const [guestName, setGuestName] = useState('');
+  const [guestMsg, setGuestMsg] = useState('');
+  const [guestHp, setGuestHp] = useState(''); // honeypot, must stay empty
+  const [guestState, setGuestState] = useState('idle'); // idle | sending | ok | err
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [preReset, setPreReset] = useState(null);
@@ -173,6 +178,23 @@ export default function CounterDefaultsStudio() {
     setLinkCopied(true);
     clearTimeout(linkT.current);
     linkT.current = setTimeout(() => setLinkCopied(false), 1800);
+  };
+  const submitGuestbook = async () => {
+    if (guestState === 'sending') return;
+    if (!guestMsg.trim()) { setGuestState('empty'); return; }
+    setGuestState('sending');
+    try {
+      const res = await fetch('/.netlify/functions/guestbook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: guestName, message: guestMsg, website: guestHp }),
+      });
+      if (!res.ok) throw new Error('bad status');
+      setGuestState('ok');
+      setGuestName(''); setGuestMsg('');
+    } catch (e) {
+      setGuestState('failed');
+    }
   };
 
   // Render the signature radar + caption to a downloadable PNG.
@@ -588,6 +610,7 @@ export default function CounterDefaultsStudio() {
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
                   <button onClick={() => { setPasteOpen((v) => !v); setAddYouOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: pasteOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
                   <button onClick={() => { setAddYouOpen((v) => !v); setPasteOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: addYouOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
+                  <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>✍ Guestbook</button>
                 </div>
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
@@ -616,6 +639,38 @@ export default function CounterDefaultsStudio() {
               </div>
             </div>
           </div>
+
+          {guestOpen && (
+            <div onClick={() => setGuestOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 65, background: 'rgba(20,19,13,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: narrow ? 12 : 30 }}>
+              <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 460, width: '100%', background: WARM, border: `2px solid ${INK}`, borderRadius: 16, padding: '20px 22px 22px', boxShadow: '0 24px 70px rgba(0,0,0,0.6)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12, gap: 10 }}>
+                  <div>
+                    <div style={{ fontFamily: sm, fontSize: 11, letterSpacing: '0.08em', color: INK }}>✍ GUESTBOOK</div>
+                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>Leave feedback or a thought. It goes straight to us at AIxDESIGN.</div>
+                  </div>
+                  <button onClick={() => setGuestOpen(false)} className="cd-hov" aria-label="Close" style={{ width: 30, height: 30, flexShrink: 0, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, cursor: 'pointer' }}>✕</button>
+                </div>
+                {guestState === 'ok' ? (
+                  <div style={{ padding: '16px 4px 6px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 30, marginBottom: 6 }}>🪞</div>
+                    <div style={{ fontSize: 14, color: INK, fontWeight: 700 }}>Thank you.</div>
+                    <div style={{ fontSize: 12, color: LABEL, marginTop: 4 }}>We read every one.</div>
+                    <button onClick={() => setGuestOpen(false)} className="cd-bright cd-hov" style={{ marginTop: 16, fontFamily: sm, fontSize: 12, fontWeight: 700, color: INK, background: '#68FF9E', border: `2px solid ${INK}`, borderRadius: 8, padding: '9px 20px', cursor: 'pointer' }}>Done</button>
+                  </div>
+                ) : (
+                  <>
+                    <input value={guestName} onChange={(e) => setGuestName(e.target.value)} placeholder="Name (optional)" maxLength={80} style={{ width: '100%', boxSizing: 'border-box', fontFamily: sm, fontSize: 12, color: INK, background: BG, border: `1.5px solid ${INK}`, borderRadius: 8, padding: '9px 11px', marginBottom: 8 }} />
+                    <textarea value={guestMsg} onChange={(e) => { setGuestMsg(e.target.value); if (guestState === 'empty' || guestState === 'failed') setGuestState('idle'); }} placeholder="Your feedback or thoughts…" maxLength={2000} rows={4} style={{ width: '100%', boxSizing: 'border-box', fontFamily: sm, fontSize: 12, color: INK, background: BG, border: `1.5px solid ${INK}`, borderRadius: 8, padding: '9px 11px', resize: 'vertical', lineHeight: 1.5 }} />
+                    <input value={guestHp} onChange={(e) => setGuestHp(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }} />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10, gap: 10 }}>
+                      <span style={{ fontFamily: sm, fontSize: 9.5, color: (guestState === 'empty' || guestState === 'failed') ? '#c63a26' : LABEL }}>{guestState === 'empty' ? 'Add a message first.' : guestState === 'failed' ? "Couldn't send, please try again." : `${guestMsg.length}/2000`}</span>
+                      <button onClick={submitGuestbook} disabled={guestState === 'sending'} className="cd-bright cd-hov" style={{ fontFamily: sm, fontSize: 12, fontWeight: 700, color: INK, background: '#68FF9E', border: `2px solid ${INK}`, borderRadius: 8, padding: '9px 22px', cursor: guestState === 'sending' ? 'wait' : 'pointer' }}>{guestState === 'sending' ? 'Sending…' : 'Send'}</button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {cockpitOpen && (
             <div onClick={() => setCockpitOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 60, background: 'rgba(20,19,13,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: narrow ? 12 : 30 }}>
