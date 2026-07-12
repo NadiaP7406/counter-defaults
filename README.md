@@ -12,7 +12,7 @@ npm run dev      # local dev server
 npm run build    # production build to dist/
 ```
 
-No accounts and no personal tracking. Your configuration lives in localStorage and the URL hash, so any setup is shareable as a link (for example `#s=33222330213120&t=emdash.fillers`). Two small serverless touches: a guestbook form that posts feedback to a Notion database (`netlify/functions/`), and cookieless, aggregate-only analytics via Plausible.
+No accounts and no personal tracking. Your configuration lives in localStorage and the URL hash, so any setup is shareable as a link (for example `#s=33222330213120&t=emdash.fillers`). Two small serverless touches: a guestbook form that posts feedback to a Notion database (`netlify/functions/`), and cookieless, aggregate-only analytics via GoatCounter (free, open-source).
 
 ## Structure
 
