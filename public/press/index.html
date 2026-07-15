@@ -37,6 +37,9 @@
     .kicker{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--label); }
     a{ color:var(--cobalt); text-decoration:none; }
     a:hover{ text-decoration:underline; }
+    /* name links: match surrounding text, stay clearly clickable */
+    a.nl{ color:inherit; text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px; }
+    a.nl:hover{ opacity:.65; }
 
     .btn{ display:inline-flex; align-items:center; gap:7px; font-family:'Space Mono',monospace; font-weight:700; font-size:13px; padding:11px 18px; border:2px solid var(--ink); border-radius:8px; background:var(--paper); color:var(--ink); cursor:pointer; transition:transform .08s ease; }
     .btn:hover{ text-decoration:none; transform:translatey(-1px); }
@@ -115,7 +118,7 @@
         <span class="chip">Your setup stays in your browser</span>
         <span class="chip y">14 dimensions, six to start</span>
         <span class="chip l">Works with Claude, ChatGPT, Gemini, or any cloud, open-source, or local LLM that has a settings field</span>
-        <span class="chip p">Built by Nadia Piet (AIxDESIGN)</span>
+        <span class="chip p">Built by <a class="nl" href="https://nadiapiet.com" target="_blank" rel="noopener">Nadia Piet</a> (<a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a>)</span>
       </div>
     </section>
 
@@ -164,9 +167,9 @@
       <h2>Quotes you can use</h2>
       <p class="note">Draft lines in Nadia's voice. Edit or attribute as you like before running them.</p>
       <div style="margin-top:18px">
-        <div class="quote">"The defaults are one company's guess at what everyone wants at once. This just lets you overrule the guess."<div class="who">Nadia Piet, AIxDESIGN</div></div>
-        <div class="quote">"It is not an off switch for your LLM. It is a way to keep your judgment, your voice, and your attention yours while still using the thing."<div class="who">Nadia Piet, AIxDESIGN</div></div>
-        <div class="quote">"People kept telling us the model agrees too much or writes over their voice. So we made the fourteen defaults visible and gave you a fader for each."<div class="who">Nadia Piet, AIxDESIGN</div></div>
+        <div class="quote">"The defaults are one company's guess at what everyone wants at once. This just lets you overrule the guess."<div class="who"><a class="nl" href="https://nadiapiet.com" target="_blank" rel="noopener">Nadia Piet</a>, <a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a></div></div>
+        <div class="quote">"It is not an off switch for your LLM. It is a way to keep your judgment, your voice, and your attention yours while still using the thing."<div class="who"><a class="nl" href="https://nadiapiet.com" target="_blank" rel="noopener">Nadia Piet</a>, <a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a></div></div>
+        <div class="quote">"People kept telling us the model agrees too much or writes over their voice. So we made the fourteen defaults visible and gave you a fader for each."<div class="who"><a class="nl" href="https://nadiapiet.com" target="_blank" rel="noopener">Nadia Piet</a>, <a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a></div></div>
       </div>
     </section>
 
@@ -175,11 +178,11 @@
       <div class="grid-cards">
         <div>
           <h3>About the tool</h3>
-          <p style="font-size:15px">LLM Counter-Defaults is a free, no-account web tool that generates the custom instructions to override an LLM's default behaviors. It exposes fourteen behavioral defaults as faders, writes your choices into a paste-ready instructions block, and works with any assistant that has a custom-instructions field, cloud or local. Built by Nadia Piet (AIxDESIGN).</p>
+          <p style="font-size:15px">LLM Counter-Defaults is a free, no-account web tool that generates the custom instructions to override an LLM's default behaviors. It exposes fourteen behavioral defaults as faders, writes your choices into a paste-ready instructions block, and works with any assistant that has a custom-instructions field, cloud or local. Built by <a class="nl" href="https://nadiapiet.com" target="_blank" rel="noopener">Nadia Piet</a> (<a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a>).</p>
         </div>
         <div>
           <h3>About AIxDESIGN</h3>
-          <p style="font-size:15px">AIxDESIGN is a non-profit community organization making AI work for the rest of us. We bring people together, like designers, artists, technologists, and researchers, to challenge dominant AI narratives, research alternatives, and make them real. We work in the open and teach what we've learned to build our shared critical AI literacy, because it'll take many hands to make the worlds we deserve. Founded 2019, 8,000+ members across 63 countries. <a href="https://aixdesign.co" target="_blank" rel="noopener">aixdesign.co</a></p>
+          <p style="font-size:15px"><a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a> is a non-profit community organization making AI work for the rest of us. We bring people together, like designers, artists, technologists, and researchers, to challenge dominant AI narratives, research alternatives, and make them real. We work in the open and teach what we've learned to build our shared critical AI literacy, because it'll take many hands to make the worlds we deserve. Founded 2019, 8,000+ members across 63 countries. <a href="https://aixdesign.co" target="_blank" rel="noopener">aixdesign.co</a></p>
         </div>
       </div>
     </section>
@@ -218,18 +221,18 @@
         <a href="mobile.png" download>mobile.png</a>
         <a href="/og.png" download>social-card.png</a>
       </div>
-      <p class="note">Screenshots are 2x retina PNGs. Video is silent H.264 MP4, 1280x800. Everything here is cleared for editorial use with credit to AIxDESIGN.</p>
+      <p class="note">Screenshots are 2x retina PNGs. Video is silent H.264 MP4, 1280x800. Everything here is cleared for editorial use with credit to <a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a>.</p>
     </section>
 
     <section>
       <h2>Contact</h2>
-      <p>Nadia Piet, AIxDESIGN. Email <a href="mailto:hello@aixdesign.co">hello@aixdesign.co</a> or find us at <a href="https://aixdesign.co" target="_blank" rel="noopener">aixdesign.co</a>. Tool: <a href="https://counterdefaults.aixdesign.co">counterdefaults.aixdesign.co</a>.</p>
+      <p><a class="nl" href="https://nadiapiet.com" target="_blank" rel="noopener">Nadia Piet</a>, <a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a>. Email <a href="mailto:hello@aixdesign.co">hello@aixdesign.co</a> or find us at <a href="https://aixdesign.co" target="_blank" rel="noopener">aixdesign.co</a>. Tool: <a href="https://counterdefaults.aixdesign.co">counterdefaults.aixdesign.co</a>.</p>
     </section>
 
   </main>
 
   <footer>
-    <div class="wrap">LLM Counter-Defaults · by AIxDESIGN · counterdefaults.aixdesign.co</div>
+    <div class="wrap">LLM Counter-Defaults · by <a class="nl" href="https://aixdesign.co" target="_blank" rel="noopener">AIxDESIGN</a> · counterdefaults.aixdesign.co</div>
   </footer>
 </body>
 </html>
