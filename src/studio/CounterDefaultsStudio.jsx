@@ -228,7 +228,7 @@ export default function CounterDefaultsStudio() {
     g.fillStyle = INK; g.font = "700 25px 'Space Mono', monospace";
     g.fillText(`${engaged}/${N_CH} defaults countered · ${pushWord}`, S / 2, 906);
     g.fillStyle = LABEL; g.font = "18px 'Space Mono', monospace"; g.fillText('set your own at', S / 2, 968);
-    g.fillStyle = COBALT; g.font = "24px 'Space Mono', monospace"; g.fillText('counterdefaults.netlify.app', S / 2, 1000);
+    g.fillStyle = COBALT; g.font = "24px 'Space Mono', monospace"; g.fillText('counterdefaults.aixdesign.co', S / 2, 1000);
     g.fillStyle = LABEL; g.font = "16px 'Space Mono', monospace"; g.fillText('LLM Counter-Defaults · by AIxDESIGN', S / 2, 1034);
     cv.toBlob((blob) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-llm-signature.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); });
   };

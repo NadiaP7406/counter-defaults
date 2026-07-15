@@ -31,6 +31,6 @@ export function generateMarkdown(state) {
   // Attribution as a trailing HTML comment: keeps the AIxDESIGN credit and URL
   // with every shared config, but reads as metadata so the LLM doesn't treat it
   // as an instruction. Human-facing "edit freely" guidance lives in the UI.
-  lines.push('<!-- Generated with LLM Counter-Defaults by AIxDESIGN · counterdefaults.netlify.app -->');
+  lines.push('<!-- Generated with LLM Counter-Defaults by AIxDESIGN · counterdefaults.aixdesign.co -->');
   return lines.join('\n');
 }
