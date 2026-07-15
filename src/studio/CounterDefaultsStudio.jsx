@@ -383,7 +383,7 @@ export default function CounterDefaultsStudio() {
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ flex: 'none', marginBottom: 11 }}>
                 <p style={{ fontSize: 13, lineHeight: 1.5, color: BODY, maxWidth: 720, margin: 0 }}>
-              Your LLM ships with default behaviours. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
+              Your LLM ships with default behaviors. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
             </p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('#F0C8C8')}>
@@ -405,7 +405,7 @@ export default function CounterDefaultsStudio() {
                     <p style={{ margin: '0 0 6px' }}><strong>Cognitive surrender.</strong> Shaw &amp; Nave (Wharton, 2026); Lee et al. (Microsoft Research, CHI '25, n=319): higher confidence in AI correlates with lower critical-thinking effort.</p>
                     <p style={{ margin: '0 0 6px' }}><strong>Sycophancy.</strong> Sharma, Tong, Korbak et al. (Anthropic, ICLR 2024); Fanous et al. (Stanford, SycEval 2025): 58% sycophancy baseline across major models.</p>
                     <p style={{ margin: '0 0 6px' }}><strong>Homogeneity.</strong> Wenger &amp; Kenett (Duke, PNAS Nexus 2026): LLM outputs cluster tightly, narrowing the variety of thinking in circulation.</p>
-                    <p style={{ margin: '0 0 6px' }}><strong>Preference writing.</strong> Waddell (Medium, 2025): behavioural specs (do X, not Y) beat abstract requests, the pattern this tool's output follows.</p>
+                    <p style={{ margin: '0 0 6px' }}><strong>Preference writing.</strong> Waddell (Medium, 2025): behavioral specs (do X, not Y) beat abstract requests, the pattern this tool's output follows.</p>
                     <div style={{ fontFamily: sm, fontSize: 9, letterSpacing: '0.08em', color: LABEL, margin: '2px 0 5px' }}>FURTHER READING</div>
                     <ul style={{ margin: 0, paddingLeft: 16, fontSize: 10.5, lineHeight: 1.65, color: BODY }}>
                       <li><a href="https://maggieappleton.com/ai-enlightenment" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>Appleton, A Treatise on AI Chatbots Undermining the Enlightenment</a> (2025)</li>
@@ -678,13 +678,13 @@ export default function CounterDefaultsStudio() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
                   <div>
                     <div style={{ fontFamily: sm, fontSize: 11, color: INK }}>◉ SIGNATURE{narrow ? '' : ' · EDIT MODE'}</div>
-                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>{narrow ? 'Each spoke is one dimension. The centre is the LLM’s default; the edge is your full counter. Open on a desktop to drag the shape; here, tune with the faders above.' : 'Each spoke is one dimension. The centre is the LLM’s default; drag a node outward to push your counter further.'}</div>
+                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>{narrow ? 'Each spoke is one dimension. The center is the LLM’s default; the edge is your full counter. Open on a desktop to drag the shape; here, tune with the faders above.' : 'Each spoke is one dimension. The center is the LLM’s default; drag a node outward to push your counter further.'}</div>
                   </div>
                   <button onClick={() => setCockpitOpen(false)} className="cd-hov" style={{ width: 30, height: 30, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, cursor: 'pointer' }}>✕</button>
                 </div>
                 {radar(0, true, !narrow)}
                 <div style={{ display: 'flex', gap: 18, justifyContent: 'center', margin: '6px 0 14px', fontFamily: sm, fontSize: 9.5, color: LABEL }}>
-                  <span><span style={{ display: 'inline-block', width: 9, height: 9, borderRadius: '50%', border: '1px solid #b9b2a0', verticalAlign: 'middle', marginRight: 5 }} />centre = factory default</span>
+                  <span><span style={{ display: 'inline-block', width: 9, height: 9, borderRadius: '50%', border: '1px solid #b9b2a0', verticalAlign: 'middle', marginRight: 5 }} />center = factory default</span>
                   <span><span style={{ display: 'inline-block', width: 9, height: 9, borderRadius: '50%', background: CORAL, verticalAlign: 'middle', marginRight: 5 }} />outer = your counter</span>
                 </div>
                 <div style={{ textAlign: 'center', display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
