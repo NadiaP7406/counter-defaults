@@ -534,8 +534,8 @@ export default function CounterDefaultsStudio() {
                         </button>
                       )))}
                       {!patternsLoaded && (
-                        <button onClick={togglePatterns} title="Ban specific LLM writing tics (em-dashes, filler, negative parallelism, etc.)" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
-                          <span style={{ flexShrink: 0 }}>🚫</span>Ban writing patterns
+                        <button onClick={togglePatterns} title="Ban LLM-speak: the writing tics LLMs default to (em-dashes, filler, negative parallelism, etc.)" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
+                          <span style={{ flexShrink: 0 }}>🚫</span>Ban LLM-speak
                         </button>
                       )}
                     </div>
@@ -546,7 +546,7 @@ export default function CounterDefaultsStudio() {
                 {patternsLoaded && (
                   <div style={{ marginTop: 8, border: `1.5px solid ${INK}`, borderRadius: 9, padding: '12px 14px', background: WARM }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 9, gap: 8 }}>
-                      <span style={{ fontFamily: sm, fontSize: 10, letterSpacing: '0.08em', color: INK }}>🚫 BAN WRITING PATTERNS{tropes.length > 0 ? ` · ${tropes.length} on` : ''}</span>
+                      <span style={{ fontFamily: sm, fontSize: 10, letterSpacing: '0.08em', color: INK }}>🚫 BAN LLM-SPEAK{tropes.length > 0 ? ` · ${tropes.length} on` : ''}</span>
                       <button className="cd-inv cd-hov" onClick={togglePatterns} aria-label="Remove the writing-patterns dimension" style={{ flexShrink: 0, width: 22, height: 22, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, fontFamily: sm, fontSize: 11, cursor: 'pointer', lineHeight: 1 }}>✕</button>
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
