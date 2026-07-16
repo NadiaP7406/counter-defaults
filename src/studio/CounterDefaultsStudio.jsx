@@ -206,7 +206,7 @@ export default function CounterDefaultsStudio() {
     g.strokeStyle = INK; g.lineWidth = 4; g.strokeRect(22, 22, S - 44, S - 44);
     g.textAlign = 'center';
     g.fillStyle = INK; g.font = "54px 'Jersey 25', sans-serif"; g.fillText('MY LLM COUNTER-DEFAULTS', S / 2, 122);
-    g.fillStyle = LABEL; g.font = "19px 'Space Mono', monospace"; g.fillText("the AI defaults I've overridden", S / 2, 156);
+    g.fillStyle = LABEL; g.font = "19px 'Space Mono', monospace"; g.fillText("the LLM defaults I've overridden", S / 2, 156);
     const axes = loaded, N = axes.length;
     const cx = S / 2, cy = 544, RR = 238, inner = 0.16;
     const dirs = axes.map((bi, k) => { const a = (-90 + 360 * k / (N || 1)) * Math.PI / 180; return { ux: Math.cos(a), uy: Math.sin(a) }; });
@@ -534,7 +534,7 @@ export default function CounterDefaultsStudio() {
                         </button>
                       )))}
                       {!patternsLoaded && (
-                        <button onClick={togglePatterns} title="Ban specific AI writing tics (em-dashes, filler, negative parallelism, etc.)" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
+                        <button onClick={togglePatterns} title="Ban specific LLM writing tics (em-dashes, filler, negative parallelism, etc.)" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: sm, fontSize: 10, cursor: 'pointer', borderRadius: 999, padding: '5px 11px', color: DEEMPH, background: 'transparent', border: '1px solid rgba(21,19,13,0.35)' }}>
                           <span style={{ flexShrink: 0 }}>🚫</span>Ban writing patterns
                         </button>
                       )}
