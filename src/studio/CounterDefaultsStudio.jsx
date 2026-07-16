@@ -373,7 +373,7 @@ export default function CounterDefaultsStudio() {
         <div style={{ flex: narrow ? 'none' : 1, position: 'relative', background: BG, padding: narrow ? '14px 16px 88px' : '16px 26px 18px', display: 'flex', flexDirection: 'column', overflow: narrow ? 'visible' : 'hidden' }}>
           {fromShared && (
             <div style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', background: 'rgba(165,166,246,0.3)', border: `1.5px solid ${INK}`, borderRadius: 9, padding: '9px 14px', marginBottom: 11 }}>
-              <span style={{ fontSize: 12, flex: 1, minWidth: 180 }}>↩ You opened a shared mix, <strong>{engaged} dimension{engaged === 1 ? '' : 's'} set</strong>. Drag any fader to make it yours, or start over.</span>
+              <span style={{ fontSize: 12, flex: 1, minWidth: 180 }}>↩ You opened a shared mix, <strong>{engaged} dimension{engaged === 1 ? '' : 's'} set</strong>. Drag any slider to make it yours, or start over.</span>
               <button className="cd-inv cd-hov" onClick={onReset} style={{ fontFamily: sm, fontSize: 10, background: 'transparent', color: INK, border: `1.5px solid ${INK}`, borderRadius: 999, padding: '5px 12px', cursor: 'pointer' }}>START FRESH</button>
               <button onClick={() => setFromShared(false)} aria-label="Dismiss" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: INK, padding: '0 4px' }}>×</button>
             </div>
@@ -383,7 +383,7 @@ export default function CounterDefaultsStudio() {
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ flex: 'none', marginBottom: 11 }}>
                 <p style={{ fontSize: 13, lineHeight: 1.5, color: BODY, maxWidth: 720, margin: 0 }}>
-              Your LLM ships with default behaviors. It agrees with you, sounds sure, and writes in your place. Each channel below is one of those defaults. Push a fader to override it, then paste the result into your LLM once. Every chat after follows your rules.
+              Your LLM came with settings you didn't choose. It agrees with you, sounds sure, and writes in your place. Each dimension below is one of those factory defaults. Move its slider to tailor the result to your own needs and values, then paste it into your LLM once. Every chat after follows your rules.
             </p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('#F0C8C8')}>
@@ -422,7 +422,7 @@ export default function CounterDefaultsStudio() {
                 )}
               </ExplainerCard>
             )}
-            {howOpen && <ExplainerCard tint="rgba(245,255,110,0.4)">Each fader starts on the left, where the LLM already is. Push it right to swap that default for yours. Your choices are written live into an <span style={{ fontFamily: sm, color: COBALT }}>instructions.md</span> panel. Paste it into your LLM's settings once, and it applies to every conversation from then on, in ChatGPT, Claude, Gemini, or anything with a settings field.</ExplainerCard>}
+            {howOpen && <ExplainerCard tint="rgba(245,255,110,0.4)">Each slider starts on the left, where the LLM already is. Push it right to swap that default for yours. Your choices are written live into an <span style={{ fontFamily: sm, color: COBALT }}>instructions.md</span> panel. Paste it into your LLM's settings once, and it applies to every conversation from then on, in ChatGPT, Claude, Gemini, or anything with a settings field.</ExplainerCard>}
             {presetOpen && (
               <div style={{ display: 'flex', gap: 8, marginTop: 9, flexWrap: 'wrap' }}>
                 {PRESETS.map((p) => (
@@ -678,7 +678,7 @@ export default function CounterDefaultsStudio() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
                   <div>
                     <div style={{ fontFamily: sm, fontSize: 11, color: INK }}>◉ SIGNATURE{narrow ? '' : ' · EDIT MODE'}</div>
-                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>{narrow ? 'Each spoke is one dimension. The center is the LLM’s default; the edge is your full counter. Open on a desktop to drag the shape; here, tune with the faders above.' : 'Each spoke is one dimension. The center is the LLM’s default; drag a node outward to push your counter further.'}</div>
+                    <div style={{ fontSize: 12, color: LABEL, marginTop: 3, lineHeight: 1.45 }}>{narrow ? 'Each spoke is one dimension. The center is the LLM’s default; the edge is your full counter. Open on a desktop to drag the shape; here, tune with the sliders above.' : 'Each spoke is one dimension. The center is the LLM’s default; drag a node outward to push your counter further.'}</div>
                   </div>
                   <button onClick={() => setCockpitOpen(false)} className="cd-hov" style={{ width: 30, height: 30, borderRadius: '50%', border: `1.5px solid ${INK}`, background: 'transparent', color: INK, cursor: 'pointer' }}>✕</button>
                 </div>
