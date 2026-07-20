@@ -395,6 +395,9 @@ export default function CounterDefaultsStudio() {
               <button className="cd-pill cd-hov" onClick={() => setPresetOpen((v) => !v)} style={pillStyle('#80F2FF')}>
                 <span>◆</span> Start from a preset <span style={{ color: '#6a6452' }}>{presetOpen ? '–' : '+'}</span>
               </button>
+              <button className="cd-pill cd-hov" onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={pillStyle('#68FF9E')}>
+                <span>✍</span> Guestbook
+              </button>
             </div>
             {whyOpen && (
               <ExplainerCard tint="rgba(240,200,200,0.4)">
@@ -610,7 +613,9 @@ export default function CounterDefaultsStudio() {
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
                   <button onClick={() => { setPasteOpen((v) => !v); setAddYouOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: pasteOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
                   <button onClick={() => { setAddYouOpen((v) => !v); setPasteOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: addYouOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
-                  <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>✍ Guestbook</button>
+                </div>
+                <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
+                  Been useful? <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', padding: 0 }}>Sign the guestbook →</button>
                 </div>
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
