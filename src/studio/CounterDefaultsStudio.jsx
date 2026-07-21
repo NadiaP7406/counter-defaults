@@ -704,7 +704,7 @@ export default function CounterDefaultsStudio() {
         {/* Sticky copy bar — mobile only, so the output is always one tap away */}
         {narrow && (
           <div style={{ position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 55, background: BG, borderTop: `1.5px solid ${INK}`, padding: '9px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ fontFamily: sm, fontSize: 9.5, color: LABEL, lineHeight: 1.25, flexShrink: 0 }}>{engaged}/{N_CH} set<br />{words}w · {text.length}c</div>
+            <div style={{ fontFamily: sm, fontSize: 9.5, color: LABEL, lineHeight: 1.25, flexShrink: 0 }}>{engaged}/{N_CH} set<br />{words} words</div>
             <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onCopy} disabled={empty} style={{ flex: 1, background: empty ? TRACK : '#68FF9E', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 8, padding: 12, cursor: empty ? 'not-allowed' : 'pointer' }}>{copied ? 'COPIED ✓' : empty ? 'NOTHING TO COPY YET' : 'COPY INSTRUCTIONS'}</button>
           </div>
         )}
