@@ -54,6 +54,7 @@ export const handler = async (event) => {
           Name: { title: [{ text: { content: name } }] },
           Message: { rich_text: [{ text: { content: message } }] },
           Status: { select: { name: 'New' } },
+          Type: { select: { name: 'Feedback' } },
           ...(signature
             ? { Signature: { rich_text: [{ text: { content: signature } }] } }
             : {}),

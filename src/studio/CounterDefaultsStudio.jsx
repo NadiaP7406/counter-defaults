@@ -96,6 +96,7 @@ export default function CounterDefaultsStudio() {
   const [guestMsg, setGuestMsg] = useState('');
   const [guestHp, setGuestHp] = useState(''); // honeypot, must stay empty
   const [guestState, setGuestState] = useState('idle'); // idle | sending | ok | err
+  const [contribState, setContribState] = useState('idle'); // idle | sending | ok | failed
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [preReset, setPreReset] = useState(null);
@@ -199,6 +200,27 @@ export default function CounterDefaultsStudio() {
       setGuestName(''); setGuestMsg('');
     } catch (e) {
       setGuestState('failed');
+    }
+  };
+  // Explicit, anonymous opt-in: send just the signature (the shape of the
+  // settings) to the aggregate tally so we can report which defaults people
+  // override. No name, no message, no PII. Sticky after success so one person
+  // can't pad the tally by nudging sliders.
+  const submitContribute = async () => {
+    if (contribState === 'sending' || contribState === 'ok') return;
+    const st = levelsToState(levels, tropes);
+    if (isDefaultState(st)) return;
+    setContribState('sending');
+    try {
+      const res = await fetch('/.netlify/functions/contribute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ signature: encodeState(st) }),
+      });
+      if (!res.ok) throw new Error('bad status');
+      setContribState('ok');
+    } catch (e) {
+      setContribState('failed');
     }
   };
 
@@ -622,6 +644,18 @@ export default function CounterDefaultsStudio() {
                 <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
                   Been useful? <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', padding: 0 }}>Sign the guestbook →</button>
                 </div>
+                {!empty && (
+                  <div style={{ textAlign: 'center', marginTop: 7, fontFamily: sm, fontSize: 10.5, color: LABEL, lineHeight: 1.6 }}>
+                    {contribState === 'ok' ? (
+                      <span style={{ color: INK }}>✓ Added to the tally, thank you 🪞</span>
+                    ) : (
+                      <>
+                        <button onClick={submitContribute} disabled={contribState === 'sending'} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: contribState === 'sending' ? 'wait' : 'pointer', padding: 0 }}>{contribState === 'sending' ? 'Adding…' : 'Contribute your signature anonymously'}</button>
+                        <div style={{ fontSize: 9, color: LABEL, marginTop: 3 }}>{contribState === 'failed' ? "Couldn't add, please try again." : 'The shape of your settings only, no account or personal data. Helps us show which defaults people override.'}</div>
+                      </>
+                    )}
+                  </div>
+                )}
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
                     <div><strong style={{ color: INK }}>Claude</strong> → <a href="https://claude.ai/settings/profile" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>claude.ai/settings/profile</a></div>
