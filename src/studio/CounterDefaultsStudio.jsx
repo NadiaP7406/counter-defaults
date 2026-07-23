@@ -646,7 +646,7 @@ export default function CounterDefaultsStudio() {
                   <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, maxWidth: 340, margin: '11px auto 0', cursor: (contribState === 'ok' || contribState === 'sending') ? 'default' : 'pointer' }}>
                     <input
                       type="checkbox"
-                      aria-label="Share my anonymous settings for independent research"
+                      aria-label="Share my anonymous settings for independent research by AIxDESIGN"
                       checked={contribState === 'ok' || contribState === 'sending'}
                       disabled={contribState === 'ok' || contribState === 'sending'}
                       onChange={(e) => { if (e.target.checked) submitContribute(); }}
@@ -656,7 +656,7 @@ export default function CounterDefaultsStudio() {
                       {contribState === 'ok' ? (
                         <span style={{ color: INK, fontWeight: 700 }}>Shared for independent research, thank you 🪞</span>
                       ) : (
-                        <>Share my anonymous settings for independent research
+                        <>Share my anonymous settings for independent research by AIxDESIGN
                           <span style={{ display: 'block', fontSize: 9, marginTop: 2 }}>{contribState === 'failed' ? "Couldn't share, please try again." : 'The shape of your settings only, no account or personal data.'}</span>
                         </>
                       )}
