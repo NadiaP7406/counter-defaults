@@ -637,6 +637,18 @@ export default function CounterDefaultsStudio() {
                   <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onCopy} disabled={empty} style={{ flex: 1, background: empty ? TRACK : '#68FF9E', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: 13, cursor: empty ? 'not-allowed' : 'pointer' }}>{copied ? 'COPIED ✓' : empty ? 'NOTHING TO COPY YET' : 'COPY INSTRUCTIONS'}</button>
                   <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onShare} disabled={empty} aria-label="Copy a shareable link to this mix" style={{ flexShrink: 0, background: linkCopied ? '#68FF9E' : 'transparent', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: '13px 14px', cursor: empty ? 'not-allowed' : 'pointer' }}>{linkCopied ? '✓ LINK' : 'SHARE'}</button>
                 </div>
+                {!empty && (
+                  <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL, lineHeight: 1.6 }}>
+                    {contribState === 'ok' ? (
+                      <span style={{ color: INK }}>✓ Shared, thank you 🪞</span>
+                    ) : (
+                      <>
+                        <button onClick={submitContribute} disabled={contribState === 'sending'} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: contribState === 'sending' ? 'wait' : 'pointer', padding: 0 }}>{contribState === 'sending' ? 'Sharing…' : 'Share my anonymous settings for independent research'}</button>
+                        <div style={{ fontSize: 9, color: LABEL, marginTop: 3 }}>{contribState === 'failed' ? "Couldn't share, please try again." : 'The shape of your settings only, no account or personal data.'}</div>
+                      </>
+                    )}
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
                   <button onClick={() => { setPasteOpen((v) => !v); setAddYouOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: pasteOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
                   <button onClick={() => { setAddYouOpen((v) => !v); setPasteOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: addYouOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
@@ -644,18 +656,6 @@ export default function CounterDefaultsStudio() {
                 <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
                   Been useful? <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', padding: 0 }}>Sign the guestbook →</button>
                 </div>
-                {!empty && (
-                  <div style={{ textAlign: 'center', marginTop: 7, fontFamily: sm, fontSize: 10.5, color: LABEL, lineHeight: 1.6 }}>
-                    {contribState === 'ok' ? (
-                      <span style={{ color: INK }}>✓ Added to the tally, thank you 🪞</span>
-                    ) : (
-                      <>
-                        <button onClick={submitContribute} disabled={contribState === 'sending'} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: contribState === 'sending' ? 'wait' : 'pointer', padding: 0 }}>{contribState === 'sending' ? 'Adding…' : 'Contribute your signature anonymously'}</button>
-                        <div style={{ fontSize: 9, color: LABEL, marginTop: 3 }}>{contribState === 'failed' ? "Couldn't add, please try again." : 'The shape of your settings only, no account or personal data. Helps us show which defaults people override.'}</div>
-                      </>
-                    )}
-                  </div>
-                )}
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
                     <div><strong style={{ color: INK }}>Claude</strong> → <a href="https://claude.ai/settings/profile" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>claude.ai/settings/profile</a></div>
