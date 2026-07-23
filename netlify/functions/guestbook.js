@@ -5,6 +5,7 @@
 const NOTION_VERSION = '2022-06-28';
 const MAX_NAME = 80;
 const MAX_MESSAGE = 2000; // Notion's per-rich-text-item limit
+const MAX_SIGNATURE = 200; // encoded settings string is short; cap defensively
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -24,6 +25,9 @@ export const handler = async (event) => {
 
   const message = String(body.message || '').trim();
   const name = String(body.name || '').trim().slice(0, MAX_NAME) || 'Anonymous';
+  // Opt-in signature: the encoded shape of the signer's settings (e.g. "s=3300020001032&t=emdash").
+  // Sent only when someone chooses to sign, so we can see which defaults people override. No PII.
+  const signature = String(body.signature || '').trim().slice(0, MAX_SIGNATURE);
   if (!message) return json(400, { ok: false, error: 'Message is required' });
   if (message.length > MAX_MESSAGE) {
     return json(400, { ok: false, error: 'Message is too long' });
@@ -50,6 +54,9 @@ export const handler = async (event) => {
           Name: { title: [{ text: { content: name } }] },
           Message: { rich_text: [{ text: { content: message } }] },
           Status: { select: { name: 'New' } },
+          ...(signature
+            ? { Signature: { rich_text: [{ text: { content: signature } }] } }
+            : {}),
         },
       }),
     });

@@ -184,10 +184,15 @@ export default function CounterDefaultsStudio() {
     if (!guestMsg.trim()) { setGuestState('empty'); return; }
     setGuestState('sending');
     try {
+      // Attach the signer's current signature (the encoded shape of their settings)
+      // so we can see which defaults people override. Opt-in: only sent when they
+      // choose to sign, and disclosed under the form. Empty when all-default.
+      const st = levelsToState(levels, tropes);
+      const signature = isDefaultState(st) ? '' : encodeState(st);
       const res = await fetch('/.netlify/functions/guestbook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: guestName, message: guestMsg, website: guestHp }),
+        body: JSON.stringify({ name: guestName, message: guestMsg, website: guestHp, signature }),
       });
       if (!res.ok) throw new Error('bad status');
       setGuestState('ok');
@@ -671,6 +676,7 @@ export default function CounterDefaultsStudio() {
                       <span style={{ fontFamily: sm, fontSize: 9.5, color: (guestState === 'empty' || guestState === 'failed') ? '#c63a26' : LABEL }}>{guestState === 'empty' ? 'Add a message first.' : guestState === 'failed' ? "Couldn't send, please try again." : `${guestMsg.length}/2000`}</span>
                       <button onClick={submitGuestbook} disabled={guestState === 'sending'} className="cd-bright cd-hov" style={{ fontFamily: sm, fontSize: 12, fontWeight: 700, color: INK, background: '#68FF9E', border: `2px solid ${INK}`, borderRadius: 8, padding: '9px 22px', cursor: guestState === 'sending' ? 'wait' : 'pointer' }}>{guestState === 'sending' ? 'Sending…' : 'Send'}</button>
                     </div>
+                    <div style={{ fontFamily: sm, fontSize: 9.5, color: LABEL, marginTop: 10, lineHeight: 1.5 }}>Signing also shares your signature (the shape of your current settings), so we can see which defaults people override. Nothing else about you.</div>
                   </>
                 )}
               </div>
