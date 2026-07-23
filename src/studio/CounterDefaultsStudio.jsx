@@ -117,6 +117,7 @@ export default function CounterDefaultsStudio() {
   const curAxes = useRef([]);
   const curDirs = useRef([]);
   const copyT = useRef(null);
+  const contribSent = useRef(false); // synchronous guard: contribute at most once
   const infoAutoShown = useRef(false); // auto-open the info card only on the very first fader move
 
   // Any manual edit means you're no longer just viewing a shared link.
@@ -207,9 +208,12 @@ export default function CounterDefaultsStudio() {
   // override. No name, no message, no PII. Sticky after success so one person
   // can't pad the tally by nudging sliders.
   const submitContribute = async () => {
-    if (contribState === 'sending' || contribState === 'ok') return;
+    // Ref guard is synchronous, so a double-dispatched checkbox event can't
+    // submit twice before React re-renders and disables the input.
+    if (contribSent.current || contribState === 'sending' || contribState === 'ok') return;
     const st = levelsToState(levels, tropes);
     if (isDefaultState(st)) return;
+    contribSent.current = true;
     setContribState('sending');
     try {
       const res = await fetch('/.netlify/functions/contribute', {
@@ -220,6 +224,7 @@ export default function CounterDefaultsStudio() {
       if (!res.ok) throw new Error('bad status');
       setContribState('ok');
     } catch (e) {
+      contribSent.current = false; // allow a retry
       setContribState('failed');
     }
   };
@@ -638,16 +643,25 @@ export default function CounterDefaultsStudio() {
                   <button className={empty ? '' : 'cd-bright cd-hov'} onClick={onShare} disabled={empty} aria-label="Copy a shareable link to this mix" style={{ flexShrink: 0, background: linkCopied ? '#68FF9E' : 'transparent', color: empty ? '#6a6452' : INK, border: `2px solid ${empty ? '#cdc6b2' : INK}`, fontFamily: sm, fontSize: 13, fontWeight: 700, borderRadius: 7, padding: '13px 14px', cursor: empty ? 'not-allowed' : 'pointer' }}>{linkCopied ? '✓ LINK' : 'SHARE'}</button>
                 </div>
                 {!empty && (
-                  <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL, lineHeight: 1.6 }}>
-                    {contribState === 'ok' ? (
-                      <span style={{ color: INK }}>✓ Shared, thank you 🪞</span>
-                    ) : (
-                      <>
-                        <button onClick={submitContribute} disabled={contribState === 'sending'} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: contribState === 'sending' ? 'wait' : 'pointer', padding: 0 }}>{contribState === 'sending' ? 'Sharing…' : 'Share my anonymous settings for independent research'}</button>
-                        <div style={{ fontSize: 9, color: LABEL, marginTop: 3 }}>{contribState === 'failed' ? "Couldn't share, please try again." : 'The shape of your settings only, no account or personal data.'}</div>
-                      </>
-                    )}
-                  </div>
+                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, maxWidth: 340, margin: '11px auto 0', cursor: (contribState === 'ok' || contribState === 'sending') ? 'default' : 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      aria-label="Share my anonymous settings for independent research"
+                      checked={contribState === 'ok' || contribState === 'sending'}
+                      disabled={contribState === 'ok' || contribState === 'sending'}
+                      onChange={(e) => { if (e.target.checked) submitContribute(); }}
+                      style={{ width: 15, height: 15, marginTop: 1, accentColor: INK, flexShrink: 0, cursor: 'inherit' }}
+                    />
+                    <span style={{ fontFamily: sm, fontSize: 10.5, color: LABEL, lineHeight: 1.45, textAlign: 'left' }}>
+                      {contribState === 'ok' ? (
+                        <span style={{ color: INK, fontWeight: 700 }}>Shared for independent research, thank you 🪞</span>
+                      ) : (
+                        <>Share my anonymous settings for independent research
+                          <span style={{ display: 'block', fontSize: 9, marginTop: 2 }}>{contribState === 'failed' ? "Couldn't share, please try again." : 'The shape of your settings only, no account or personal data.'}</span>
+                        </>
+                      )}
+                    </span>
+                  </label>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
                   <button onClick={() => { setPasteOpen((v) => !v); setAddYouOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: pasteOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
