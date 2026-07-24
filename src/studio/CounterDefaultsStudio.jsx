@@ -670,6 +670,9 @@ export default function CounterDefaultsStudio() {
                 <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
                   Been useful? <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', padding: 0 }}>Sign the guestbook →</button>
                 </div>
+                <div style={{ textAlign: 'center', marginTop: 6, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
+                  Want this as a workshop for your team? <a href="mailto:hello@aixdesign.co" style={{ fontWeight: 700, color: INK, textDecoration: 'underline' }}>hello@aixdesign.co</a>
+                </div>
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
                     <div><strong style={{ color: INK }}>Claude</strong> → <a href="https://claude.ai/settings/profile" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>claude.ai/settings/profile</a></div>
