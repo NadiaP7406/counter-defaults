@@ -395,6 +395,7 @@ export default function CounterDefaultsStudio() {
           <span style={{ fontFamily: "'Jersey 25','Darker Grotesque',sans-serif", fontSize: narrow ? 18 : 22, letterSpacing: '0.01em', color: INK, whiteSpace: 'nowrap' }}>LLM COUNTER-DEFAULTS</span>
           <span style={{ fontFamily: sm, fontSize: 10, color: LABEL, flexShrink: 0 }}>v1.0</span>
           <span style={{ flex: 1 }} />
+          <a href="/press/" style={{ fontFamily: sm, fontSize: 10, color: LABEL, textDecoration: 'underline', textUnderlineOffset: 2, flexShrink: 0 }}>Press</a>
           <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" aria-label="AIxDESIGN, opens in a new tab" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, textDecoration: 'none', flexShrink: 0 }}>
             <span style={{ fontFamily: sm, fontSize: 10, color: LABEL }}>by</span>
             <img src="/aixdesign-logo.png" alt="AIxDESIGN" style={{ height: narrow ? 13 : 15, width: 'auto', display: 'block' }} />
