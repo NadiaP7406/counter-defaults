@@ -430,8 +430,6 @@ export default function CounterDefaultsStudio() {
               <button className="cd-pill cd-hov" onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={pillStyle('#68FF9E')}>
                 <span>✍</span> Guestbook
               </button>
-              <a href="/press/" className="cd-hov" style={{ display: 'inline-flex', alignItems: 'center', fontFamily: sm, fontSize: 10, color: LABEL, background: 'transparent', border: '1.5px solid rgba(21,19,13,0.28)', borderRadius: 999, padding: '6px 12px', textDecoration: 'none' }}>Press</a>
-              <a href="mailto:hello@aixdesign.co" className="cd-hov" style={{ display: 'inline-flex', alignItems: 'center', fontFamily: sm, fontSize: 10, color: LABEL, background: 'transparent', border: '1.5px solid rgba(21,19,13,0.28)', borderRadius: 999, padding: '6px 12px', textDecoration: 'none' }}>Workshops</a>
             </div>
             {whyOpen && (
               <ExplainerCard tint="rgba(240,200,200,0.4)">
