@@ -430,6 +430,8 @@ export default function CounterDefaultsStudio() {
               <button className="cd-pill cd-hov" onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={pillStyle('#68FF9E')}>
                 <span>✍</span> Guestbook
               </button>
+              <a href="/press/" className="cd-hov" style={{ display: 'inline-flex', alignItems: 'center', fontFamily: sm, fontSize: 10, color: LABEL, background: 'transparent', border: '1.5px solid rgba(21,19,13,0.28)', borderRadius: 999, padding: '6px 12px', textDecoration: 'none' }}>Press</a>
+              <a href="mailto:hello@aixdesign.co" className="cd-hov" style={{ display: 'inline-flex', alignItems: 'center', fontFamily: sm, fontSize: 10, color: LABEL, background: 'transparent', border: '1.5px solid rgba(21,19,13,0.28)', borderRadius: 999, padding: '6px 12px', textDecoration: 'none' }}>Workshops</a>
             </div>
             {whyOpen && (
               <ExplainerCard tint="rgba(240,200,200,0.4)">
@@ -752,13 +754,16 @@ export default function CounterDefaultsStudio() {
           )}
         </div>
 
-        {/* Lowkey footer — press / workshops / guestbook */}
-        <div style={{ flex: 'none', display: 'flex', justifyContent: narrow ? 'center' : 'flex-end', alignItems: 'center', padding: narrow ? '12px 16px 74px' : '5px 26px', fontFamily: sm, fontSize: 10, color: LABEL }}>
-          <a href="/press/" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Press</a>
-          <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
-          <a href="mailto:hello@aixdesign.co" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Workshops</a>
-          <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
-          <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} className="cd-hov" style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Guestbook</button>
+        {/* Footer C — structured, bordered (A/B test vs menu pills) */}
+        <div style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: narrow ? '10px 16px 74px' : '7px 26px', borderTop: `1.5px solid ${INK}`, fontFamily: sm, fontSize: 10, color: LABEL }}>
+          <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>a free tool by AIxDESIGN →</a>
+          <span>
+            <a href="/press/" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Press</a>
+            <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
+            <a href="mailto:hello@aixdesign.co" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Workshops</a>
+            <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
+            <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} className="cd-hov" style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Guestbook</button>
+          </span>
         </div>
 
         {/* Sticky copy bar — mobile only, so the output is always one tap away */}
