@@ -395,7 +395,6 @@ export default function CounterDefaultsStudio() {
           <span style={{ fontFamily: "'Jersey 25','Darker Grotesque',sans-serif", fontSize: narrow ? 18 : 22, letterSpacing: '0.01em', color: INK, whiteSpace: 'nowrap' }}>LLM COUNTER-DEFAULTS</span>
           <span style={{ fontFamily: sm, fontSize: 10, color: LABEL, flexShrink: 0 }}>v1.0</span>
           <span style={{ flex: 1 }} />
-          <a href="/press/" style={{ fontFamily: sm, fontSize: 10, color: LABEL, textDecoration: 'underline', textUnderlineOffset: 2, flexShrink: 0 }}>Press</a>
           <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" aria-label="AIxDESIGN, opens in a new tab" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, textDecoration: 'none', flexShrink: 0 }}>
             <span style={{ fontFamily: sm, fontSize: 10, color: LABEL }}>by</span>
             <img src="/aixdesign-logo.png" alt="AIxDESIGN" style={{ height: narrow ? 13 : 15, width: 'auto', display: 'block' }} />
@@ -668,12 +667,6 @@ export default function CounterDefaultsStudio() {
                   <button onClick={() => { setPasteOpen((v) => !v); setAddYouOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: pasteOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>⤓ Where do I paste this?</button>
                   <button onClick={() => { setAddYouOpen((v) => !v); setPasteOpen(false); }} style={{ fontFamily: sm, fontSize: 10, color: addYouOpen ? INK : LABEL, background: 'none', border: 'none', cursor: 'pointer' }}>＋ Add yourself</button>
                 </div>
-                <div style={{ textAlign: 'center', marginTop: 9, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
-                  Been useful? <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} style={{ fontFamily: sm, fontSize: 10.5, fontWeight: 700, color: INK, background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', padding: 0 }}>Sign the guestbook →</button>
-                </div>
-                <div style={{ textAlign: 'center', marginTop: 6, fontFamily: sm, fontSize: 10.5, color: LABEL }}>
-                  Want this as a workshop for your team? <a href="mailto:hello@aixdesign.co" style={{ fontWeight: 700, color: INK, textDecoration: 'underline' }}>hello@aixdesign.co</a>
-                </div>
                 {pasteOpen && (
                   <div className="cd-scroll" style={{ marginTop: 8, background: 'rgba(128,242,255,0.35)', border: `1.5px solid ${INK}`, borderRadius: 8, padding: 12, fontSize: 11, color: INK, lineHeight: 1.6, maxHeight: narrow ? 'none' : '30vh', overflowY: 'auto', flexShrink: 0 }}>
                     <div><strong style={{ color: INK }}>Claude</strong> → <a href="https://claude.ai/settings/profile" target="_blank" rel="noopener noreferrer" style={{ color: COBALT }}>claude.ai/settings/profile</a></div>
@@ -757,6 +750,15 @@ export default function CounterDefaultsStudio() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Lowkey footer — press / workshops / guestbook */}
+        <div style={{ flex: 'none', display: 'flex', justifyContent: narrow ? 'center' : 'flex-end', alignItems: 'center', padding: narrow ? '12px 16px 74px' : '5px 26px', fontFamily: sm, fontSize: 10, color: LABEL }}>
+          <a href="/press/" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Press</a>
+          <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
+          <a href="mailto:hello@aixdesign.co" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Workshops</a>
+          <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
+          <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} className="cd-hov" style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Guestbook</button>
         </div>
 
         {/* Sticky copy bar — mobile only, so the output is always one tap away */}
