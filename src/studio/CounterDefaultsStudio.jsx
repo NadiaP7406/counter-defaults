@@ -5,7 +5,7 @@ import { generateMarkdown } from '../utils/generateMarkdown.js';
 import { encodeState, decodeState, isDefaultState } from '../utils/urlState.js';
 
 // ---- light "risograph" tokens ----
-const BG = '#FFFCF4', WARM = '#fbf7ec', WHITE = '#ffffff', TRACK = '#efe9da';
+const BG = '#F3EFE4', WARM = '#EEEADD', WHITE = '#ffffff', TRACK = '#E4DFCF';
 const INK = '#15130d', BODY = '#4a4636', LABEL = '#6a6452', DEEMPH = '#6a6452', FAINT = '#6a6452';
 const MONO = '#3a352a', RLINE = '#d8cfb8', CORAL = '#FC6653', COBALT = '#3C69FD';
 const CX = 230, CY = 242, R = 150, INNER = 0.16;
@@ -754,7 +754,7 @@ export default function CounterDefaultsStudio() {
 
         {/* Footer C — structured, bordered (A/B test vs menu pills) */}
         <div style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: narrow ? '10px 16px 74px' : '7px 26px', borderTop: `1.5px solid ${INK}`, fontFamily: sm, fontSize: 10, color: LABEL }}>
-          <span>a free tool by <a href="https://nadiapiet.com" target="_blank" rel="noopener noreferrer" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Nadia Piet</a> (<a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>AIxDESIGN</a>) →</span>
+          <span>A tool by <a href="https://aixdesign.co" target="_blank" rel="noopener noreferrer" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>AIxDESIGN</a>. Researched, designed &amp; written by <a href="https://nadiapiet.com" target="_blank" rel="noopener noreferrer" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Nadia Piet</a>. Built with Claude Code.</span>
           <span>
             <a href="/press/" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Press</a>
             <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>

@@ -1,6 +1,6 @@
 /* Base reset (the original relied on Tailwind preflight inside claude.ai artifacts) */
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #F3EFE4; }
 h1, h2, h3, p, ul { margin: 0; padding: 0; }
 button { font: inherit; background: none; }
 
