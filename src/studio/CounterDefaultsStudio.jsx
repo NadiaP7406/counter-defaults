@@ -5,7 +5,7 @@ import { generateMarkdown } from '../utils/generateMarkdown.js';
 import { encodeState, decodeState, isDefaultState } from '../utils/urlState.js';
 
 // ---- light "risograph" tokens ----
-const BG = '#F3EFE4', WARM = '#EEEADD', WHITE = '#ffffff', TRACK = '#E4DFCF';
+const BG = '#EDF0F2', WARM = '#E7EBEE', WHITE = '#ffffff', TRACK = '#DBE1E6';
 const INK = '#15130d', BODY = '#4a4636', LABEL = '#6a6452', DEEMPH = '#6a6452', FAINT = '#6a6452';
 const MONO = '#3a352a', RLINE = '#d8cfb8', CORAL = '#FC6653', COBALT = '#3C69FD';
 const CX = 230, CY = 242, R = 150, INNER = 0.16;
