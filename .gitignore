@@ -3,5 +3,14 @@ dist/
 .DS_Store
 *.local
 
+# secrets
+.env
+.env.*
+
+# private working notes (not for publication)
+docs/
+CLAUDE.md
+
 # local demo video (not tracked)
 demo/
+social-assets/

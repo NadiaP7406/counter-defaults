@@ -24,19 +24,14 @@ src/
   utils/        generateMarkdown, urlState, color constants
   styles/       fonts.css (self-hosted), index.css (reset + utilities)
 public/fonts/   self-hosted font files
-docs/           handoff doc, research notes, original single-file component
 ```
 
 ## Fonts
 
 All fonts are self-hosted (no CDN calls) and OFL-licensed: Jersey 25 (display), Inter, Darker Grotesque, Space Mono, and VT323, all as latin subsets from Google Fonts.
 
-## Companion research
-
-[docs/counter_defaults_research.md](docs/counter_defaults_research.md) holds the per-dimension research notes: what people in prompt engineering, writing, and AI ethics communities actually do, with verified sources.
-
 ## License & credit
 
-Open source under the [MIT License](LICENSE): free to use, fork, remix, and build on.
+Open source under the [GNU AGPL-3.0](LICENSE). You're free to use, study, share, and modify it. The one condition: if you distribute a modified version, or run one as a network service, you have to make your source available under the same license. So it stays open.
 
-Made by [Nadia Piet](https://nadiapiet.com), co-founder of [AIxDESIGN](https://aixdesign.co). If you use or fork it, please keep the MIT license and copyright notice intact, and a credit to Nadia Piet with a link back to [counterdefaults.aixdesign.co](https://counterdefaults.aixdesign.co) is appreciated.
+Made by [Nadia Piet](https://nadiapiet.com), co-founder of [AIxDESIGN](https://aixdesign.co). Please keep the license and the `© 2026 Nadia Piet (AIxDESIGN)` notice intact, and a credit with a link back to [counterdefaults.aixdesign.co](https://counterdefaults.aixdesign.co) is appreciated.
