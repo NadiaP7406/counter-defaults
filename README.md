@@ -1,6 +1,6 @@
 # LLM Counter-Defaults
 
-Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. LLM Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Built by [AIxDESIGN](https://aixdesign.co).
+Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. LLM Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Made by [Nadia Piet](https://nadiapiet.com) at [AIxDESIGN](https://aixdesign.co).
 
 14 behaviors to counter, from how hard the model pushes back to how much it discloses uncertainty or protects your writing voice. Six load to start; add the rest as you go, plus a "Ban writing patterns" set. Each fader starts where the LLM already is; push it to swap that default for yours. Only the faders you move appear in the generated instructions.
 
@@ -34,3 +34,9 @@ All fonts are self-hosted (no CDN calls) and OFL-licensed: Jersey 25 (display), 
 ## Companion research
 
 [docs/counter_defaults_research.md](docs/counter_defaults_research.md) holds the per-dimension research notes: what people in prompt engineering, writing, and AI ethics communities actually do, with verified sources.
+
+## License & credit
+
+Open source under the [MIT License](LICENSE): free to use, fork, remix, and build on.
+
+Made by [Nadia Piet](https://nadiapiet.com), co-founder of [AIxDESIGN](https://aixdesign.co). If you use or fork it, please keep the MIT license and copyright notice intact, and a credit to Nadia Piet with a link back to [counterdefaults.aixdesign.co](https://counterdefaults.aixdesign.co) is appreciated.
