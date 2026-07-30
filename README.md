@@ -44,4 +44,6 @@ Open source under the [GNU AGPL-3.0](LICENSE). You're free to use, study, share,
 
 Made by [Nadia Piet](https://nadiapiet.com), co-founder of [AIxDESIGN](https://aixdesign.co).
 
-**Attribution is required, not optional.** AGPL-3.0 obliges anyone who copies, modifies, or runs a modified version (including as a hosted service) to keep the `© 2026 Nadia Piet (AIxDESIGN)` copyright notice and this license intact. On top of that mandatory credit, a visible link back to [counterdefaults.aixdesign.co](https://counterdefaults.aixdesign.co) is appreciated.
+**Attribution is required, not optional.** AGPL-3.0 obliges anyone who copies, modifies, or runs a modified version (including as a hosted service) to keep the `© 2026 Nadia Piet (AIxDESIGN)` copyright notice and this license intact.
+
+On top of that, this project adds a **required-attribution term under [AGPL-3.0 §7(b)](LICENSE)** (see [`NOTICE`](NOTICE)): the credit **"LLM Counter-Defaults by Nadia Piet (AIxDESIGN)"** must be preserved in all copies and modified versions, both in the source and in whatever the running app displays (its footer, an About screen, or credits). Removing it isn't permitted. A visible link back to [counterdefaults.aixdesign.co](https://counterdefaults.aixdesign.co) is appreciated but not required.
