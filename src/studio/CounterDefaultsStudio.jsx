@@ -761,6 +761,8 @@ export default function CounterDefaultsStudio() {
             <a href="mailto:hello@aixdesign.co" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>Workshops</a>
             <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
             <button onClick={() => { setGuestOpen(true); setGuestState('idle'); }} className="cd-hov" style={{ fontFamily: sm, fontSize: 10, color: LABEL, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Guestbook</button>
+            <span style={{ margin: '0 8px', color: '#cdc6b2' }}>·</span>
+            <a href="https://github.com/NadiaP7406/counter-defaults" target="_blank" rel="noopener noreferrer" className="cd-hov" style={{ color: LABEL, textDecoration: 'none' }}>GitHub</a>
           </span>
         </div>
 

@@ -2,6 +2,10 @@
 
 Your LLM has default behaviors: agreeing with you, sounding sure, writing in your place. LLM Counter-Defaults writes the custom instructions that override them. Paste them into your LLM's settings once, and every conversation after follows your rules. Made by [Nadia Piet](https://nadiapiet.com) at [AIxDESIGN](https://aixdesign.co).
 
+**Live at [counterdefaults.aixdesign.co](https://counterdefaults.aixdesign.co)**
+
+![LLM Counter-Defaults — the mixing-desk interface](public/press/cockpit.png)
+
 14 behaviors to counter, from how hard the model pushes back to how much it discloses uncertainty or protects your writing voice. Six load to start; add the rest as you go, plus a "Ban writing patterns" set. Each fader starts where the LLM already is; push it to swap that default for yours. Only the faders you move appear in the generated instructions.
 
 ## Run it
@@ -29,6 +33,10 @@ public/fonts/   self-hosted font files
 ## Fonts
 
 All fonts are self-hosted (no CDN calls) and OFL-licensed: Jersey 25 (display), Inter, Darker Grotesque, Space Mono, and VT323, all as latin subsets from Google Fonts.
+
+## Contributing
+
+Issues and pull requests are welcome. It's a small, self-contained Vite + React app, so it's quick to run locally and poke at. If you add or change a dimension, keep the research-grounded spirit: base it on what people in prompt-engineering, writing, or AI-ethics practice actually do, and cite it.
 
 ## License & credit
 
