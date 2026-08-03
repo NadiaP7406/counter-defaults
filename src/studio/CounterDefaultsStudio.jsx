@@ -417,6 +417,7 @@ export default function CounterDefaultsStudio() {
                 <p style={{ fontSize: 13, lineHeight: 1.5, color: BODY, maxWidth: 720, margin: 0 }}>
               Your LLM came with settings you didn't choose. It agrees with you, sounds sure, and writes in your place. Each dimension below is one of those factory defaults. Move its slider to tailor the result to your own needs and values, then paste it into your LLM once. Every chat after follows your rules.
             </p>
+                <p style={{ fontSize: 11, lineHeight: 1.45, color: LABEL, maxWidth: 720, margin: '7px 0 0' }}>Each slider starts on the left, at your LLM's default. The further right you push it, the harder it counters that default (it never makes the behavior stronger than default).</p>
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               <button className="cd-pill cd-hov" onClick={() => setWhyOpen((v) => !v)} style={pillStyle('#F0C8C8')}>
                 <span style={{ width: 7, height: 7, borderRadius: '50%', background: CORAL, display: 'inline-block' }} /> Why counter the defaults <span style={{ color: '#6a6452' }}>{whyOpen ? '–' : '+'}</span>
@@ -485,7 +486,7 @@ export default function CounterDefaultsStudio() {
                         const labelEl = (
                           <button onClick={(e) => { e.stopPropagation(); setFocused(bi); setInfoOpen((p) => (p === bi ? null : bi)); }} aria-label={`${b.name} info`} style={{ width: narrow ? 'auto' : 128, flex: narrow ? 1 : 'none', flexShrink: 0, minWidth: 0, background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', padding: 0 }}>
                             <div style={{ fontFamily: sm, fontSize: 11, textTransform: 'uppercase', color: on ? INK : '#6a6452' }}><span style={{ marginRight: 4 }}>{b.emoji}</span>{b.short}</div>
-                            <div style={{ fontSize: 8, color: LABEL, marginTop: 2 }}>{b.poles[0]} → {b.poles[1]}</div>
+                            <div style={{ fontSize: 8, color: LABEL, marginTop: 2 }}>{b.poles[0]} <span style={{ fontStyle: 'italic' }}>(default)</span> → {b.poles[1]}</div>
                           </button>
                         );
                         const trackEl = (
