@@ -13,6 +13,7 @@ const SHORT = {
   worldview: 'Worldview', divergence: 'Divergence', sycophancy: 'Sycophancy',
   anthropo: 'Persona', presence: 'Presence', memory: 'Context', privacy: 'Privacy',
   calibration: 'Calibration', voice: 'Voice', frugality: 'Frugality', reflection: 'Reflection',
+  resolution: 'Resolution',
 };
 
 // A distinct hue per channel (Studio-only; cosmetic, no effect on output). The
@@ -23,6 +24,7 @@ const STUDIO_COLORS = {
   worldview: '#8A6CEF', divergence: '#3C69FD', sycophancy: '#FC6653',
   anthropo: '#F0C8C8', presence: '#92FFB9', memory: '#5BD6C0', privacy: '#FF55CF',
   calibration: '#FFD23F', voice: '#F5FF6E', frugality: '#F59E2E', reflection: '#E08CFF',
+  resolution: '#9D8CFF',
 };
 
 export const CHANNELS = KEYS.map((key) => {

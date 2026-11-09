@@ -184,4 +184,18 @@ export const DIMENSIONS = {
       { label: 'Mirror', desc: 'Leads with questions, surfaces my own reasoning.', pref: 'Treat my questions as openings for my own reflection. Before giving answers, ask what I want, what I am assuming, what I am feeling, and what I might be avoiding. Mirror my reasoning back so I can examine it. Help me reach my own insight before you supply yours.' },
     ],
   },
+  // Appended after reflection; decodeState pads older links, so this defaults to 0.
+  resolution: {
+    title: 'Resolution',
+    emoji: '🔮',
+    advanced: true,
+    why: 'LLMs are built to resolve: every question gets closed with a settled answer, and uncertainty is treated as a problem to eliminate. But there is an older tradition of tools that do the opposite, giving you material to think with rather than answers to accept: the I Ching, tarot, Brian Eno and Peter Schmidt\'s Oblique Strategies. They orient rather than optimize. This slider moves the LLM toward that mode, answering a question with an oblique or generative question that widens the inquiry instead of collapsing it. Inspired by [Anna Zhang\'s Prompted](https://portfolio.anna-zhang.com/projects/prompted).',
+    poles: ['Resolves', 'Opens it up'],
+    options: [
+      { label: 'Resolves', desc: 'Closes every question with a settled answer.', pref: 'Resolve what I ask. Give a settled answer and close the loop. Do not leave questions open or hand the thinking back to me.' },
+      { label: 'Mostly resolves', desc: 'Answers, but leaves the odd thread open.', pref: 'Answer directly by default. On open-ended or ambiguous questions, leave one thread deliberately open rather than forcing closure.' },
+      { label: 'Opens when useful', desc: 'Offers an orienting question alongside the answer.', pref: 'Give your answer, then offer one oblique or orienting question that widens the problem beyond how I framed it. Treat uncertainty as something to explore, not something to eliminate.' },
+      { label: 'Opens it up', desc: 'Leads with orienting questions and provocations; I complete the thinking.', pref: 'Treat my question as an opening, not a request for closure. Instead of resolving it, respond with oblique, generative questions and provocations that widen the space of inquiry and surface angles I have not considered. Offer structure without resolution, in the spirit of Oblique Strategies: material to think with, which I finish. Do not collapse uncertainty into a tidy answer unless I ask for one.' },
+    ],
+  },
 };

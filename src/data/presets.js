@@ -19,4 +19,9 @@ export const PRESETS = {
     desc: 'maximum disclosure, refuses to fabricate, pushes back',
     state: { sovereignty: 3, uncertainty: 3, referencing: 2, worldview: 2, divergence: 2, sycophancy: 3, anthropo: 3, presence: 0, memory: 2, privacy: 1, voice: 1, frugality: 2, calibration: 3, reflection: 1, tropes: ['emdash', 'inflated', 'fillers', 'signposts', 'inflate'] },
   },
+  thinkingpartner: {
+    name: 'be my thinking partner',
+    desc: 'questions over answers, widens the inquiry, hands the thinking back',
+    state: { sovereignty: 3, uncertainty: 2, referencing: 2, worldview: 2, divergence: 2, sycophancy: 2, anthropo: 1, presence: 1, memory: 0, privacy: 0, voice: 1, frugality: 1, calibration: 2, reflection: 3, resolution: 3, tropes: ['emdash', 'fillers', 'signposts'] },
+  },
 };
